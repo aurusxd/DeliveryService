@@ -197,6 +197,7 @@ namespace DeliveryService.ViewModels
 
                 CourierSelected?.Invoke(startLat, startLon, endLat, endLon);
             });
+            System.Diagnostics.Debug.WriteLine($"DispatcherViewModel");
 
             InitializeTimer();
         }
@@ -215,10 +216,11 @@ namespace DeliveryService.ViewModels
                 ActiveOrders.Clear();
                 foreach (var order in activeOrders) 
                     ActiveOrders.Add(order);
-                
+
+                System.Diagnostics.Debug.WriteLine($"Заказов загружено: {ActiveOrders.Count}");
 
                 // Поменять статусы на нужные проекту
-                
+
                 NewOrderCount = activeOrders.Count(o => o.Status == "new");
                 InTransitOrderCount = activeOrders.Count(o => o.Status == "InDelivery");
                 CompletedOrderCount = allOrders.Count(o => o.Status == "Done");

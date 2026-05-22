@@ -19,6 +19,14 @@
             <DataTemplate DataType="{x:Type vm:DispatcherViewModel}">
                 <vw:dispatcherPage/>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:OrderListViewModel}">
+                <vw:ordersPage/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:ListCouriersViewModel}">
+                <vw:listCouriersPage/>
+            </DataTemplate>
         </ResourceDictionary>
 
 

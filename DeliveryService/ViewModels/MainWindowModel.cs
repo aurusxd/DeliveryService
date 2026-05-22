@@ -40,6 +40,7 @@ namespace DeliveryService.ViewModels
         private object _currentView;
         private readonly DispatcherViewModel _dispatcherVm;
         private readonly OrderListViewModel _ordersVm;
+        private readonly ListCouriersViewModel _couriersVm;
 
         public object CurrentView
         {
@@ -51,11 +52,13 @@ namespace DeliveryService.ViewModels
         public MainWindowModel(
             OrderListViewModel ordersVm,
             DispatcherViewModel dispatcherVm,
+            ListCouriersViewModel couriersVm,
             WindowsService windowsService)
         {
 
             _dispatcherVm = dispatcherVm;
             _ordersVm = ordersVm;
+            _couriersVm = couriersVm;
 
             CurrentView = ordersVm;
             _windowsService = windowsService;
@@ -63,9 +66,17 @@ namespace DeliveryService.ViewModels
             OpenDispatcherCommand = new RelayCommand(() =>
                 CurrentView = _dispatcherVm
 
+
                 );
-            OpenOrderListCommand = new RelayCommand(_windowsService.OpenOrderList);
-            OpenListCouriersCommand = new RelayCommand(_windowsService.OpenListCouriers);
+            OpenOrderListCommand = new RelayCommand(()=>
+                CurrentView = _ordersVm
+                
+                );
+            OpenListCouriersCommand = new RelayCommand(()=>
+                CurrentView = _couriersVm
+                
+                
+                );
 
             // Эти потом можно изменить с проверками DialogResult
             OpenNewOrderCommand = new RelayCommand(() => {
@@ -74,6 +85,7 @@ namespace DeliveryService.ViewModels
             OpenRegistrationCourierCommand = new RelayCommand(() => { 
                 _windowsService.OpenRegistrationCourier();
             });
+
 
             CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
         }

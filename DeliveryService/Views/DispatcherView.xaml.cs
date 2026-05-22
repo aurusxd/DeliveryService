@@ -16,6 +16,11 @@ namespace DeliveryService.Views
     /// </summary>
     public partial class DispatcherView : Window
     {
+
+        public DispatcherView()
+        {
+            
+        }
         public DispatcherView(DispatcherViewModel viewModel)
         {
             InitializeComponent();
