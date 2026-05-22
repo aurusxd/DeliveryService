@@ -205,9 +205,9 @@ namespace DeliveryService.ViewModels
                     ClientName = client.Name;
                     ClientPhone = client.Phone.ToString();
 
-                    //var (basket, _) = await _basketService.GetUserBasketAsync(_clientId);
-                    var basket = await _basketService.GetUserActiveBasketAsync(_clientId);
-                    _clientBasket = basket;
+                    var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_clientId);
+                    _clientBasket = userBasket;
+                    Price = totalPrice;
                 }
             }
         }

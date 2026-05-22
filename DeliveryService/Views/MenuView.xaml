@@ -105,6 +105,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="Корзина" FontSize="28" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,20"/>
@@ -135,7 +136,12 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <Button Grid.Row="2" Content="Сделать заказ" Command="{Binding CreateOrderCommand}" 
+                <WrapPanel Grid.Row="2">
+                    <TextBlock Text="Итоговая сумма:" Foreground="Black" Padding="10,5" FontSize="16"/>
+                    <TextBlock Text="{Binding TotalPrice}" Foreground="Black" Padding="10,5" FontSize="14"/>
+                </WrapPanel>
+                
+                <Button Grid.Row="3" Content="Сделать заказ" Command="{Binding CreateOrderCommand}" 
                         CommandParameter="{Binding CurrentUserId}"
                         Style="{StaticResource PrimaryButton}" Height="50" Margin="0,20,0,0"/>
             </Grid>

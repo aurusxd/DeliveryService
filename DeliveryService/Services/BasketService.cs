@@ -40,13 +40,16 @@ namespace DeliveryService.Services
             return (basket, totalPrice);
         }
         /// <summary>
-        /// Получение всех объектов корзины по пользователю, исключая те объекты, которые уже привязаны к заказам
+        /// Полуение списка корзины, исключая те объекты, которые уже привязаны к заказам и полной суммы по пользователю
         /// </summary>
         /// <param name="userId">ID пользователя</param>
-        /// <returns>Список объектов корзины, не привязанные к заказам, с указанным пользователем</returns>
-        public async Task<List<Basket>> GetUserActiveBasketAsync(int userId)
+        /// <returns>Список объектов корзины, c не привязанными к заказам и полная сумма</returns>
+        public async Task<(List<Basket> userBasket, decimal totalPrice)> GetUserActiveBasketAsync(int userId)
         {
-            return await _basketRepository.GetUserActiveBasketAsync(userId);
+            var basket = await _basketRepository.GetUserActiveBasketAsync(userId);
+            decimal totalPrice = basket.Sum(b => b.Price);
+
+            return (basket, totalPrice);
         }
         /// <summary>
         /// Создание нового объекта корзины
@@ -87,7 +90,7 @@ namespace DeliveryService.Services
             if (food == null)
                 return false;
 
-            var item = await _basketRepository.GetByUserAndFoodId(userId, foodId);
+            var item = await _basketRepository.GetActiveByUserAndFoodId(userId, foodId);
             if (item != null)
             {
                 item.Quantity += quantity;

@@ -136,7 +136,7 @@
 
                     <TextBlock Text="СУММА" FontSize="10" FontWeight="SemiBold" Foreground="#888" Margin="0,5,0,8"/>
                     <TextBox Text="{Binding Price}" Foreground="Black" BorderBrush="#444" BorderThickness="1" 
-                             Padding="10,5" FontSize="11"/>
+                             Padding="10,5" FontSize="11" IsReadOnly="True"/>
 
                 </StackPanel>
             </ScrollViewer>

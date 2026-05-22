@@ -30,7 +30,7 @@ namespace DeliveryService.Repositories
                 .FirstOrDefaultAsync(b => b.Id == basketId);
         }
         /// <summary>
-        /// Полечение объекта корзины по id`шникам пользователя и еды 
+        /// Получение объекта корзины по id`шникам пользователя и еды 
         /// </summary>
         /// <param name="userId">ID пользователя</param>
         /// <param name="foodId">ID еды</param>
@@ -40,6 +40,17 @@ namespace DeliveryService.Repositories
             return await _context.Baskets
                 .Include(b => b.Food)
                 .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId);
+        }
+        /// <summary>
+        /// Получение объекта корзины, который не привязан к заказу и по id`шникам пользователя и еды
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="foodId">ID еды</param>
+        /// <returns>Объект корзины не привязанный к заказу и с указаными id`ками</returns>
+        public async Task<Basket?> GetActiveByUserAndFoodId(int userId, int foodId)
+        {
+            return await _context.Baskets
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId && !_context.Orders.Any(o => o.BasketId == b.Id));
         }
         /// <summary>
         /// Получение всех объектов корзины по пользователю
