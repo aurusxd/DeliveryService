@@ -45,7 +45,15 @@ namespace DeliveryService.ViewModels
         public object CurrentView
         {
             get => _currentView;
-            set => SetProperty(ref _currentView, value);
+            set {
+                switch (value)
+                {
+                    case OrderListViewModel o: o.LoadOrdersCommand.Execute(null); break;
+                    case DispatcherViewModel d: d.LoadDataCommand.Execute(null); break;
+                    case ListCouriersViewModel d: d.LoadCouriersCommand.Execute(null); break;
+                }
+                SetProperty(ref _currentView, value);
+                }
         }
 
 

@@ -153,7 +153,7 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
-            LoadDataCommand.Execute(null);
+            //LoadDataCommand.Execute(null);
 
 
 
