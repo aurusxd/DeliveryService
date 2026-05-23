@@ -44,11 +44,9 @@ namespace DeliveryService.ViewModels
             OpenDispatcherCommand = new RelayCommand(_windowsService.OpenDispatcher);
             OpenOrderListCommand = new RelayCommand(_windowsService.OpenOrderList);
             OpenListCouriersCommand = new RelayCommand(_windowsService.OpenListCouriers);
+            OpenNewOrderCommand = new RelayCommand(_windowsService.OpenMenu);
 
             // Эти потом можно изменить с проверками DialogResult
-            OpenNewOrderCommand = new RelayCommand(() => {
-                _windowsService.OpenNewOrder();
-            });
             OpenRegistrationCourierCommand = new RelayCommand(() => { 
                 _windowsService.OpenRegistrationCourier();
             });

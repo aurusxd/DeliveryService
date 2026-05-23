@@ -40,22 +40,33 @@ namespace DeliveryService.Services
             return (basket, totalPrice);
         }
         /// <summary>
+        /// Полуение списка корзины, исключая те объекты, которые уже привязаны к заказам и полной суммы по пользователю
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <returns>Список объектов корзины, c не привязанными к заказам и полная сумма</returns>
+        public async Task<(List<Basket> userBasket, decimal totalPrice)> GetUserActiveBasketAsync(int userId)
+        {
+            var basket = await _basketRepository.GetUserActiveBasketAsync(userId);
+            decimal totalPrice = basket.Sum(b => b.Price);
+
+            return (basket, totalPrice);
+        }
+        /// <summary>
         /// Создание нового объекта корзины
         /// </summary>
         /// <param name="userId">ID пользователя</param>
         /// <param name="foodId">ID еды</param>
         /// <param name="quantity">Количество</param>
         /// <returns>Прошла ли операция</returns>
-        public async Task<bool> AddNewBusketItemAsync(int userId, int foodId, int quantity)
+        public async Task<bool> AddNewBasketItemAsync(int userId, int foodId, int quantity)
         {
             var food = await _foodRepository.GetById(foodId);
             if (food == null)
                 return false;
 
             decimal price = food.Price * quantity;
-
-            Basket item = new Basket 
-            { 
+            Basket item = new Basket
+            {
                 UserId = userId,
                 FoodId = foodId,
                 Quantity = quantity,
@@ -63,25 +74,44 @@ namespace DeliveryService.Services
             };
 
             await _basketRepository.AddAsync(item);
+
             return true;
         }
         /// <summary>
-        /// Первичное создание заказа - создание с пользователем, корзиной, статусом и датой
+        /// Создание нового объекта корзины или обновление уже существующего
         /// </summary>
         /// <param name="userId">ID пользователя</param>
-        /// <param name="basketId">ID корзины</param>
-        /// <returns>ID шаблона заказа</returns>
-        public async Task<int> CreateOrderFromBasketAsync(int userId, int basketId)
+        /// <param name="foodId">ID еды</param>
+        /// <param name="quantity">Количество</param>
+        /// <returns>Прошла ли операция</returns>
+        public async Task<bool> AddOrUpdateBasketItemAsync(int userId, int foodId, int quantity)
         {
-            Order order = new Order 
-            { 
-                ClientId = userId,
-                BasketId = basketId,
-                Status = "new"
-            };
+            var food = await _foodRepository.GetById(foodId);
+            if (food == null)
+                return false;
 
-            await _orderRepository.AddAsync(order);
-            return order.Id;
+            var item = await _basketRepository.GetActiveByUserAndFoodId(userId, foodId);
+            if (item != null)
+            {
+                item.Quantity += quantity;
+                item.Price = food.Price * item.Quantity;
+                await _basketRepository.UpdateAsync(item);
+            }
+            else
+            {
+                decimal price = food.Price * quantity;
+                Basket newItem = new Basket 
+                { 
+                    UserId = userId,
+                    FoodId = foodId,
+                    Quantity = quantity,
+                    Price = price
+                };
+
+                await _basketRepository.AddAsync(newItem);
+            }
+
+            return true;
         }
         /// <summary>
         /// Удаление объекта из корзины

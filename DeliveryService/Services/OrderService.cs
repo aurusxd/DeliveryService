@@ -33,13 +33,13 @@ namespace DeliveryService.Services
         public async Task<bool> CreateOrderAsync(Client client, Order order)
         {
             if (client == null) return false;
-            if (string.IsNullOrEmpty(order.Address_From) ||
-                string.IsNullOrEmpty(order.Address_To)) return false;
+            if (string.IsNullOrEmpty(order.Address_From) || string.IsNullOrEmpty(order.Address_To)) return false;
 
-            await _clientRepository.AddAsync(client);
+            if (client.Id == 0)
+                await _clientRepository.AddAsync(client);
             order.ClientId = client.Id;
 
-            order.Status = "new"; // поменять если нужно
+            order.Status = "new";
             order.Created_At = DateTime.UtcNow;
 
             await _orderRepository.AddAsync(order);
