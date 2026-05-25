@@ -43,8 +43,8 @@ namespace DeliveryService
             services.AddScoped<BasketRepository>();
             // Сервисы
             services.AddSingleton<SessionService>();
+            services.AddSingleton<WindowsService>();
 
-            services.AddScoped<WindowsService>();
             services.AddScoped<OrderService>();
             services.AddScoped<CourierService>();
             services.AddScoped<ClientService>();
