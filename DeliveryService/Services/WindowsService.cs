@@ -59,12 +59,10 @@ namespace DeliveryService.Services
         }
 
         /// <summary>
-        /// Открытие RegistrationView
+        /// Открывает окно входа
         /// </summary>
-        public void OpenRegistration() => OpenWindow<RegistrationView>();
-        /// <summary>
-        /// Открытие MenuView
-        /// </summary>
+        public void OpenEntrance() => OpenWindow<EntranceView>();
+
         public void OpenMenu() => OpenWindow<MenuView>();
         /// <summary>
         /// Открытие NewOrderView

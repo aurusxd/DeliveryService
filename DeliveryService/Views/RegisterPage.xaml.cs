@@ -1,5 +1,4 @@
-﻿using DeliveryService.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,21 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DeliveryService.Views
 {
     /// <summary>
-    /// Логика взаимодействия для RegistrationView.xaml
+    /// Interaction logic for RegisterPage.xaml
     /// </summary>
-    public partial class RegistrationView : Window
+    public partial class RegisterPage : UserControl
     {
-        public RegistrationView(RegistrationViewModel vm)
+        public RegisterPage()
         {
             InitializeComponent();
-            DataContext = vm;
-            
-
         }
     }
 }

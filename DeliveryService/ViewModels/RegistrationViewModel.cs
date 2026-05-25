@@ -67,15 +67,25 @@ namespace DeliveryService.ViewModels
             get => _password;
             set => SetProperty(ref _password, value);
         }
-
+        /// <summary>
+        /// Сервис клиента
+        /// </summary>
         private ClientService _clientService;
-
+        /// <summary>
+        /// Команда для кнопки регистрации
+        /// </summary>
         public ICommand RegistrationCommand { get; }
+        /// <summary>
+        /// Сервис для открытия окон
+        /// </summary>
 
-        public RegistrationViewModel(ClientService clientService)
+        private readonly WindowsService _windowService;
+
+        public RegistrationViewModel(ClientService clientService, WindowsService windowService)
         {
             System.Diagnostics.Debug.WriteLine("RegistrationViewModel создан");
             _clientService = clientService;
+            _windowService = windowService;
 
             RegistrationCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(SaveUserAsync, "Ошибка создания пользователя"),
@@ -127,7 +137,10 @@ namespace DeliveryService.ViewModels
                 bool success = await _clientService.AddClientAsync(Client);
 
                 if (success)
+                {
                     CloseWindow(true);
+                    _windowService.OpenEntrance();
+                }
                 else
                     ErrorMessage = "Не удалось выполнить команду";
             }

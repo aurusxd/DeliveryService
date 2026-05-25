@@ -21,33 +21,26 @@
                     </Border>
                 </StackPanel>
             </Border>
+            
 
-            <Border Grid.Column="1" Padding="60,0">
-                <StackPanel VerticalAlignment="Center">
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="160"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
+                <StackPanel Grid.Row="0" VerticalAlignment="Bottom" >
                     <Border HorizontalAlignment="Center" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="ВХОД" Style="{StaticResource TabButtonStyle}"/>
-                            <Button Content="РЕГИСТРАЦИЯ" Style="{StaticResource TabButtonStyle}" Margin="15,0,0,0"/>
+                            <Button Content="ВХОД" Style="{StaticResource TabButtonStyle}" Command="{Binding LoginCommand}"/>
+                            <Button Content="РЕГИСТРАЦИЯ" Style="{StaticResource TabButtonStyle}" Command="{Binding RegCommand}" Margin="15,0,0,0"/>
                         </StackPanel>
                     </Border>
-
-                    <TextBlock Text="Добро пожаловать" 
-                               FontSize="20" 
-                               FontWeight="SemiBold" 
-                               Foreground="#374151" 
-                               HorizontalAlignment="Center" 
-                               Margin="0,20,0,40"/>
-
-                    <TextBlock Text="ЛОГИН" Style="{StaticResource FieldLabel}" Margin="0,0,0,8"/>
-                    <TextBox Name="NameTextBox" Text="{Binding CourierName}" Style="{StaticResource ModernFieldTextBox}" Margin="0,0,0,25"/>
-
-                    <TextBlock Text="ПАРОЛЬ" Style="{StaticResource FieldLabel}" Margin="0,0,0,8"/>
-                    <TextBox Name="PhoneTextBox" Text="{Binding CourierPhone}" Style="{StaticResource ModernFieldTextBox}" Margin="0,0,0,40"/>
-
-                    <Button Content="ВОЙТИ" Style="{StaticResource PrimaryButton}" Height="50" Margin="0,0,0,15"/>
                 </StackPanel>
-            </Border>
+                <StackPanel Grid.Row="1" VerticalAlignment="Top">
+                    <ContentControl Grid.Column="1" Padding="60,0" Content="{Binding CurrentView}"/>
+                </StackPanel>
+            </Grid>   
         </Grid>
     </Border>
 </Window>

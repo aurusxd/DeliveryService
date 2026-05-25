@@ -71,9 +71,16 @@ namespace DeliveryService.ViewModels
         /// Клиент сервис
         /// </summary>
         private readonly ClientService _clientService;
+        /// <summary>
+        /// Сервис для открытия окон
+        /// </summary>
         private readonly WindowsService _windowService;
+
+       /// <summary>
+       /// Команда для авторизации
+       /// </summary>
         public ICommand LoginCommand { get; }
-        public ICommand RegistrationCommand { get; }
+
 
         public EntranceViewModel(ClientService clientService, WindowsService windowService, SessionService sessionService)
         {
@@ -86,13 +93,13 @@ namespace DeliveryService.ViewModels
                 execute: () => TryRunTaskAsync(CheckAndAuthClient, "Ошибка аунтефикации"),
                 canExecute: () => !IsBusy
             );
-            RegistrationCommand = new RelayCommandAsync(
-                execute: () => TryRunTaskAsync(OpenReg, "Ошибка регистрации"),
-                canExecute: () => !IsBusy
-            );
+
         }
 
-        private async Task OpenReg() => _windowService.OpenRegistration();
+        /// <summary>
+        /// Проверка и аунтефикация пользователя
+        /// </summary>
+        /// <returns></returns>
         private async Task CheckAndAuthClient()
         {
 

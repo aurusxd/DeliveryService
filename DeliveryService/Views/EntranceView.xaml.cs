@@ -11,7 +11,7 @@ namespace DeliveryService.Views
 
     public partial class EntranceView : Window
     {
-        public EntranceView(EntranceViewModel vw)
+        public EntranceView(AuthorizationViewModel vw)
         {
             InitializeComponent();
             DataContext = vw;
