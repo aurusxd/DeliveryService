@@ -27,6 +27,15 @@
             <DataTemplate DataType="{x:Type vm:ListCouriersViewModel}">
                 <vw:listCouriersPage/>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:EntranceViewModel}">
+                <vw:LoginPage/>
+            </DataTemplate>
+
+
+            <DataTemplate DataType="{x:Type vm:RegistrationViewModel}">
+                <vw:RegisterPage/>
+            </DataTemplate>
         </ResourceDictionary>
 
 
