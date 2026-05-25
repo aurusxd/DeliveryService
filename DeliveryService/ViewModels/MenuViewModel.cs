@@ -20,7 +20,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Текущий пользователь
         /// </summary>
-        private readonly int _currentUserId;
+        private int _currentUserId;
 
         /// <summary>
         /// Список категорий
@@ -43,6 +43,7 @@ namespace DeliveryService.ViewModels
         public int CurrentUserId 
         { 
             get => _currentUserId;
+            set => SetProperty(ref _currentUserId, value);
         }
         /// <summary>
         /// Список категорий
@@ -108,7 +109,7 @@ namespace DeliveryService.ViewModels
             _basketService = basketService;
 
             // Это для тестов. В будущем надо как-то получать его
-            _currentUserId = 1;
+            //_currentUserId = 1;
 
             Categories = new ObservableCollection<Categories>();
             MenuItems = new ObservableCollection<Food>();
@@ -159,10 +160,18 @@ namespace DeliveryService.ViewModels
                 execute: () => TryRunTaskAsync(OpenNewOrder, "Ошибка открытия NewOrderView"),
                 canExecute: () => !IsBusy
             );
-
-            LoadDataCommand.Execute(null);
         }
 
+
+        /// <summary>
+        /// Изменение id пользователя
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        public void SetCurrentUserId(int userId)
+        {
+            CurrentUserId = userId;
+            LoadDataCommand.Execute(null);
+        }
 
         /// <summary>
         /// Заполнение коллекции

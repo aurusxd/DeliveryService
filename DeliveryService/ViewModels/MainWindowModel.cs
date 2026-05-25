@@ -12,6 +12,8 @@ namespace DeliveryService.ViewModels
     {
         private readonly WindowsService _windowsService;
 
+        private int _currentUserId;
+
         /// <summary>
         /// Команда открытия DispatcherView
         /// </summary>
@@ -88,12 +90,26 @@ namespace DeliveryService.ViewModels
                 );
 
             // Эти потом можно изменить с проверками DialogResult
+            OpenNewOrderCommand = new RelayCommand(() =>
+                _windowsService.OpenMenu(_currentUserId)
+            );
+
             OpenRegistrationCourierCommand = new RelayCommand(() => { 
                 _windowsService.OpenRegistrationCourier();
             });
 
 
             CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
+        }
+
+
+        /// <summary>
+        /// Изменение id пользователя
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        public void SetCurrentUserId(int userId)
+        {
+            _currentUserId = userId;
         }
     }
 }

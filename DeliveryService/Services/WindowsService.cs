@@ -25,10 +25,11 @@ namespace DeliveryService.Services
 
 
         /// <summary>
-        /// Открытие окна
+        /// Открытие окна с возможностью настройки перед отображением
         /// </summary>
         /// <typeparam name="TView">Класс открываемого окна</typeparam>
-        private void OpenWindow<TView>() where TView : Window
+        /// <param name="configure">Команда настройки окна</param>
+        private void OpenWindow<TView>(Action<TView>? configure = null) where TView : Window
         {
             var type = typeof(TView);
 
@@ -39,27 +40,43 @@ namespace DeliveryService.Services
             }
 
             var win = _services.GetRequiredService<TView>();
+            configure?.Invoke(win);
             win.Closed += (s, e) => _openedWindows.Remove(type);
             win.Show();
             _openedWindows[type] = win;
         }
         /// <summary>
-        /// Открытие окна как модальное
+        /// Открытие окна как модальное с возможностью настройки перед отображением
         /// </summary>
         /// <typeparam name="TView">Класс открываемого окна</typeparam>
+        /// <param name="configure">Команда настройки окна</param>
         /// <returns>Результат работы окна - DialogResult</returns>
-        private bool? OpenModalWindow<TView>() where TView : Window
+        private bool? OpenModalWindow<TView>(Action<TView>? configure = null) where TView : Window
         {
             var win = _services.GetRequiredService<TView>();
+            configure?.Invoke(win);
             return win.ShowDialog();
         }
 
         /// <summary>
-        /// Открытие окна регистрации
+        /// Открытие RegistrationView
         /// </summary>
         public void OpenRegistration() => OpenWindow<RegistrationView>();
-
+        /// <summary>
+        /// Открытие MenuView
+        /// </summary>
         public void OpenMenu() => OpenWindow<MenuView>();
+        /// <summary>
+        /// Открытие MenuView с передачей id пользователя
+        /// </summary>
+        public void OpenMenu(int userId)
+        {
+            OpenWindow<MenuView>(win =>
+            {
+                if (win.DataContext is MenuViewModel vm)
+                    vm.SetCurrentUserId(userId);
+            });
+        }
         /// <summary>
         /// Открытие NewOrderView
         /// </summary>
@@ -72,18 +89,30 @@ namespace DeliveryService.Services
         /// <returns>Результат работы окна - DialogResult</returns>
         public bool? OpenNewOrder(int userId)
         {
-            var win = _services.GetRequiredService<NewOrderView>();
-            if (win.DataContext is NewOrderViewModel vm)
-                vm.SetCurrentUserId(userId);
-
-            return win.ShowDialog();
+            return OpenModalWindow<NewOrderView>(win =>
+            {
+                if (win.DataContext is NewOrderViewModel vm)
+                    vm.SetCurrentUserId(userId);
+            });
         }
         /// <summary>
         /// Открытие MainWindow
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Результат работы окна - DialogResult</returns>
         public bool? OpenMainWindow() => OpenModalWindow<MainWindow>();
-
+        /// <summary>
+        /// Открытие MainWindow с передачей id пользователя
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <returns>Результат работы окна - DialogResult</returns>
+        public bool? OpenMainWindow(int userId)
+        {
+            return OpenModalWindow<MainWindow>(win =>
+            { 
+                if (win.DataContext is MainWindowModel vm)
+                    vm.SetCurrentUserId(userId);
+            });
+        }
         /// <summary>
         /// Открытие RegistrationCourier
         /// </summary>

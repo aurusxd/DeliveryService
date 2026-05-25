@@ -104,10 +104,10 @@ namespace DeliveryService.ViewModels
             switch (Role)
             {
                 case "admin":
-                    _windowService.OpenMainWindow();
+                    _windowService.OpenMainWindow(Client.Id);
                     break;
                 case "user":
-                    _windowService.OpenMenu();
+                    _windowService.OpenMenu(Client.Id);
                     break;
             }
             CloseWindow(true);
