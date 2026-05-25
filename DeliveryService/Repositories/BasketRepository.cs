@@ -30,6 +30,29 @@ namespace DeliveryService.Repositories
                 .FirstOrDefaultAsync(b => b.Id == basketId);
         }
         /// <summary>
+        /// Получение объекта корзины по id`шникам пользователя и еды 
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="foodId">ID еды</param>
+        /// <returns>Объект корзины с указаными id`ками</returns>
+        public async Task<Basket?> GetByUserAndFoodId(int userId, int foodId)
+        {
+            return await _context.Baskets
+                .Include(b => b.Food)
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId);
+        }
+        /// <summary>
+        /// Получение объекта корзины, который не привязан к заказу и по id`шникам пользователя и еды
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="foodId">ID еды</param>
+        /// <returns>Объект корзины не привязанный к заказу и с указаными id`ками</returns>
+        public async Task<Basket?> GetActiveByUserAndFoodId(int userId, int foodId)
+        {
+            return await _context.Baskets
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId && !_context.Orders.Any(o => o.BasketId == b.Id));
+        }
+        /// <summary>
         /// Получение всех объектов корзины по пользователю
         /// </summary>
         /// <param name="userId">ID пользователя</param>
@@ -39,6 +62,18 @@ namespace DeliveryService.Repositories
             return await _context.Baskets
                 .Include(b => b.Food)
                 .Where(b => b.UserId == userId)
+                .ToListAsync();
+        }
+        /// <summary>
+        /// Получение всех объектов корзины по пользователю, исключая те объекты, которые уже привязаны к заказам
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <returns>Список объектов корзины, не привязанные к заказам, с указанным пользователем</returns>
+        public async Task<List<Basket>> GetUserActiveBasketAsync(int userId)
+        {
+            return await _context.Baskets
+                .Include(b => b.Food)
+                .Where(b => b.UserId == userId && !_context.Orders.Any(o => o.BasketId == b.Id))
                 .ToListAsync();
         }
         /// <summary>

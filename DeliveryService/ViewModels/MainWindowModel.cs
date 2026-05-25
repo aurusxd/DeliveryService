@@ -71,6 +71,7 @@ namespace DeliveryService.ViewModels
             CurrentView = ordersVm;
             _windowsService = windowsService;
 
+
             OpenDispatcherCommand = new RelayCommand(() =>
                 CurrentView = _dispatcherVm
 
@@ -87,9 +88,6 @@ namespace DeliveryService.ViewModels
                 );
 
             // Эти потом можно изменить с проверками DialogResult
-            OpenNewOrderCommand = new RelayCommand(() => {
-                _windowsService.OpenNewOrder();
-            });
             OpenRegistrationCourierCommand = new RelayCommand(() => { 
                 _windowsService.OpenRegistrationCourier();
             });

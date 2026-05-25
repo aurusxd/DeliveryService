@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeliveryService.Views"
         mc:Ignorable="d"
-        Title="RegistrationView" Height="650" Width="500">
+        Title="RegistrationView" Height="750" Width="500" WindowStartupLocation="CenterScreen">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -45,7 +45,7 @@
                    FontSize="18"
                    Margin="0,0,0,5" HorizontalAlignment="Center"/>
             <TextBox Name="NameTextBox"
-                 Text="{Binding CourierName}"
+                 Text="{Binding Name}"
                  FontSize="18" 
                  Height="35"
                  Width="300"
@@ -59,7 +59,7 @@
                    FontSize="18"
                    Margin="0,0,0,5" HorizontalAlignment="Center"/>
             <TextBox Name="PhoneTextBox"
-                 Text="{Binding CourierPhone}"
+                 Text="{Binding PhoneNumber}"
                  FontSize="18" 
                  Height="35"
                  Width="300"
@@ -67,10 +67,34 @@
                  VerticalContentAlignment="Center"/>
         </StackPanel>
 
-        <Button Grid.Row="4" 
+        <StackPanel Grid.Row="3" Margin="0,0,0,20">
+            <TextBlock Text="Электронная почта:" 
+                   FontSize="18"
+                   Margin="0,0,0,5" HorizontalAlignment="Center"/>
+            <TextBox
+                 Text="{Binding Email}"
+                 FontSize="18" 
+                 Height="35"
+                 Width="300"
+                 HorizontalAlignment="Center"
+                 VerticalContentAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4" Margin="0,0,0,20">
+            <TextBlock Text="Пароль:" 
+                   FontSize="18"
+                   Margin="0,0,0,5" HorizontalAlignment="Center"/>
+            <TextBox
+                 Text="{Binding Password}"
+                 FontSize="18" 
+                 Height="35"
+                 Width="300"
+                 HorizontalAlignment="Center"
+                 VerticalContentAlignment="Center"/>
+        </StackPanel>
+        <Button Grid.Row="5" 
             Name="RegisterButton"
             Content="Зарегистрироваться"
-            Command="{Binding SaveCommand}"
+            Command="{Binding RegistrationCommand}"
             Height="45"
             Width="220"
             FontSize="16"

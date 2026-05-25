@@ -45,9 +45,11 @@ namespace DeliveryService
             services.AddScoped<WindowsService>();
             services.AddScoped<OrderService>();
             services.AddScoped<CourierService>();
+            services.AddScoped<ClientService>();
             services.AddScoped<FoodCategoryService>();
             services.AddScoped<FoodService>();
             services.AddScoped<BasketService>();
+            services.AddSingleton<SessionService>();
 
             // ViewModels
             services.AddTransient<MainWindowModel>();
@@ -56,20 +58,24 @@ namespace DeliveryService
             services.AddTransient<NewOrderViewModel>();
             services.AddTransient<RegistrationCourierModel>();
             services.AddTransient<DispatcherViewModel>();
+            services.AddTransient<MenuViewModel>();
+            services.AddTransient<EntranceViewModel>();
+            services.AddTransient<RegistrationViewModel>();
+            services.AddTransient<MenuViewModel>();
 
             // View
             services.AddTransient<MainWindow>();
-            services.AddTransient<ListCouriersView>();
-            services.AddTransient<OrdersListView>();
             services.AddTransient<NewOrderView>();
             services.AddTransient<RegistrationCourier>();
-            services.AddTransient<DispatcherView>();
+            services.AddTransient<EntranceView>();
+            services.AddTransient<RegistrationView>();
+            services.AddTransient<MenuView>();
 
             // Собираем контейнер
             Services = services.BuildServiceProvider();
 
             // Открываем главное окно - пока затычка
-            var win = Services.GetRequiredService<MainWindow>();
+            var win = Services.GetRequiredService<EntranceView>();
             win.Show();
         }
     }

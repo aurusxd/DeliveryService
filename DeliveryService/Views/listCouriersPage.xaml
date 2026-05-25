@@ -24,7 +24,7 @@
 
             <TextBlock Grid.Column="0" Text="Курьеры" FontSize="28" FontWeight="SemiBold" Foreground="#111827"/>
 
-            <Button Content="Добавить курьера" Command="{Binding AddCourierCommand}" Margin="785,0,0,0" Padding="20,0" Height="40" Background="#2563EB" Foreground="White" BorderThickness="0" Cursor="Hand" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button Content="Добавить курьера" Command="{Binding AddCourierCommand}" Margin="450,0,0,0" Padding="20,0" Height="40" Background="#2563EB" Foreground="White" BorderThickness="0" Cursor="Hand" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="6"/>

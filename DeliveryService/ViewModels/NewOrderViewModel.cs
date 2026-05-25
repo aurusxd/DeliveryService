@@ -1,6 +1,7 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Models;
 using DeliveryService.Services;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -12,7 +13,13 @@ namespace DeliveryService.ViewModels
     public class NewOrderViewModel : BaseViewModel
     {
         private readonly OrderService _orderService;
+        private readonly ClientService _clientService;
+        private readonly BasketService _basketService;
 
+        /// <summary>
+        /// Id пользователя
+        /// </summary>
+        private int _clientId;
         /// <summary>
         /// Имя клиента
         /// </summary>
@@ -25,6 +32,8 @@ namespace DeliveryService.ViewModels
         /// Номер клиента, "очищенный" от всего, кроме цифр
         /// </summary>
         private string _cleanedPhoneNumber;
+
+        private List<Basket> _clientBasket;
 
         /// <summary>
         /// Адрес отправки
@@ -152,11 +161,21 @@ namespace DeliveryService.ViewModels
         /// Команда закрытия окна
         /// </summary>
         public ICommand CloseCommand { get; }
+        /// <summary>
+        /// Команда загрузки пользователя
+        /// </summary>
+        public ICommand LoadUserCommand { get; }
 
 
-        public NewOrderViewModel(OrderService orderService)
+        public NewOrderViewModel(OrderService orderService, ClientService clientService, BasketService basketService)
         {
             _orderService = orderService;
+            _clientService = clientService;
+            _basketService = basketService;
+
+            _clientId = SessionService.CurrentClient.Id;
+            _clientBasket = new List<Basket>();
+
 
             SaveCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(SaveOrderAsync, "Ошибка создания заказа"),
@@ -164,9 +183,39 @@ namespace DeliveryService.ViewModels
             );
 
             CloseCommand = new RelayCommand(_ => CloseWindow(false));
+
+            LoadUserCommand = new RelayCommandAsync(
+                execute: () => TryRunTaskAsync(LoadUser, "Ошибка загрузки пользователя"),
+                canExecute: () => !IsBusy
+            );
+
+            LoadUserCommand.Execute(null);
+
             IsFromMode = true;
         }
 
+
+        /// <summary>
+        /// Загрузка имени и телефона пользователя
+        /// </summary>
+        private async Task LoadUser()
+        {
+            ClientName = SessionService.CurrentClient.Name;
+            ClientPhone = SessionService.CurrentClient.Phone.ToString();
+
+            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_clientId);
+            _clientBasket = userBasket;
+            Price = totalPrice;
+        }
+        /// <summary>
+        /// Изменение id пользователя
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        public void SetCurrentUserId(int userId)
+        {
+            _clientId = userId;
+            LoadUserCommand.Execute(null);
+        }
 
         /// <summary>
         /// Проверка валидации ClientName, AddressFrom, AddressTo, и Price
@@ -197,7 +246,6 @@ namespace DeliveryService.ViewModels
 
             return true;
         }
-
         /// <summary>
         /// Проверка валидации ClientPhone и "очишение" от не-цифр
         /// </summary>
@@ -229,11 +277,73 @@ namespace DeliveryService.ViewModels
             return true;
         }
 
+
+        private async Task SaveOrderAsync()
+        {
+            ErrorMessage = null;
+
+            if (!ValidateProperty())
+                return;
+
+            if (_clientBasket == null || _clientBasket.Count == 0)
+            {
+                ErrorMessage = "Корзина пуста. Невозможно оформить заказ.";
+                return;
+            }
+
+            Client? client = await _clientService.GetClientById(_clientId);
+            if (client == null)
+            {
+                if (!int.TryParse(ClientPhone, out int phoneNumber))
+                {
+                    ErrorMessage = "Номер телефона должен содержать только цифры";
+                    return;
+                }
+
+                #region На данный момент этот регион работает с ошибками
+                //if (!ValidatePhoneNumber())
+                //    return;
+
+                //if (!int.TryParse(_cleanedPhoneNumber, out int phoneNumber))
+                //{
+                //    ErrorMessage = "Номер телефона должен содержать только цифры";
+                //    return;
+                //}
+                #endregion
+            }
+
+            foreach (var item in _clientBasket)
+            {
+                var order = new Order
+                {
+                    ClientId = SessionService.CurrentClient.Id,
+                    Address_From = AddressFrom,
+                    Lat_From = LatFrom,
+                    Lon_From = LonFrom,
+                    Address_To = AddressTo,
+                    Lat_To = LatTo,
+                    Lon_To = LonTo,
+                    Price = item.Price,
+                    Status = "new",
+                    Created_At = DateTime.UtcNow,
+                    BasketId = item.Id
+                };
+
+                bool success = await _orderService.CreateOrderAsync(client, order);
+                if (!success)
+                {
+                    ErrorMessage = "Не удалось создать один из заказов";
+                    return;
+                }
+            }
+
+            CloseWindow(true);
+        }
         /// <summary>
         /// Создание заказа и сохранение
-        /// <br/> !!! Возможно нужно будет изменить то как получается клиент !!!
+        /// <br/> !!! Старый метод, остался как тестовый вариант !!!
         /// </summary>
-        private async Task SaveOrderAsync()
+        private async Task SaveOrderAsync_Old()
         {
             ErrorMessage = null;
 
@@ -257,12 +367,16 @@ namespace DeliveryService.ViewModels
                 return;
             }
 
-            Client client = new Client
+            Client? client = await _clientService.GetClientById(_clientId);
+            if (client == null)
             {
-                Name = ClientName,
-                Phone = phoneNumber,
-                Created_At = DateTime.UtcNow
-            };
+                client = new Client
+                {
+                    Name = ClientName,
+                    Phone = phoneNumber,
+                    Created_At = DateTime.UtcNow
+                };
+            }
 
             Order order = new Order
             {

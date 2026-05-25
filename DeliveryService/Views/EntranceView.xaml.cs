@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeliveryService.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,10 @@ namespace DeliveryService.Views
 
     public partial class EntranceView : Window
     {
-        public EntranceView()
+        public EntranceView(EntranceViewModel vw)
         {
             InitializeComponent();
+            DataContext = vw;
         }
     }
 }
