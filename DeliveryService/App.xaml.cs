@@ -42,6 +42,8 @@ namespace DeliveryService
             services.AddScoped<FoodRepository>();
             services.AddScoped<BasketRepository>();
             // Сервисы
+            services.AddSingleton<SessionService>();
+
             services.AddScoped<WindowsService>();
             services.AddScoped<OrderService>();
             services.AddScoped<CourierService>();
@@ -49,7 +51,6 @@ namespace DeliveryService
             services.AddScoped<FoodCategoryService>();
             services.AddScoped<FoodService>();
             services.AddScoped<BasketService>();
-            services.AddSingleton<SessionService>();
 
             // ViewModels
             services.AddTransient<MainWindowModel>();
