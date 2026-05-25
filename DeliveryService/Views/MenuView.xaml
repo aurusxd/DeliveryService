@@ -77,7 +77,7 @@
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
                                         <Border Grid.Row="0" Background="#F3F4F6" CornerRadius="18" Margin="12,12,12,0" ClipToBounds="True">
-                                            <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                            <Image Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
                                         </Border>
                                         <StackPanel Grid.Row="1" Margin="15,10,15,0">
                                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold" Foreground="#111827"/>
@@ -123,7 +123,7 @@
                     </Border>
 
                     <TextBlock Grid.Column="1" 
-                       Text="{Binding UserName}"
+                       Text="{Binding Username}"
                        FontSize="14" 
                        FontWeight="Medium"
                        Foreground="#111827"
@@ -132,7 +132,7 @@
 
 
                     <Button Grid.Column="2" Content="Выйти" 
-                    Command="{Binding LoginCommand}"
+                    Command="{Binding LogoutCommand}"
                     Background="#3B82F6" Foreground="White" 
                     BorderThickness="0" 
                     Padding="20,8" FontSize="14" FontWeight="SemiBold"
@@ -158,8 +158,8 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel>
                                             <TextBlock Text="{Binding Food.Title}" FontWeight="SemiBold" FontSize="14"/>
-                                            <TextBlock Text="Количество: {Binding Quantity}" Foreground="#6B7280" FontSize="12"/>
-                                            <TextBlock Text="Цена: {Binding Price}" Foreground="#6B7280" FontSize="12"/>
+                                            <TextBlock Text="{Binding Quantity,StringFormat=Количество:{0}}" Foreground="#6B7280" FontSize="12"/>
+                                            <TextBlock Text="{Binding Price,StringFormat=Цена:{0}}" Foreground="#6B7280" FontSize="12"/>
                                         </StackPanel>
                                         <Button Grid.Column="1" Content="✕" 
                                     Command="{Binding DataContext.RemoveFromBasketCommand, RelativeSource={RelativeSource AncestorType=Window}}"

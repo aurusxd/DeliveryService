@@ -11,6 +11,7 @@ namespace DeliveryService.ViewModels
     /// </summary>
     public class MenuViewModel : BaseViewModel, IDisposable
     {
+        private string _userName;
         private readonly WindowsService _windowsService;
         private readonly SessionService _sessionService;
 
@@ -35,6 +36,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private decimal _totalPrice;
 
+       
 
         /// <summary>
         /// Список категорий
@@ -70,6 +72,15 @@ namespace DeliveryService.ViewModels
         }
 
         /// <summary>
+        /// Имя аккаунта клиента
+        /// </summary>
+        public string Username
+        {
+            get => _userName;
+            set=>SetProperty(ref _userName, value);
+        }
+
+        /// <summary>
         /// Команда загрузки данных
         /// </summary>
         public ICommand LoadDataCommand {  get; }
@@ -90,6 +101,12 @@ namespace DeliveryService.ViewModels
         /// </summary>
         public ICommand CreateOrderCommand { get; }
 
+        /// <summary>
+        /// Команда выхода из аккаунта
+        /// </summary>
+        public ICommand LogoutCommand { get; }
+
+
 
         public MenuViewModel(WindowsService windowsService, SessionService sessionService,
             FoodCategoryService foodCategoryService, FoodService foodService, BasketService basketService)
@@ -104,7 +121,7 @@ namespace DeliveryService.ViewModels
             Categories = new ObservableCollection<Categories>();
             MenuItems = new ObservableCollection<Food>();
             BasketItems = new ObservableCollection<Basket>();
-
+            Username = _sessionService.CurrentClient.Name;
             LoadDataCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(LoadDataAsync, "Ошибка загрузки данных"),
                 canExecute: () => !IsBusy
@@ -150,6 +167,11 @@ namespace DeliveryService.ViewModels
                 execute: () => TryRunTaskAsync(OpenNewOrder, "Ошибка открытия NewOrderView"),
                 canExecute: () => !IsBusy
             );
+
+            LogoutCommand = new RelayCommandAsync(
+                execute: () => TryRunTaskAsync(Logout,"Ошибка выхода из аккаунта"),
+                canExecute: () => !IsBusy
+                );
 
             _sessionService.CurrentUserChanged += OnCurrentUserChanged;
 
@@ -269,6 +291,16 @@ namespace DeliveryService.ViewModels
                 await LoadBasketAsync();
             else
                 ErrorMessage = "Не удалось создать заказ";
+        }
+
+        /// <summary>
+        /// Выход из аккаунта
+        /// </summary>
+        /// <returns></returns>
+        private async Task Logout()
+        {
+            _windowsService.CloseWindows();
+            _windowsService.OpenEntrance();
         }
 
         /// <summary>
