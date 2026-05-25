@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeliveryService.Views"
         mc:Ignorable="d"
-        Title="EntranceView" Height="650" Width="500">
+        Title="EntranceView" Height="650" Width="500" WindowStartupLocation="CenterScreen">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,7 +44,7 @@
                        FontSize="16"
                        Margin="0,0,0,5" HorizontalAlignment="Center"/>
             <TextBox Name="NameTextBox"
-                     Text="{Binding CourierName}"
+                     Text="{Binding Name}"
                      FontSize="18" 
                      Height="35"
                      Width="300"
@@ -53,11 +53,11 @@
         </StackPanel>
 
         <StackPanel Grid.Row="3" Margin="0,0,0,25">
-            <TextBlock Text="Номер телефона:" 
+            <TextBlock Text="Пароль:" 
                        FontSize="16"
                        Margin="0,0,0,5" HorizontalAlignment="Center"/>
-            <TextBox Name="PhoneTextBox"
-                     Text="{Binding CourierPhone}"
+            <TextBox
+                     Text="{Binding Password}"
                      FontSize="18" 
                      Height="35"
                      Width="300"
@@ -68,7 +68,7 @@
         <Button Grid.Row="4" 
                 x:Name="LoginButton"
                 Content="Вход"
-                Command="{Binding SaveCommand}"
+                Command="{Binding LoginCommand}"
                 Width="300" 
                 Height="45"
                 FontSize="16"
@@ -79,7 +79,7 @@
         <Button Grid.Row="5" 
                 Name="RegisterButton"
                 Content="Зарегистрироваться"
-                Command="{Binding SaveCommand}"
+                Command="{Binding RegistrationCommand}"
                 Width="200"
                 Height="30"
                 FontSize="13"

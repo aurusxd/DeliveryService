@@ -1,6 +1,7 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Models;
 using DeliveryService.Services;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -171,9 +172,10 @@ namespace DeliveryService.ViewModels
             _orderService = orderService;
             _clientService = clientService;
             _basketService = basketService;
-            
-            _clientId = -1;
+
+            _clientId = SessionService.CurrentClient.Id;
             _clientBasket = new List<Basket>();
+
 
             SaveCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(SaveOrderAsync, "Ошибка создания заказа"),
@@ -187,6 +189,8 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
+            LoadUserCommand.Execute(null);
+
             IsFromMode = true;
         }
 
@@ -196,20 +200,12 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadUser()
         {
-            if (_clientId > 0)
-            {
-                var client = await _clientService.GetClientById(_clientId);
-                
-                if (client != null)
-                {
-                    ClientName = client.Name;
-                    ClientPhone = client.Phone.ToString();
+            ClientName = SessionService.CurrentClient.Name;
+            ClientPhone = SessionService.CurrentClient.Phone.ToString();
 
-                    var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_clientId);
-                    _clientBasket = userBasket;
-                    Price = totalPrice;
-                }
-            }
+            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_clientId);
+            _clientBasket = userBasket;
+            Price = totalPrice;
         }
         /// <summary>
         /// Изменение id пользователя
@@ -314,20 +310,13 @@ namespace DeliveryService.ViewModels
                 //    return;
                 //}
                 #endregion
-
-                client = new Client
-                {
-                    Name = ClientName,
-                    Phone = phoneNumber,
-                    Created_At = DateTime.UtcNow
-                };
             }
 
             foreach (var item in _clientBasket)
             {
                 var order = new Order
                 {
-                    ClientId = client.Id,
+                    ClientId = SessionService.CurrentClient.Id,
                     Address_From = AddressFrom,
                     Lat_From = LatFrom,
                     Lon_From = LonFrom,

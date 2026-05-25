@@ -1,9 +1,12 @@
-﻿<Window x:Class="DeliveryService.Views.DispatcherView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        Title="DispatcherView" Height="800" Width="1200" Loaded="Window_Loaded">
-
+﻿<UserControl x:Class="DeliveryService.Views.dispatcherPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DeliveryService.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1100" Loaded="UserControl_Loaded">
     <Grid Background="#F9FAFB">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -20,7 +23,7 @@
 
                     <TextBlock Text="Диспетчерская" FontSize="22" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,20"/>
 
-                    
+
                     <UniformGrid Columns="3" Margin="0,0,0,25">
                         <Border Background="#F3F4F6" CornerRadius="8" Padding="10" Margin="0,0,5,0">
                             <StackPanel>
@@ -54,26 +57,26 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Command="{Binding DataContext.SelectOrderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                CommandParameter="{Binding}"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Padding="0"
-                                HorizontalContentAlignment="Stretch">
+                            CommandParameter="{Binding}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="0"
+                            HorizontalContentAlignment="Stretch">
 
                                     <Border Background="White" 
-                                    BorderBrush="#E5E7EB" 
-                                    BorderThickness="1" 
-                                    CornerRadius="8" 
-                                    Padding="12" 
-                                    Margin="0,0,0,8"
-                                    Height="130">
+                                BorderBrush="#E5E7EB" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Padding="12" 
+                                Margin="0,0,0,8"
+                                Height="130">
 
 
                                         <Border.InputBindings>
                                             <MouseBinding MouseAction="LeftClick"
-                                            Command="{Binding SelectOrderCommand,
-                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"/>
+                                        Command="{Binding SelectOrderCommand,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"/>
                                         </Border.InputBindings>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -83,37 +86,37 @@
 
                                             <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Id, StringFormat='№{0}'}"
-                                                   Foreground="#111827" 
-                                                   FontWeight="Bold" 
-                                                   FontSize="14"/>
+                                               Foreground="#111827" 
+                                               FontWeight="Bold" 
+                                               FontSize="14"/>
                                                 <TextBlock Text="{Binding Courier.Name, StringFormat='{}Курьер: {0}'}" 
-                                                   FontSize="12" 
-                                                   Foreground="#4B5563" 
-                                                   Margin="0,4,0,0"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   TextWrapping="Wrap"/>
+                                               FontSize="12" 
+                                               Foreground="#4B5563" 
+                                               Margin="0,4,0,0"
+                                               TextTrimming="CharacterEllipsis"
+                                               TextWrapping="Wrap"/>
                                                 <StackPanel Visibility="{Binding Status,Converter={StaticResource converter},ConverterParameter=new}">
                                                     <ComboBox ItemsSource="{Binding DataContext.FreeCouriers, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                      SelectedItem="{Binding DataContext.SelectedCourier, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                      DisplayMemberPath="Name"
-                                                      Margin="0,6,0,4"/>
+                                                  SelectedItem="{Binding DataContext.SelectedCourier, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,6,0,4"/>
                                                     <Button Content="Назначить"
-                                                    Command="{Binding DataContext.AssignCourierCommand,
-                                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                    CommandParameter="{Binding}"/>
+                                                Command="{Binding DataContext.AssignCourierCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"/>
                                                 </StackPanel>
 
                                             </StackPanel>
 
                                             <Border Grid.Column="1" 
-                                            VerticalAlignment="Center"
-                                            Background="#DBEAFE" 
-                                            CornerRadius="4" 
-                                            Padding="8,4">
+                                        VerticalAlignment="Center"
+                                        Background="#DBEAFE" 
+                                        CornerRadius="4" 
+                                        Padding="8,4">
                                                 <TextBlock Text="{Binding Status}" 
-                                                   FontSize="10" 
-                                                   Foreground="#1E40AF" 
-                                                   FontWeight="Medium"/>
+                                               FontSize="10" 
+                                               Foreground="#1E40AF" 
+                                               FontWeight="Medium"/>
                                             </Border>
                                         </Grid>
                                     </Border>
@@ -130,15 +133,15 @@
                                 <Border BorderBrush="#F3F4F6" BorderThickness="0,0,0,1" Padding="0,10">
                                     <Border.InputBindings>
                                         <MouseBinding MouseAction="LeftClick"
-                                        Command="{Binding DataContext.SelectCourierCommand,RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="{Binding}"/>
+                                    Command="{Binding DataContext.SelectCourierCommand,RelativeSource={RelativeSource AncestorType=ListView}}"
+                                    CommandParameter="{Binding}"/>
                                     </Border.InputBindings>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        
+
 
                                         <Border Width="32" Height="32" Background="#2563EB" CornerRadius="16" Margin="0,0,12,0">
                                             <TextBlock Text="К" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
@@ -146,8 +149,8 @@
 
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="{Binding Name}" 
-                                                   Foreground="#111827" 
-                                                   FontWeight="SemiBold"/>
+                                               Foreground="#111827" 
+                                               FontWeight="SemiBold"/>
                                             <TextBlock Text="{Binding IsActive}" FontSize="12" Foreground="#059669"/>
                                         </StackPanel>
                                     </Grid>
@@ -160,4 +163,4 @@
             </ScrollViewer>
         </Border>
     </Grid>
-</Window>
+</UserControl>

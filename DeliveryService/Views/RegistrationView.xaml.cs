@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeliveryService.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,12 @@ namespace DeliveryService.Views
     /// </summary>
     public partial class RegistrationView : Window
     {
-        public RegistrationView()
+        public RegistrationView(RegistrationViewModel vm)
         {
             InitializeComponent();
+            DataContext = vm;
+            
+
         }
     }
 }

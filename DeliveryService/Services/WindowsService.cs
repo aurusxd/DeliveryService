@@ -55,20 +55,10 @@ namespace DeliveryService.Services
         }
 
         /// <summary>
-        /// Открытие DispatcherView
+        /// Открытие окна регистрации
         /// </summary>
-        public void OpenDispatcher() => OpenWindow<DispatcherView>();
-        /// <summary>
-        /// Открытие OrderListView
-        /// </summary>
-        public void OpenOrderList() => OpenWindow<OrdersListView>();
-        /// <summary>
-        /// Открытие ListCouriersView
-        /// </summary>
-        public void OpenListCouriers() => OpenWindow<ListCouriersView>();
-        /// <summary>
-        /// Открытие MenuView
-        /// </summary>
+        public void OpenRegistration() => OpenWindow<RegistrationView>();
+
         public void OpenMenu() => OpenWindow<MenuView>();
         /// <summary>
         /// Открытие NewOrderView
@@ -88,6 +78,12 @@ namespace DeliveryService.Services
 
             return win.ShowDialog();
         }
+        /// <summary>
+        /// Открытие MainWindow
+        /// </summary>
+        /// <returns></returns>
+        public bool? OpenMainWindow() => OpenModalWindow<MainWindow>();
+
         /// <summary>
         /// Открытие RegistrationCourier
         /// </summary>

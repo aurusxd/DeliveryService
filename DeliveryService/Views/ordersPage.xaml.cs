@@ -1,5 +1,4 @@
-﻿using DeliveryService.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DeliveryService.Views
 {
     /// <summary>
-    /// Interaction logic for OrdersListView.xaml
+    /// Interaction logic for ordersPage.xaml
     /// </summary>
-    public partial class OrdersListView : Window
+    public partial class ordersPage : UserControl
     {
-        public OrdersListView(OrderListViewModel viewModel)
+        public ordersPage()
         {
             InitializeComponent();
-            DataContext = viewModel;
         }
     }
 }
