@@ -62,13 +62,13 @@ namespace DeliveryService
             services.AddTransient<EntranceViewModel>();
             services.AddTransient<RegistrationViewModel>();
             services.AddTransient<MenuViewModel>();
+            services.AddTransient<AuthorizationViewModel>();
 
             // View
             services.AddTransient<MainWindow>();
             services.AddTransient<NewOrderView>();
             services.AddTransient<RegistrationCourier>();
             services.AddTransient<EntranceView>();
-            services.AddTransient<RegistrationView>();
             services.AddTransient<MenuView>();
 
             // Собираем контейнер
