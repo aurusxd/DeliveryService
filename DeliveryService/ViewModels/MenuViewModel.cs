@@ -9,7 +9,7 @@ namespace DeliveryService.ViewModels
     /// <summary>
     /// Логика взаимодействия пользователя и базы данных с MenuView
     /// </summary>
-    public class MenuViewModel : BaseViewModel
+    public class MenuViewModel : BaseViewModel, IDisposable
     {
         private readonly WindowsService _windowsService;
         private readonly SessionService _sessionService;
@@ -151,6 +151,8 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
+            _sessionService.CurrentUserChanged += OnCurrentUserChanged;
+
             LoadDataCommand.Execute(null);
         }
 
@@ -240,6 +242,13 @@ namespace DeliveryService.ViewModels
                 await LoadBasketAsync();
         }
         /// <summary>
+        /// Перезагрузка при изменении текущего пользователя
+        /// </summary>
+        private async void OnCurrentUserChanged()
+        {
+            await LoadDataAsync();
+        }
+        /// <summary>
         /// Открытие окна NewOrderView для создания заказа
         /// </summary>
         private async Task OpenNewOrder()
@@ -260,6 +269,14 @@ namespace DeliveryService.ViewModels
                 await LoadBasketAsync();
             else
                 ErrorMessage = "Не удалось создать заказ";
+        }
+
+        /// <summary>
+        ///Действия, происходящие при закрытии окна
+        /// </summary>
+        public void Dispose()
+        {
+            _sessionService.CurrentUserChanged -= OnCurrentUserChanged;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace DeliveryService.Views
         {
             InitializeComponent();
             DataContext = viewModel;
+            Closed += (s, e) => viewModel.Dispose();
         }
 
         private void ListView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
