@@ -1,5 +1,4 @@
-﻿using DeliveryService.ViewModels;
-using DeliveryService.Views;
+﻿using DeliveryService.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -11,15 +10,20 @@ namespace DeliveryService.Services
     public class WindowsService
     {
         private readonly IServiceProvider _services;
+
+        private readonly SessionService _sessionService;
+
         /// <summary>
         /// Словарь открытых, не модальных, окон
         /// </summary>
         private readonly Dictionary<Type, Window> _openedWindows;
 
 
-        public WindowsService(IServiceProvider services)
+        public WindowsService(IServiceProvider services, SessionService sessionService)
         {
             _services = services;
+            _sessionService = sessionService;
+
             _openedWindows = new Dictionary<Type, Window>();
         }
 
@@ -66,24 +70,10 @@ namespace DeliveryService.Services
         /// <returns>Результат работы окна - DialogResult</returns>
         public bool? OpenNewOrder() => OpenModalWindow<NewOrderView>();
         /// <summary>
-        /// Открытие NewOrderView с передачей id пользователя
-        /// </summary>
-        /// <param name="userId">ID пользователя</param>
-        /// <returns>Результат работы окна - DialogResult</returns>
-        public bool? OpenNewOrder(int userId)
-        {
-            var win = _services.GetRequiredService<NewOrderView>();
-            if (win.DataContext is NewOrderViewModel vm)
-                vm.SetCurrentUserId(userId);
-
-            return win.ShowDialog();
-        }
-        /// <summary>
         /// Открытие MainWindow
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Результат работы окна - DialogResult</returns>
         public bool? OpenMainWindow() => OpenModalWindow<MainWindow>();
-
         /// <summary>
         /// Открытие RegistrationCourier
         /// </summary>

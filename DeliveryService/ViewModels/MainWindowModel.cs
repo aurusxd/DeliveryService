@@ -11,6 +11,7 @@ namespace DeliveryService.ViewModels
     public class MainWindowModel : BaseViewModel
     {
         private readonly WindowsService _windowsService;
+        private readonly SessionService _sessionService;
 
         /// <summary>
         /// Команда открытия DispatcherView
@@ -61,7 +62,8 @@ namespace DeliveryService.ViewModels
             OrderListViewModel ordersVm,
             DispatcherViewModel dispatcherVm,
             ListCouriersViewModel couriersVm,
-            WindowsService windowsService)
+            WindowsService windowsService,
+            SessionService sessionService)
         {
 
             _dispatcherVm = dispatcherVm;
@@ -70,6 +72,7 @@ namespace DeliveryService.ViewModels
 
             CurrentView = ordersVm;
             _windowsService = windowsService;
+            _sessionService = sessionService;
 
 
             OpenDispatcherCommand = new RelayCommand(() =>
@@ -88,6 +91,10 @@ namespace DeliveryService.ViewModels
                 );
 
             // Эти потом можно изменить с проверками DialogResult
+            OpenNewOrderCommand = new RelayCommand(() =>
+                _windowsService.OpenMenu()
+            );
+
             OpenRegistrationCourierCommand = new RelayCommand(() => { 
                 _windowsService.OpenRegistrationCourier();
             });

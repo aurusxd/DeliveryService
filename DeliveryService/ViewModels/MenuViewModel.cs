@@ -9,18 +9,14 @@ namespace DeliveryService.ViewModels
     /// <summary>
     /// Логика взаимодействия пользователя и базы данных с MenuView
     /// </summary>
-    public class MenuViewModel : BaseViewModel
+    public class MenuViewModel : BaseViewModel, IDisposable
     {
         private readonly WindowsService _windowsService;
+        private readonly SessionService _sessionService;
 
         private readonly FoodCategoryService _categoryService;
         private readonly FoodService _foodService;
         private readonly BasketService _basketService;
-
-        /// <summary>
-        /// Текущий пользователь
-        /// </summary>
-        private readonly int _currentUserId;
 
         /// <summary>
         /// Список категорий
@@ -40,10 +36,6 @@ namespace DeliveryService.ViewModels
         private decimal _totalPrice;
 
 
-        public int CurrentUserId 
-        { 
-            get => _currentUserId;
-        }
         /// <summary>
         /// Список категорий
         /// </summary>
@@ -99,16 +91,15 @@ namespace DeliveryService.ViewModels
         public ICommand CreateOrderCommand { get; }
 
 
-        public MenuViewModel(WindowsService windowsService,
+        public MenuViewModel(WindowsService windowsService, SessionService sessionService,
             FoodCategoryService foodCategoryService, FoodService foodService, BasketService basketService)
         {
             _windowsService = windowsService;
+            _sessionService = sessionService;
+
             _categoryService = foodCategoryService;
             _foodService = foodService;
             _basketService = basketService;
-
-            // Это для тестов. В будущем надо как-то получать его
-            _currentUserId = 1;
 
             Categories = new ObservableCollection<Categories>();
             MenuItems = new ObservableCollection<Food>();
@@ -160,6 +151,8 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
+            _sessionService.CurrentUserChanged += OnCurrentUserChanged;
+
             LoadDataCommand.Execute(null);
         }
 
@@ -207,8 +200,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadBasketAsync()
         {
-            //var (basket, totalPrice) = await _basketService.GetUserBasketAsync(_currentUserId);
-            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_currentUserId);
+            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_sessionService.CurrentClient.Id);
 
             FillList(BasketItems, userBasket);
             TotalPrice = totalPrice;
@@ -220,7 +212,7 @@ namespace DeliveryService.ViewModels
         /// <param name="quantity">Количество</param>
         private async Task AddToBasketAsync(int foodId, int quantity)
         {
-            bool success = await _basketService.AddOrUpdateBasketItemAsync(_currentUserId, foodId, quantity);
+            bool success = await _basketService.AddOrUpdateBasketItemAsync(_sessionService.CurrentClient.Id, foodId, quantity);
             if (success)
                 await LoadBasketAsync();
             else
@@ -245,14 +237,23 @@ namespace DeliveryService.ViewModels
         {
             await LoadCategoriesAsync();
             await LoadMenuAsync();
-            await LoadBasketAsync();
+
+            if (_sessionService.CurrentClient != null)
+                await LoadBasketAsync();
+        }
+        /// <summary>
+        /// Перезагрузка при изменении текущего пользователя
+        /// </summary>
+        private async void OnCurrentUserChanged()
+        {
+            await LoadDataAsync();
         }
         /// <summary>
         /// Открытие окна NewOrderView для создания заказа
         /// </summary>
         private async Task OpenNewOrder()
         {
-            if (_currentUserId <= 0)
+            if (_sessionService.CurrentClient == null)
             {
                 ErrorMessage = "Id пользователя нет";
                 return;
@@ -263,11 +264,19 @@ namespace DeliveryService.ViewModels
                 return;
             }
 
-            bool? success = _windowsService.OpenNewOrder(_currentUserId);
+            bool? success = _windowsService.OpenNewOrder();
             if (success == true)
                 await LoadBasketAsync();
             else
                 ErrorMessage = "Не удалось создать заказ";
+        }
+
+        /// <summary>
+        ///Действия, происходящие при закрытии окна
+        /// </summary>
+        public void Dispose()
+        {
+            _sessionService.CurrentUserChanged -= OnCurrentUserChanged;
         }
     }
 }

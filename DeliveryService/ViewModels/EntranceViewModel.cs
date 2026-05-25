@@ -13,6 +13,8 @@ namespace DeliveryService.ViewModels
 {
     public class EntranceViewModel : BaseViewModel
     {
+        private readonly SessionService _sessionService;
+
         /// <summary>
         /// Имя
         /// </summary>
@@ -80,11 +82,13 @@ namespace DeliveryService.ViewModels
         public ICommand LoginCommand { get; }
 
 
-        public EntranceViewModel(ClientService clientService, WindowsService windowService  )
+        public EntranceViewModel(ClientService clientService, WindowsService windowService, SessionService sessionService)
         {
 
             _clientService = clientService;
             _windowService = windowService;
+            _sessionService = sessionService;
+
             LoginCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(CheckAndAuthClient, "Ошибка аунтефикации"),
                 canExecute: () => !IsBusy
@@ -100,7 +104,7 @@ namespace DeliveryService.ViewModels
         {
 
             Client = await _clientService.GetClientByName(Name);
-            SessionService.CurrentClient = Client;
+            _sessionService.CurrentClient = Client;
 
             if (Client == null)
             {

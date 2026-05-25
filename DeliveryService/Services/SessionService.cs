@@ -13,6 +13,30 @@ namespace DeliveryService.Services
     /// </summary>
     public class SessionService
     {
-        public static Client? CurrentClient;
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
+        private Client? _currentClient;
+
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
+        public Client? CurrentClient
+        {
+            get => _currentClient;
+            set
+            {
+                if (_currentClient?.Id != value?.Id)
+                {
+                    _currentClient = value;
+                    CurrentUserChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ивент при изменении текущего пользователя (пока что нигде не используется)
+        /// </summary>
+        public event Action? CurrentUserChanged; 
     }
 }

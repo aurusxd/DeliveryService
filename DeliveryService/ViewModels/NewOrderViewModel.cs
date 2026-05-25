@@ -1,7 +1,6 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Models;
 using DeliveryService.Services;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -12,14 +11,12 @@ namespace DeliveryService.ViewModels
     /// </summary>
     public class NewOrderViewModel : BaseViewModel
     {
+        private readonly SessionService _sessionService;
+
         private readonly OrderService _orderService;
         private readonly ClientService _clientService;
         private readonly BasketService _basketService;
 
-        /// <summary>
-        /// Id пользователя
-        /// </summary>
-        private int _clientId;
         /// <summary>
         /// Имя клиента
         /// </summary>
@@ -167,15 +164,15 @@ namespace DeliveryService.ViewModels
         public ICommand LoadUserCommand { get; }
 
 
-        public NewOrderViewModel(OrderService orderService, ClientService clientService, BasketService basketService)
+        public NewOrderViewModel(SessionService sessionService, 
+            OrderService orderService, ClientService clientService, BasketService basketService)
         {
+            _sessionService = sessionService;
             _orderService = orderService;
             _clientService = clientService;
             _basketService = basketService;
 
-            _clientId = SessionService.CurrentClient.Id;
             _clientBasket = new List<Basket>();
-
 
             SaveCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(SaveOrderAsync, "Ошибка создания заказа"),
@@ -200,21 +197,12 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadUser()
         {
-            ClientName = SessionService.CurrentClient.Name;
-            ClientPhone = SessionService.CurrentClient.Phone.ToString();
+            ClientName = _sessionService.CurrentClient.Name;
+            ClientPhone = _sessionService.CurrentClient.Phone.ToString();
 
-            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_clientId);
+            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_sessionService.CurrentClient.Id);
             _clientBasket = userBasket;
             Price = totalPrice;
-        }
-        /// <summary>
-        /// Изменение id пользователя
-        /// </summary>
-        /// <param name="userId">ID пользователя</param>
-        public void SetCurrentUserId(int userId)
-        {
-            _clientId = userId;
-            LoadUserCommand.Execute(null);
         }
 
         /// <summary>
@@ -291,7 +279,7 @@ namespace DeliveryService.ViewModels
                 return;
             }
 
-            Client? client = await _clientService.GetClientById(_clientId);
+            Client? client = await _clientService.GetClientById(_sessionService.CurrentClient.Id);
             if (client == null)
             {
                 if (!int.TryParse(ClientPhone, out int phoneNumber))
@@ -316,7 +304,7 @@ namespace DeliveryService.ViewModels
             {
                 var order = new Order
                 {
-                    ClientId = SessionService.CurrentClient.Id,
+                    ClientId = _sessionService.CurrentClient.Id,
                     Address_From = AddressFrom,
                     Lat_From = LatFrom,
                     Lon_From = LonFrom,
@@ -367,7 +355,7 @@ namespace DeliveryService.ViewModels
                 return;
             }
 
-            Client? client = await _clientService.GetClientById(_clientId);
+            Client? client = await _clientService.GetClientById(_sessionService.CurrentClient.Id);
             if (client == null)
             {
                 client = new Client

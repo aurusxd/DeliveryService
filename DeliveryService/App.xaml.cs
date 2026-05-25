@@ -42,14 +42,15 @@ namespace DeliveryService
             services.AddScoped<FoodRepository>();
             services.AddScoped<BasketRepository>();
             // Сервисы
-            services.AddScoped<WindowsService>();
+            services.AddSingleton<SessionService>();
+            services.AddSingleton<WindowsService>();
+
             services.AddScoped<OrderService>();
             services.AddScoped<CourierService>();
             services.AddScoped<ClientService>();
             services.AddScoped<FoodCategoryService>();
             services.AddScoped<FoodService>();
             services.AddScoped<BasketService>();
-            services.AddSingleton<SessionService>();
 
             // ViewModels
             services.AddTransient<MainWindowModel>();
