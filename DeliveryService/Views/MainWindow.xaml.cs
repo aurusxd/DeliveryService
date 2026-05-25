@@ -1,4 +1,5 @@
 ﻿using DeliveryService.ViewModels;
+using DeliveryService.Views;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,5 +24,6 @@ namespace DeliveryService
             DataContext = viewModel;
             Closing += (s, e) => viewModel.CloseWindowsCommand.Execute(null); 
         }
+
     }
 }

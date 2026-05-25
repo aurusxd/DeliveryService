@@ -1,6 +1,4 @@
-﻿using DeliveryService.Models;
-using DeliveryService.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DeliveryService.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ListCouriersView.xaml
+    /// Interaction logic for listCouriersPage.xaml
     /// </summary>
-    public partial class ListCouriersView : Window
+    public partial class listCouriersPage : UserControl
     {
-        public ListCouriersView(ListCouriersViewModel viewModel)
+        public listCouriersPage()
         {
             InitializeComponent();
-            DataContext = viewModel;
         }
     }
 }

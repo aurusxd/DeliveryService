@@ -32,6 +32,12 @@ namespace DeliveryService.Repositories
         /// <param name="id">Айди клиента</param>
         /// <returns>Вовзращает клиента с указанным id</returns>
         public async Task<Client?> GetById(int id) => await _context.Clients.FindAsync(id);
+        /// <summary>
+        /// Получение клиента по логину(имени)
+        /// </summary>
+        /// <param name="name">Логин</param>
+        /// <returns></returns>
+        public async Task<Client?> GetByName(string name) => await _context.Clients.FirstOrDefaultAsync(x=>x.Name == name);
 
         /// <summary>
         /// Добавление клиента в БД

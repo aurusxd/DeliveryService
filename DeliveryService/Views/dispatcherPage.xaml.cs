@@ -1,26 +1,37 @@
-﻿using DeliveryService.DTO;
-using DeliveryService.Models;
-using DeliveryService.Utils;
+﻿using DeliveryService.Utils;
 using DeliveryService.ViewModels;
-using Microsoft.Web.WebView2.Core;
-using System.Diagnostics.Metrics;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace DeliveryService.Views
 {
     /// <summary>
-    /// Логика взаимодействия для DispatcherView.xaml
+    /// Interaction logic for dispatcherPage.xaml
     /// </summary>
-    public partial class DispatcherView : Window
+    public partial class dispatcherPage : UserControl
     {
-        public DispatcherView(DispatcherViewModel viewModel)
+        public dispatcherPage()
         {
             InitializeComponent();
-            DataContext = viewModel;
             MapInitializer.CoordinatesRoute += RouteSimulate;
+            Loaded += (s, e) =>
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"dispatcherPage загружен, DataContext: {DataContext?.GetType().Name}");
+            };
         }
 
         public async Task RouteSimulate(List<List<double>> points)
@@ -39,11 +50,11 @@ namespace DeliveryService.Views
             }
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             await MapInitializer.Initialize(Map);
-            Map.CoreWebView2.OpenDevToolsWindow();
-  
+
+
             if (DataContext is DispatcherViewModel vm)
             {
                 vm.OrderSelected += async order =>
@@ -60,7 +71,7 @@ namespace DeliveryService.Views
                             order.Lat_From, order.Lon_From, order.Lat_To, order.Lon_To));
                 };
 
-                vm.CourierSelected += async (Lat_From,Lan_From,Lat_To,Lan_To) =>
+                vm.CourierSelected += async (Lat_From, Lan_From, Lat_To, Lan_To) =>
                 {
                     await Map.CoreWebView2.ExecuteScriptAsync(
                         "clearObjects()"
@@ -80,7 +91,5 @@ namespace DeliveryService.Views
                 };
             }
         }
-
-
     }
 }

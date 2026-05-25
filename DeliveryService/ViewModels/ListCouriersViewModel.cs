@@ -133,7 +133,7 @@ namespace DeliveryService.ViewModels
                     LoadCouriersCommand.Execute(null);
             });
 
-            LoadCouriersCommand.Execute(null);
+            //LoadCouriersCommand.Execute(null);
         }
 
         /// <summary>

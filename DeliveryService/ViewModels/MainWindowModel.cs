@@ -1,6 +1,7 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Services;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace DeliveryService.ViewModels
 {
@@ -36,22 +37,61 @@ namespace DeliveryService.ViewModels
         /// </summary>
         public ICommand CloseWindowsCommand { get; }
 
+        private object _currentView;
+        private readonly DispatcherViewModel _dispatcherVm;
+        private readonly OrderListViewModel _ordersVm;
+        private readonly ListCouriersViewModel _couriersVm;
 
-        public MainWindowModel(WindowsService windowsService)
+        public object CurrentView
         {
+            get => _currentView;
+            set {
+                switch (value)
+                {
+                    case OrderListViewModel o: o.LoadOrdersCommand.Execute(null); break;
+                    case DispatcherViewModel d: d.LoadDataCommand.Execute(null); break;
+                    case ListCouriersViewModel d: d.LoadCouriersCommand.Execute(null); break;
+                }
+                SetProperty(ref _currentView, value);
+                }
+        }
+
+
+        public MainWindowModel(
+            OrderListViewModel ordersVm,
+            DispatcherViewModel dispatcherVm,
+            ListCouriersViewModel couriersVm,
+            WindowsService windowsService)
+        {
+
+            _dispatcherVm = dispatcherVm;
+            _ordersVm = ordersVm;
+            _couriersVm = couriersVm;
+
+            CurrentView = ordersVm;
             _windowsService = windowsService;
 
-            OpenDispatcherCommand = new RelayCommand(_windowsService.OpenDispatcher);
-            OpenOrderListCommand = new RelayCommand(_windowsService.OpenOrderList);
-            OpenListCouriersCommand = new RelayCommand(_windowsService.OpenListCouriers);
+
+            OpenDispatcherCommand = new RelayCommand(() =>
+                CurrentView = _dispatcherVm
+
+
+                );
+            OpenOrderListCommand = new RelayCommand(()=>
+                CurrentView = _ordersVm
+                
+                );
+            OpenListCouriersCommand = new RelayCommand(()=>
+                CurrentView = _couriersVm
+                
+                
+                );
 
             // Эти потом можно изменить с проверками DialogResult
-            OpenNewOrderCommand = new RelayCommand(() => {
-                _windowsService.OpenNewOrder();
-            });
             OpenRegistrationCourierCommand = new RelayCommand(() => { 
                 _windowsService.OpenRegistrationCourier();
             });
+
 
             CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
         }

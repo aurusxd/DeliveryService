@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using DeliveryService.Models;
+using DeliveryService.ViewModels;
 
 namespace DeliveryService.Views
 {
@@ -20,12 +21,13 @@ namespace DeliveryService.Views
     /// Логика взаимодействия для MenuView.xaml
     /// </summary>
    
-        public partial class MenuView : Window
-        {
+    public partial class MenuView : Window
+    {
 
-        public MenuView()
+        public MenuView(MenuViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
         }
 
         private void ListView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
