@@ -15,6 +15,7 @@ namespace DeliveryService.ViewModels
     {
         private readonly WindowsService _windowsService;
         private readonly OrderService _orderService;
+        private readonly CourierService _courierService;
 
         /// <summary>
         /// Список DTO всех заказов
@@ -25,9 +26,17 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private ObservableCollection<OrderDTO> _orders;
         /// <summary>
+        /// Список всех курьеров
+        /// </summary>
+        private List<CourierDTO> _couriers;
+        /// <summary>
         /// Фильтр списка заказов
         /// </summary>
         private string _filter;
+        /// <summary>
+        /// Id выбранного курьера для фильтра 
+        /// </summary>
+        private int? _selectedCourierId;
 
         /// <summary>
         /// Количество заказов
@@ -55,6 +64,14 @@ namespace DeliveryService.ViewModels
             set => SetProperty(ref _orders, value);
         }
         /// <summary>
+        /// Список всех курьеров
+        /// </summary>
+        public List<CourierDTO> Couriers
+        {
+            get => _couriers;
+            set => SetProperty(ref _couriers, value);
+        }
+        /// <summary>
         /// Фильтр списка заказов
         /// </summary>
         public string Filter
@@ -63,6 +80,18 @@ namespace DeliveryService.ViewModels
             set
             {
                 if (SetProperty(ref _filter, value))
+                    ApplyFilter();
+            }
+        }
+        /// <summary>
+        /// Id выбранного курьера для фильтра 
+        /// </summary>
+        public int? SelectedCourierId
+        {
+            get => _selectedCourierId;
+            set
+            {
+                if (SetProperty(ref _selectedCourierId, value))
                     ApplyFilter();
             }
         }
@@ -104,21 +133,32 @@ namespace DeliveryService.ViewModels
         /// </summary>
         public ICommand LoadOrdersCommand { get; }
         /// <summary>
+        /// Команда загрузки данных
+        /// </summary>
+        public ICommand LoadDataCommand { get; }
+        /// <summary>
         /// Команда открытия окна добавления нового заказа
         /// </summary>
         public ICommand AddOrderCommand { get; }
 
 
-        public OrderListViewModel(WindowsService windowsService, OrderService orderService)
+        public OrderListViewModel(WindowsService windowsService, OrderService orderService, CourierService courierService)
         {
             _windowsService = windowsService;
             _orderService = orderService;
+            _courierService = courierService;
 
             _allOrders = new List<OrderDTO>();
             Orders = new ObservableCollection<OrderDTO>();
+            Couriers = new List<CourierDTO>();
 
             LoadOrdersCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(LoadOrdersAsync, "Ошибка загрузки"),
+                canExecute: () => !IsBusy
+            );
+
+            LoadDataCommand = new RelayCommandAsync(
+                execute: () => TryRunTaskAsync(LoadDataAsync, "Ошибка загрузки"),
                 canExecute: () => !IsBusy
             );
 
@@ -128,7 +168,7 @@ namespace DeliveryService.ViewModels
                     LoadOrdersCommand.Execute(null);
             });
 
-            LoadOrdersCommand.Execute(null);
+            LoadDataCommand.Execute(null);
         }
 
 
@@ -163,7 +203,8 @@ namespace DeliveryService.ViewModels
                     Route = $"{order.Address_From} → {order.Address_To}",
                     Status = order.Status ?? "—",
                     Price = order.Price,
-                    OrderTime = order.Created_At.ToString()
+                    OrderTime = order.Created_At.ToString(),
+                    CourierId = order.CourierId,
                 });
             }
 
@@ -171,6 +212,34 @@ namespace DeliveryService.ViewModels
             Orders = new ObservableCollection<OrderDTO>(_allOrders);
 
             SetOrderStatistic(Orders);
+        }
+        /// <summary>
+        /// Загрузка данных о курьерах
+        /// </summary>
+        private async Task LoadCouriersAsync()
+        {
+            var all = await _courierService.GetAllAsync();
+            var list = new List<CourierDTO>
+            {
+                new CourierDTO { Id = 0, Name = "Все курьеры" }
+            };
+
+            foreach (var courier in all)
+            {
+                list.Add(new CourierDTO() { 
+                    Id = courier.Id,
+                    Name = courier.Name,
+                });
+            }
+            Couriers = list;
+        }
+        /// <summary>
+        /// Загрузка данных
+        /// </summary>
+        private async Task LoadDataAsync()
+        {
+            await LoadOrdersAsync();
+            await LoadCouriersAsync();
         }
         /// <summary>
         /// Загрузка списка заказов с учётом фильтрации по имени клиента или ардресам откуда и куда
@@ -182,11 +251,14 @@ namespace DeliveryService.ViewModels
             if (!string.IsNullOrWhiteSpace(Filter))
             {
                 string search = Filter.Trim().ToLower();
-                filtered = _allOrders.Where(o =>
-                    o.ClientName?.ToLower().Contains(search) == true ||
-                    o.Route?.ToLower().Contains(search) == true
+                filtered = filtered.Where(o =>
+                    (o.ClientName?.ToLower().Contains(search) == true) ||
+                    (o.Route?.ToLower().Contains(search) == true)
                 );
             }
+
+            if (SelectedCourierId.HasValue && SelectedCourierId.Value > 0)
+                filtered = filtered.Where(o => o.CourierId == SelectedCourierId.Value);
 
             Orders = new ObservableCollection<OrderDTO>(filtered);
             SetOrderStatistic(Orders);

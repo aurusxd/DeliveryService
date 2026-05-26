@@ -11,5 +11,6 @@
         public string Status { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public string OrderTime { get; set; } = string.Empty;
+        public int? CourierId { get; set; }
     }
 }
