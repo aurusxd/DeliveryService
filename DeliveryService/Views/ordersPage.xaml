@@ -118,7 +118,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="СУММУ" Binding="{Binding Price}" Width="100">
+                    <DataGridTextColumn Header="СУММА" Binding="{Binding Price}" Width="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Padding" Value="12,0"/>
