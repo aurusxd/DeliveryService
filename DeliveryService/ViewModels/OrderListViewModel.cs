@@ -1,11 +1,9 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.DTO;
-using DeliveryService.Models;
 using DeliveryService.Services;
 using DeliveryService.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace DeliveryService.ViewModels
@@ -21,8 +19,16 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Список DTO всех заказов
         /// </summary>
+        private List<OrderDTO> _allOrders;
+        /// <summary>
+        /// Список DTO всех заказов для отображения
+        /// </summary>
         private ObservableCollection<OrderDTO> _orders;
-        
+        /// <summary>
+        /// Фильтр списка заказов
+        /// </summary>
+        private string _filter;
+
         /// <summary>
         /// Количество заказов
         /// </summary>
@@ -41,12 +47,24 @@ namespace DeliveryService.ViewModels
         private int _completedCount;
 
         /// <summary>
-        /// Список DTO всех заказов
+        /// Список DTO всех заказов для отображения
         /// </summary>
         public ObservableCollection<OrderDTO> Orders
         {
             get => _orders;
             set => SetProperty(ref _orders, value);
+        }
+        /// <summary>
+        /// Фильтр списка заказов
+        /// </summary>
+        public string Filter
+        {
+            get => _filter;
+            set
+            {
+                if (SetProperty(ref _filter, value))
+                    ApplyFilter();
+            }
         }
         /// <summary>
         /// Количество заказов
@@ -96,6 +114,7 @@ namespace DeliveryService.ViewModels
             _windowsService = windowsService;
             _orderService = orderService;
 
+            _allOrders = new List<OrderDTO>();
             Orders = new ObservableCollection<OrderDTO>();
 
             LoadOrdersCommand = new RelayCommandAsync(
@@ -114,12 +133,23 @@ namespace DeliveryService.ViewModels
 
 
         /// <summary>
+        /// Сбор статистики по списку заказов - полное кол-во, кол-во с определёнными статусами
+        /// </summary>
+        /// <param name="orders">Список заказов</param>
+        private void SetOrderStatistic(ObservableCollection<OrderDTO> orders)
+        {
+            TotalCount = orders.Count;
+            // Изменить названия статусов на нужные проекту
+            InProcessCount = orders.Count(o => o.Status == "InProgress");
+            PendingCount = orders.Count(o => o.Status == "Pending");
+            CompletedCount = orders.Count(o => o.Status == "Done");
+        }
+        /// <summary>
         /// Загрузка данных о заказах в список
         /// </summary>
         private async Task LoadOrdersAsync()
         {
             var orders = await _orderService.GetAllAsync();
-            List<Order> activeOrders = await _orderService.GetActiveOrdersAsync();
             var items = new List<OrderDTO>();
 
             foreach (var order in orders)
@@ -137,15 +167,29 @@ namespace DeliveryService.ViewModels
                 });
             }
 
-            Orders.Clear();
-            foreach (var item in items) Orders.Add(item);
+            _allOrders = items;
+            Orders = new ObservableCollection<OrderDTO>(_allOrders);
 
-            TotalCount = Orders.Count;
+            SetOrderStatistic(Orders);
+        }
+        /// <summary>
+        /// Загрузка списка заказов с учётом фильтрации по имени клиента или ардресам откуда и куда
+        /// </summary>
+        private void ApplyFilter()
+        {
+            IEnumerable<OrderDTO> filtered = _allOrders;
 
-            // Изменить названия статусов на нужные проекту
-            InProcessCount = Orders.Count(o => o.Status == "InProgress");
-            PendingCount = Orders.Count(o => o.Status == "Pending");
-            CompletedCount = Orders.Count(o => o.Status == "Done");
+            if (!string.IsNullOrWhiteSpace(Filter))
+            {
+                string search = Filter.Trim().ToLower();
+                filtered = _allOrders.Where(o =>
+                    o.ClientName?.ToLower().Contains(search) == true ||
+                    o.Route?.ToLower().Contains(search) == true
+                );
+            }
+
+            Orders = new ObservableCollection<OrderDTO>(filtered);
+            SetOrderStatistic(Orders);
         }
 
         /// <summary>
