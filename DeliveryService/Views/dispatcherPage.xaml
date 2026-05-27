@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DeliveryService.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="1100" Loaded="UserControl_Loaded">
+             d:DesignHeight="800" d:DesignWidth="1100" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
     <Grid Background="#F9FAFB">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -51,33 +51,27 @@
                     <ItemsControl x:Name="ActiveOrdersItemsControl" ItemsSource="{Binding ActiveOrders}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel />
+                                <StackPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Command="{Binding DataContext.SelectOrderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                            CommandParameter="{Binding}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Padding="0"
-                            HorizontalContentAlignment="Stretch">
+                                <!-- Только кнопка, никакого MouseBinding внутри -->
+                                <Button Command="{Binding DataContext.SelectOrderCommand,
+                        RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="0"
+                    HorizontalContentAlignment="Stretch">
 
-                                    <Border Background="White" 
-                                BorderBrush="#E5E7EB" 
-                                BorderThickness="1" 
-                                CornerRadius="8" 
-                                Padding="12" 
-                                Margin="0,0,0,8"
-                                Height="130">
-
-
-                                        <Border.InputBindings>
-                                            <MouseBinding MouseAction="LeftClick"
-                                        Command="{Binding SelectOrderCommand,
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"/>
-                                        </Border.InputBindings>
+                                    <Border Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12"
+                        Margin="0,0,0,8"
+                        Height="130">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -86,37 +80,41 @@
 
                                             <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Id, StringFormat='№{0}'}"
-                                               Foreground="#111827" 
-                                               FontWeight="Bold" 
-                                               FontSize="14"/>
-                                                <TextBlock Text="{Binding Courier.Name, StringFormat='{}Курьер: {0}'}" 
-                                               FontSize="12" 
-                                               Foreground="#4B5563" 
-                                               Margin="0,4,0,0"
-                                               TextTrimming="CharacterEllipsis"
-                                               TextWrapping="Wrap"/>
-                                                <StackPanel Visibility="{Binding Status,Converter={StaticResource converter},ConverterParameter=new}">
-                                                    <ComboBox ItemsSource="{Binding DataContext.FreeCouriers, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  SelectedItem="{Binding DataContext.SelectedCourier, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  DisplayMemberPath="Name"
-                                                  Margin="0,6,0,4"/>
-                                                    <Button Content="Назначить"
-                                                Command="{Binding DataContext.AssignCourierCommand,
-                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                CommandParameter="{Binding}"/>
-                                                </StackPanel>
+                                       Foreground="#111827"
+                                       FontWeight="Bold"
+                                       FontSize="14"/>
+                                                <TextBlock Text="{Binding Courier.Name, StringFormat='{}Курьер: {0}'}"
+                                       FontSize="12"
+                                       Foreground="#4B5563"
+                                       Margin="0,4,0,0"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="Wrap"/>
 
+                                                <StackPanel Visibility="{Binding Status,
+                                            Converter={StaticResource converter},
+                                            ConverterParameter=new}">
+                                                    <ComboBox ItemsSource="{Binding DataContext.FreeCouriers,
+                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          SelectedItem="{Binding DataContext.SelectedCourier,
+                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          DisplayMemberPath="Name"
+                                          Margin="0,6,0,4"/>
+                                                    <Button Content="Назначить"
+                                        Command="{Binding DataContext.AssignCourierCommand,
+                                            RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
+                                                </StackPanel>
                                             </StackPanel>
 
-                                            <Border Grid.Column="1" 
-                                        VerticalAlignment="Center"
-                                        Background="#DBEAFE" 
-                                        CornerRadius="4" 
-                                        Padding="8,4">
-                                                <TextBlock Text="{Binding Status}" 
-                                               FontSize="10" 
-                                               Foreground="#1E40AF" 
-                                               FontWeight="Medium"/>
+                                            <Border Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Background="#DBEAFE"
+                                CornerRadius="4"
+                                Padding="8,4">
+                                                <TextBlock Text="{Binding Status}"
+                                       FontSize="10"
+                                       Foreground="#1E40AF"
+                                       FontWeight="Medium"/>
                                             </Border>
                                         </Grid>
                                     </Border>

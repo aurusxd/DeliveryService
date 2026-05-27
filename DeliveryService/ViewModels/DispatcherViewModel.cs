@@ -197,7 +197,6 @@ namespace DeliveryService.ViewModels
 
                 CourierSelected?.Invoke(startLat, startLon, endLat, endLon);
             });
-            System.Diagnostics.Debug.WriteLine($"DispatcherViewModel");
 
             InitializeTimer();
         }

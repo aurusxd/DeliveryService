@@ -1,6 +1,8 @@
-﻿
+
 using DeliveryService.DTO;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Windows;
@@ -18,6 +20,14 @@ namespace DeliveryService.Utils
         /// Событие при выборе курьера на карте
         /// </summary>
         public static event Func<List<List<double>>, Task>? CoordinatesRoute;
+
+        /// <summary>
+        /// Переменная, необходимая для проверки инциализирована ли карта или нет
+        /// </summary>
+        private static bool _isInitialized = false;
+
+        public static void Reset() => _isInitialized = false;
+
 
         public static async Task Initialize(WebView2 MapWebView)
         {
@@ -41,107 +51,21 @@ namespace DeliveryService.Utils
             <body>
                 <div id="map"></div>
 
-                <script>
-                    var map;
-                    var courierMark = null;
-                    const routes = []
-
-                    ymaps.ready(function () {
-                        map = new ymaps.Map("map", {
-                            center: [55.0415, 82.9346],
-                            zoom: 12
-                        });
-
-                        map.events.add('click', function (e) {
-                            var coords = e.get('coords');
-
-                            ymaps.geocode(coords).then(function (res) {
-                                var firstGeoObject = res.geoObjects.get(0);
-                                var address = firstGeoObject.getAddressLine();
-
-                                window.chrome.webview.postMessage({
-                                    type: "mapClick",
-                                    lat: coords[0],
-                                    lon: coords[1],
-                                    address: address
-                                });
-                            });
-                        });
-                    });
-
-                    function clearObjects()
-                    {
-                        map.geoObjects.removeAll(); 
-                    }
-
-                    function DrawRoute(startLat,startLon,endLat,endLon)
-                    { 
-                       console.log("DrawRoute вызван:", startLat, startLon, endLat, endLon);
-                        ymaps.route([
-                            [startLat, startLon],
-                            [endLat, endLon],
-                        ]).then(function(route) {
-                            console.log("Маршрут построен, добавляем на карту");
-
-                            map.geoObjects.add(route);
-                            routes.push(route);
-
-                            var paths = route.getPaths();
-
-                            paths.each(function(path) {
-
-                                var coordinates = path.geometry.getCoordinates();
-                                console.log(coordinates);
-                                window.routeCoordinates = coordinates;
-                                 window.chrome.webview.postMessage({
-                                    type: "routeCoordinates",
-                                    coordinates: coordinates
-                                });
-
-                            });
-
-    
-                        }).catch(function(err) {
-                            console.log("Ошибка:", err);
-                        });
-                    }
-                    function AddMark(lat,lon)
-                    {
-
-                    courierMarker = new ymaps.Placemark(
-                        [lat, lon],
-                        {
-                            balloonContent: 'Курьер'
-                        },
-                        {
-                            iconLayout: 'default#imageWithContent',
-                            iconImageHref: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                            iconImageSize: [36, 36],
-                            iconImageOffset: [-18, -36],
-                            iconContentLayout: ymaps.templateLayoutFactory.createClass(
-                                '<div style="color:white;background:#2563EB;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;font-weight:bold;border:2px solid white;">К</div>'
-                            ),
-                            zIndex: 9999,
-                            zIndexActive: 10000
-                        }
-                    );
-
-                    map.geoObjects.add(courierMarker);
-                    }
-
-
-                   function MoveCourier(lat, lon) {
-
-                        if (courierMarker != null) {
-                            courierMarker.geometry.setCoordinates([lat, lon]);
-                        }
-                    }
-
-                </script>
+                <script src="https://delivery.local/script.js"></script>
+            
             </body>
             </html>
             """;
             await MapWebView.EnsureCoreWebView2Async();
+            var utilsFolder = Path.Combine(AppContext.BaseDirectory, "Utils");
+            MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                "delivery.local",
+                utilsFolder,
+                CoreWebView2HostResourceAccessKind.Allow);
+
+            if (_isInitialized) return;
+            _isInitialized = true;
+
             MapWebView.CoreWebView2.WebMessageReceived += (sender, args) =>
             {
                 string json = args.WebMessageAsJson;
