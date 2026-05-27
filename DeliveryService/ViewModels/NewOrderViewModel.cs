@@ -312,7 +312,7 @@ namespace DeliveryService.ViewModels
                     Lat_To = LatTo,
                     Lon_To = LonTo,
                     Price = item.Price,
-                    Status = "new",
+                    Status = "Новый",
                     Created_At = DateTime.UtcNow,
                     BasketId = item.Id
                 };

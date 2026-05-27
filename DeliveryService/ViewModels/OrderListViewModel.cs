@@ -128,6 +128,7 @@ namespace DeliveryService.ViewModels
             set => SetProperty(ref _completedCount, value);
         }
 
+
         /// <summary>
         /// Команда загрузки заказов в таблицу
         /// </summary>
@@ -200,10 +201,10 @@ namespace DeliveryService.ViewModels
                 {
                     Id = order.Id,
                     ClientName = clientName,
-                    Route = $"{order.Address_From} → {order.Address_To}",
+                    Route = $"{order.Address_From} → \n{order.Address_To}",
                     Status = order.Status ?? "—",
                     Price = order.Price,
-                    OrderTime = order.Created_At.ToString(),
+                    OrderTime = $"{order.Created_At.ToString().Split(' ')[0]}\n{order.Created_At.ToString().Split(' ')[1]}",
                     CourierId = order.CourierId,
                 });
             }

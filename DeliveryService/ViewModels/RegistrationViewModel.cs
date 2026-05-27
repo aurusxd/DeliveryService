@@ -117,7 +117,6 @@ namespace DeliveryService.ViewModels
             if (!int.TryParse(PhoneNumber, out int phoneNumber))
             {
                 ErrorMessage = "Номер телефона должен содержать только цифры";
-                System.Diagnostics.Debug.WriteLine(ErrorMessage);
 
                 return;
             }
@@ -138,8 +137,8 @@ namespace DeliveryService.ViewModels
 
                 if (success)
                 {
-                    CloseWindow(true);
                     _windowService.OpenEntrance();
+                    Application.Current.MainWindow.Close();
                 }
                 else
                     ErrorMessage = "Не удалось выполнить команду";

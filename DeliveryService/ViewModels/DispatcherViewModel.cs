@@ -153,10 +153,6 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
-            //LoadDataCommand.Execute(null);
-
-
-
             AssignCourierCommand = new RelayCommandAsync(async order =>
             {
                 if (SelectedCourier == null || order == null) return;
@@ -210,7 +206,7 @@ namespace DeliveryService.ViewModels
 
             if (allOrders != null && allOrders.Any())
             {
-                var activeOrders = allOrders.Where(o => o.Status != "Done").OrderByDescending(o => o.Created_At).ToList();
+                var activeOrders = allOrders.Where(o => o.Status != "Завершён").OrderByDescending(o => o.Created_At).ToList();
 
                 ActiveOrders.Clear();
                 foreach (var order in activeOrders) 
@@ -220,9 +216,9 @@ namespace DeliveryService.ViewModels
 
                 // Поменять статусы на нужные проекту
 
-                NewOrderCount = activeOrders.Count(o => o.Status == "new");
-                InTransitOrderCount = activeOrders.Count(o => o.Status == "InDelivery");
-                CompletedOrderCount = allOrders.Count(o => o.Status == "Done");
+                NewOrderCount = activeOrders.Count(o => o.Status == "Новый");
+                InTransitOrderCount = activeOrders.Count(o => o.Status == "В пути");
+                CompletedOrderCount = allOrders.Count(o => o.Status == "Завершён");
             }
             else
             {

@@ -116,26 +116,15 @@ namespace DeliveryService.ViewModels
             {
                 case "admin":
                     _windowService.OpenMainWindow();
+                    Application.Current.MainWindow.Close();
                     break;
                 case "user":
                     _windowService.OpenMenu();
+                    Application.Current.MainWindow.Close();
                     break;
             }
-            CloseWindow(true);
 
 
-        }
-        /// <summary>
-        /// Закрытие окна
-        /// </summary>
-        /// <param name="result">Результат работы окна</param>
-        private void CloseWindow(bool result)
-        {
-            var window = Application.Current.Windows
-                .OfType<Window>()
-                .FirstOrDefault(w => w.DataContext == this);
-
-            if (window != null) window.Close();
 
         }
     }

@@ -92,7 +92,7 @@
 
                                                 <StackPanel Visibility="{Binding Status,
                                             Converter={StaticResource converter},
-                                            ConverterParameter=new}">
+                                            ConverterParameter=Новый}">
                                                     <ComboBox ItemsSource="{Binding DataContext.FreeCouriers,
                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                           SelectedItem="{Binding DataContext.SelectedCourier,

@@ -104,6 +104,10 @@ namespace DeliveryService.ViewModels
         /// Команда открытия окна регистрации курьера
         /// </summary>
         public ICommand AddCourierCommand { get; }
+        /// <summary>
+        /// Команда для удаления курьера
+        /// </summary>
+        public ICommand RemoveCourierCommand { get; }
 
 
         public ListCouriersViewModel(WindowsService windowsService, CourierService courierService)
@@ -126,14 +130,38 @@ namespace DeliveryService.ViewModels
                 },
                 canExecute: _ => !IsBusy
             );
-
-            //AddCourierCommand = new RelayCommand(OpenRegistrationCourier);
             AddCourierCommand = new RelayCommand(() => {
                 if (_windowsService.OpenRegistrationCourier() == true)
                     LoadCouriersCommand.Execute(null);
             });
 
-            //LoadCouriersCommand.Execute(null);
+            RemoveCourierCommand = new RelayCommandAsync(
+                execute: async (parameter)=>
+                {
+                    if (parameter is int courierId)
+                        await RemoveCourierAsync(courierId);
+                },
+                canExecute: _ => !IsBusy
+            );
+
+
+        }
+
+        private async Task RemoveCourierAsync(object id)
+        {
+            if (!int.TryParse(id?.ToString(), out int courierId))
+                return;
+
+            var success = _courierService.RemoveCourierAsync(courierId);
+
+            if (success.Result==true)
+                await LoadCouriersAsync();
+            else
+            {
+                ErrorMessage = "Не удалось удалить курьера";
+                await Task.Delay(3000);
+                ErrorMessage = null;
+            }
         }
 
         /// <summary>

@@ -81,14 +81,14 @@
                                         </Border>
                                         <StackPanel Grid.Row="1" Margin="15,10,15,0">
                                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold" Foreground="#111827"/>
-                                            <TextBlock Text="{Binding Weight}" FontSize="12" Foreground="#9CA3AF"/>
+                                            <TextBlock Text="{Binding Weight,StringFormat='{}{0}г.'}" FontSize="12" Foreground="#9CA3AF"/>
                                         </StackPanel>
-                                        <Grid Grid.Row="2" Margin="15,0,12,15" VerticalAlignment="Bottom">
+                                        <Grid Grid.Row="2" Margin="15,0,12,0">
                                             <TextBlock Text="{Binding Price}" FontSize="18" FontWeight="Bold" Foreground="#111827"/>
                                             <Button Content="Добавить" 
                                                     Command="{Binding DataContext.AddToBasketCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                     CommandParameter="{Binding Id}"
-                                                    Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Right" Width="75"/>
+                                                    Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Center" Width="100"/>
                                         </Grid>
                                     </Grid>
                                 </Border>
@@ -146,7 +146,7 @@
                 <TextBlock Grid.Row="1" Text="Корзина" FontSize="28" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,15"/>
 
                 
-                <ScrollViewer Grid.Row="2" MaxHeight="200" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding BasketItems}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

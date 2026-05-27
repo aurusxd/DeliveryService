@@ -1,4 +1,5 @@
-﻿using DeliveryService.Models;
+﻿using DeliveryService.DTO;
+using DeliveryService.Models;
 using DeliveryService.Repositories;
 
 namespace DeliveryService.Services
@@ -77,7 +78,7 @@ namespace DeliveryService.Services
                 return false;
 
             order.CourierId = courierId;
-            order.Status = "assigned"; // Заменить на нужный
+            order.Status = "В пути"; // Заменить на нужный
             courier.Current_Lat = order.Lat_From;
             courier.Current_Lon = order.Lon_From;
             await _orderRepository.UpdateAsync(order);
@@ -98,5 +99,24 @@ namespace DeliveryService.Services
             await _courierRepository.ToggleOnline(courierId);
             return true;
         }
+        /// <summary>
+        /// Удаление курьера
+        /// </summary>
+        /// <param name="courier">Объект курьера</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveCourierAsync(int courierId)
+        {
+            var courier = _courierRepository.GetById(courierId).Result;
+            
+            if(courier == null) return false;
+            _courierRepository?.DeleteAsync(courier);
+            return true;
+        }
+        /// <summary>
+        /// Получение курьера по айди
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Courier?> GetById(int id)=> await _courierRepository?.GetById(id);
     }
 }

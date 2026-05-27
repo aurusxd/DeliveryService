@@ -56,7 +56,7 @@ namespace DeliveryService.Repositories
         {
             return await _context.Couriers
                 .Where(c => c.IsActive)
-                .Where(c => !c.Orders.Any(o => o.Status == "assigned" || o.Status == "in_transit")) // Изменить название на нужные
+                .Where(c => !c.Orders.Any(o => o.Status == "В пути")) // Изменить название на нужные
                 .ToListAsync();
         }
 

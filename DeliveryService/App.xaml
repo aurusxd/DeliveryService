@@ -16,6 +16,7 @@
 
             </ResourceDictionary.MergedDictionaries>
                 <cv:StatusToVisibilityConverter x:Key="converter"/>
+                <cv:CourierStatusConverter x:Key="statusConverter"/>
             <DataTemplate DataType="{x:Type vm:DispatcherViewModel}">
                 <vw:dispatcherPage/>
             </DataTemplate>

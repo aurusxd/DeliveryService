@@ -84,6 +84,9 @@
                   Command="{Binding ToggleOnlineCommand}"
                   CommandParameter="{Binding PlacementTarget.SelectedItem.Id, 
                             RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                        <MenuItem Header="Удалить"
+                                  Command="{Binding RemoveCourierCommand}"
+                                  CommandParameter="{Binding PlacementTarget.SelectedItem.Id,RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
 
@@ -130,7 +133,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="СТАТУС" Binding="{Binding IsActive}" Width="100">
+                    <DataGridTextColumn Header="СТАТУС" Binding="{Binding IsActive, Converter={StaticResource statusConverter}}" Width="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Padding" Value="12,0"/>

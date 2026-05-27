@@ -39,7 +39,7 @@ namespace DeliveryService.Services
                 await _clientRepository.AddAsync(client);
             order.ClientId = client.Id;
 
-            order.Status = "new";
+            order.Status = "Новый";
             order.Created_At = DateTime.UtcNow;
 
             await _orderRepository.AddAsync(order);
@@ -82,12 +82,12 @@ namespace DeliveryService.Services
             if (order == null) return false;
 
 
-            order.Status = "Cancelled";
+            order.Status = "Отменён";
             await _orderRepository.UpdateAsync(order);
             await _orderRepository.AddStatusHistoryAsync(new OrderStatusHistory
             {
                 OrderId = orderId,
-                Status = "Cancelled",
+                Status = "Отменён",
                 Changed_At = DateTime.UtcNow,
                 FeedBack = feedback
             });
