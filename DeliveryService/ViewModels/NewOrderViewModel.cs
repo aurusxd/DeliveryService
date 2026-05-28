@@ -16,6 +16,7 @@ namespace DeliveryService.ViewModels
         private readonly OrderService _orderService;
         private readonly ClientService _clientService;
         private readonly BasketService _basketService;
+        private readonly WindowsService _windowService;
 
         /// <summary>
         /// Имя клиента
@@ -165,12 +166,13 @@ namespace DeliveryService.ViewModels
 
 
         public NewOrderViewModel(SessionService sessionService, 
-            OrderService orderService, ClientService clientService, BasketService basketService)
+            OrderService orderService, ClientService clientService, BasketService basketService, WindowsService windowService)
         {
             _sessionService = sessionService;
             _orderService = orderService;
             _clientService = clientService;
             _basketService = basketService;
+            _windowService = windowService;
 
             _clientBasket = new List<Basket>();
 
@@ -324,7 +326,7 @@ namespace DeliveryService.ViewModels
                     return;
                 }
             }
-
+            _windowService.OpenOrderAccept();
             CloseWindow(true);
         }
         /// <summary>

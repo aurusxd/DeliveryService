@@ -43,22 +43,26 @@ namespace DeliveryService.Views
         /// <returns></returns>
         public async Task RouteSimulate(List<List<double>> points)
         {
-            _simulationCts?.Cancel();
-            _simulationCts?.Dispose();
-
-            _simulationCts = new CancellationTokenSource();
-            var token = _simulationCts.Token;
-            foreach (var point in points)
+            if (DataContext is DispatcherViewModel vm)
             {
-                if (token.IsCancellationRequested) return;
-                await Map.CoreWebView2.ExecuteScriptAsync(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        "MoveCourier({0}, {1})",
-                        point[0],
-                        point[1]));
+                _simulationCts?.Cancel();
+                _simulationCts?.Dispose();
 
-                await Task.Delay(300, token);
+                _simulationCts = new CancellationTokenSource();
+                var token = _simulationCts.Token;
+                foreach (var point in points)
+                {
+                    if (token.IsCancellationRequested) return;
+
+                    await Map.CoreWebView2.ExecuteScriptAsync(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            "MoveCourier({0}, {1})",
+                            point[0],
+                            point[1]));
+                    await vm.SaveCoords(point[0], point[1]);
+                    await Task.Delay(300, token);
+                }
             }
         }
 
@@ -87,13 +91,18 @@ namespace DeliveryService.Views
                     order.Lat_From, order.Lon_From, order.Lat_To, order.Lon_To));
         }
 
-        private async void OnCourierSelected(double latFrom, double lonFrom,double latTo, double lonTo)
+        private async void OnCourierSelected(double latFrom, double lonFrom,double latTo, double lonTo,double courLat,double courLon)
         {
             System.Diagnostics.Debug.WriteLine($"OnCourierSelected вызван: {latFrom}, {lonFrom}");
             await Map.CoreWebView2.ExecuteScriptAsync(
                 string.Format(CultureInfo.InvariantCulture,
                     "DrawRoute({0}, {1}, {2}, {3}, true)",
                     latFrom, lonFrom, latTo, lonTo));
+
+            await Map.CoreWebView2.ExecuteScriptAsync(
+            string.Format(CultureInfo.InvariantCulture,
+                "AddMark({0}, {1})",
+                courLat, courLon));
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

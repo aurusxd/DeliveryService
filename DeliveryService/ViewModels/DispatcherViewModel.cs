@@ -137,7 +137,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Событие, которое вызывается при выборе курьера 
         /// </summary>
-        public event Action<double,double,double,double>? CourierSelected;
+        public event Action<double,double,double,double,double,double>? CourierSelected;
 
         public DispatcherViewModel(OrderService orderService, CourierService courierService)
         {
@@ -191,7 +191,7 @@ namespace DeliveryService.ViewModels
                 double endLat = courierAtPickup ? SelectedOrder.Lat_To : SelectedOrder.Lat_From;
                 double endLon = courierAtPickup ? SelectedOrder.Lon_To : SelectedOrder.Lon_From;
 
-                CourierSelected?.Invoke(startLat, startLon, endLat, endLon);
+                CourierSelected?.Invoke(SelectedOrder.Lat_From, SelectedOrder.Lon_From, SelectedOrder.Lat_To, SelectedOrder.Lon_To,SelectedCourier.Current_Lat,SelectedCourier.Current_Lon);
             });
 
             InitializeTimer();
@@ -317,6 +317,13 @@ namespace DeliveryService.ViewModels
             _refreshTimer.Interval = TimeSpan.FromSeconds(TIMER_INTERVAL);
             _refreshTimer.Tick += OnTimerTick;
             _refreshTimer.Start();
+        }
+
+        public async Task SaveCoords(double v1, double v2)
+            {
+            SelectedCourier.Current_Lat = v1;
+            SelectedCourier.Current_Lon = v2;
+            await _courierService.Update(SelectedCourier);
         }
     }
 }

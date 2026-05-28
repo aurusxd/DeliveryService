@@ -57,12 +57,17 @@ namespace DeliveryService.Services
             var win = _services.GetRequiredService<TView>();
             return win.ShowDialog();
         }
-
         /// <summary>
         /// Открывает окно входа
         /// </summary>
         public void OpenEntrance() => OpenWindow<EntranceView>();
-
+        /// <summary>
+        /// Открывает окно, которое появляется после совершения заказа для дальнейшего отслеживания его
+        /// </summary>
+        public void OpenOrderAccept() => OpenWindow<OrderAcceptView>();
+        /// <summary>
+        /// Открывает меню с едой
+        /// </summary>
         public void OpenMenu() => OpenWindow<MenuView>();
         /// <summary>
         /// Открытие NewOrderView

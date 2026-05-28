@@ -26,7 +26,7 @@ namespace DeliveryService.Utils
         /// </summary>
         private static bool _isInitialized = false;
 
-        public static void Reset() => _isInitialized = false;
+        public static void Reset() => _isInitialized = !_isInitialized;
 
 
         public static async Task Initialize(WebView2 MapWebView)

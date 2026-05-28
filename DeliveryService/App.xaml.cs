@@ -63,6 +63,7 @@ namespace DeliveryService
             services.AddTransient<EntranceViewModel>();
             services.AddTransient<RegistrationViewModel>();
             services.AddTransient<MenuViewModel>();
+            services.AddTransient<OrderAcceptViewModel>();
             services.AddTransient<AuthorizationViewModel>();
 
             // View
@@ -71,6 +72,7 @@ namespace DeliveryService
             services.AddTransient<RegistrationCourier>();
             services.AddTransient<EntranceView>();
             services.AddTransient<MenuView>();
+            services.AddTransient<OrderAcceptView>();
 
             // Собираем контейнер
             Services = services.BuildServiceProvider();

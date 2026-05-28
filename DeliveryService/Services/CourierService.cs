@@ -118,5 +118,12 @@ namespace DeliveryService.Services
         /// <param name="id"></param>
         /// <returns></returns>
         public async Task<Courier?> GetById(int id)=> await _courierRepository?.GetById(id);
+
+        /// <summary>
+        /// Обновление курьера
+        /// </summary>
+        /// <param name="courier"></param>
+        /// <returns></returns>
+        public async Task Update(Courier courier) => await _courierRepository.UpdateAsync(courier);
     }
 }

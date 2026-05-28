@@ -36,9 +36,7 @@ function DrawRoute(startLat, startLon, endLat, endLon, addCourierMark) {
     clearMapOverlays();
     routeRequestId++;
     var thisRequestId = routeRequestId;
-    console.log("DrawRoute вызван:", startLat, startLon, endLat, endLon);
     if (courierMarker != null) {
-        console.log("Удаляем старую метку");
         map.geoObjects.remove(courierMarker);
         courierMarker = null;
     }
@@ -50,7 +48,7 @@ function DrawRoute(startLat, startLon, endLat, endLon, addCourierMark) {
         currentRoute = route;
         map.geoObjects.add(route);
         if (addCourierMark) {
-            AddMark(startLat, startLon);
+            //AddMark(startLat, startLon);
 
 
             route.getPaths().each(function (path) {
