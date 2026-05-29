@@ -23,7 +23,7 @@
             </Border>
             
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Cursor="">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="160"/>
                     <RowDefinition Height="*"/>
@@ -32,8 +32,8 @@
                 <StackPanel Grid.Row="0" VerticalAlignment="Bottom" >
                     <Border HorizontalAlignment="Center" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal">
-                            <Button x:Name="Login" Content="ВХОД" Style="{StaticResource PrimaryButton}" Command="{Binding LoginCommand}" Width="180" Height="40" Click="LoginBtn_Click"/>
-                            <Button x:Name="Reg" Content="РЕГИСТРАЦИЯ" Style="{StaticResource PrimaryButton}" Command="{Binding RegCommand}" Margin="15,0,0,0" Width="180" Height="40" Click="RegBtn_Click"/>
+                            <Button x:Name="Login" Content="ВХОД" Style="{StaticResource PrimaryButton}" Command="{Binding LoginCommand}" Width="180" Height="35" Click="LoginBtn_Click"/>
+                            <Button x:Name="Reg" Content="РЕГИСТРАЦИЯ" Style="{StaticResource PrimaryButton}" Command="{Binding RegCommand}" Margin="15,0,0,0" Width="180" Height="35" Click="RegBtn_Click"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
