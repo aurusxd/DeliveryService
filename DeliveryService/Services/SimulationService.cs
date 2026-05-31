@@ -1,15 +1,5 @@
 ﻿using DeliveryService.Models;
-using DeliveryService.Utils;
-using DeliveryService.ViewModels;
-using Microsoft.Web.WebView2.WinForms;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+
 
 namespace DeliveryService.Services
 {

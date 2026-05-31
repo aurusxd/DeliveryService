@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace DeliveryService.Models
 {
     public class Client

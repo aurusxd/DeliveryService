@@ -2,27 +2,10 @@ using DeliveryService.Models;
 using DeliveryService.Services;
 using DeliveryService.Utils;
 using DeliveryService.ViewModels;
-using GalaSoft.MvvmLight.Helpers;
-using Microsoft.Web.WebView2.WinForms;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace DeliveryService.Views
 {

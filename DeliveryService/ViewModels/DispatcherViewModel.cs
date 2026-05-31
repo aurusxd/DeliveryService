@@ -3,10 +3,7 @@ using DeliveryService.Models;
 using DeliveryService.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 
 namespace DeliveryService.ViewModels

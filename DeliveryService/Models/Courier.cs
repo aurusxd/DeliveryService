@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-
+﻿
 namespace DeliveryService.Models
 {
     public class Courier

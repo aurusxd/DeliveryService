@@ -1,7 +1,5 @@
 ﻿using DeliveryService.Models;
 using DeliveryService.Repositories;
-using GMap.NET.MapProviders;
-using System.Runtime.CompilerServices;
 
 namespace DeliveryService.Services
 {

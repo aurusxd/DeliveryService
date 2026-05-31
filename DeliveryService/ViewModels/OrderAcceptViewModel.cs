@@ -1,17 +1,8 @@
 ﻿using DeliveryService.Commands;
-using DeliveryService.Models;
 using DeliveryService.Services;
-using DeliveryService.Utils;
-using Microsoft.Web.WebView2.WinForms;
-using Microsoft.Web.WebView2.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Net.NetworkInformation;
 using System.Windows.Input;
 using System.Windows.Threading;
-using WebView2 = Microsoft.Web.WebView2.Wpf.WebView2;
+
 
 namespace DeliveryService.ViewModels
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DeliveryService.Models
+﻿namespace DeliveryService.Models
 {
     public class OrderStatusHistory
     {

@@ -2,7 +2,6 @@
 using DeliveryService.Models;
 using DeliveryService.Services;
 using System.Collections.ObjectModel;
-using System.Windows.Automation;
 using System.Windows.Input;
 
 namespace DeliveryService.ViewModels
