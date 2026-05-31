@@ -98,7 +98,7 @@ namespace DeliveryService.Services
             if(list.Count == 0)
             {
                 order.CourierId = null;
-                order.Status = "Новый"; // Заменить на нужный
+                order.Status = "Новый"; 
                 await _orderRepository.UpdateAsync(order);
                 return false;
             }
@@ -111,7 +111,7 @@ namespace DeliveryService.Services
 
 
             order.CourierId = courier.Id;
-            order.Status = "В пути"; // Заменить на нужный
+            order.Status = "В пути";
             courier.Current_Lat = order.Lat_From;
             courier.Current_Lon = order.Lon_From;
             await _orderRepository.UpdateAsync(order);
