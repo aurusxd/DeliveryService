@@ -25,9 +25,9 @@ namespace DeliveryService.Utils
         /// <summary>
         /// Переменная, необходимая для проверки инциализирована ли карта или нет
         /// </summary>
-        private static bool _isInitialized = false;
+        private static bool _isInitialized = true;
 
-        public static void Reset() => _isInitialized = !_isInitialized;
+        public static void Reset() => _isInitialized = false;
 
 
         public static async Task Initialize(WebView2 MapWebView)
@@ -62,7 +62,7 @@ namespace DeliveryService.Utils
                 utilsFolder,
                 CoreWebView2HostResourceAccessKind.Allow);
 
-            if (_isInitialized)
+            if (!_isInitialized)
             {
                 return;
             }
