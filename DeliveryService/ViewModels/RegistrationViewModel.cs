@@ -15,6 +15,8 @@ namespace DeliveryService.ViewModels
     public class RegistrationViewModel : BaseViewModel
     {
 
+        public event Action? ClosedRequested;
+
         /// <summary>
         /// Имя
         /// </summary>
@@ -138,7 +140,7 @@ namespace DeliveryService.ViewModels
                 if (success)
                 {
                     _windowService.OpenEntrance();
-                    Application.Current.MainWindow.Close();
+                    ClosedRequested?.Invoke();
                 }
                 else
                     ErrorMessage = "Не удалось выполнить команду";
@@ -208,18 +210,5 @@ namespace DeliveryService.ViewModels
             return true;
         }
 
-
-        /// <summary>
-        /// Закрытие окна
-        /// </summary>
-        /// <param name="result">Результат работы окна</param>
-        private void CloseWindow(bool result)
-        {
-            var window = Application.Current.Windows
-                .OfType<Window>()
-                .FirstOrDefault(w => w.DataContext == this);
-
-            if (window != null) window.Close();
-        }
     }
 }

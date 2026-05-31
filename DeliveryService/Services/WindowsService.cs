@@ -99,5 +99,21 @@ namespace DeliveryService.Services
 
             _openedWindows.Clear();
         }
+
+
+        /// <summary>
+        /// Закрытие окна
+        /// </summary>
+        /// <param name="dataContext">Контекст нужного окна</param>
+        public void CloseWindow(object dataContext)
+        {
+            var target = dataContext ?? this;
+
+            var window = Application.Current.Windows
+                .OfType<Window>()
+                .FirstOrDefault(w => w.DataContext == target);
+
+            if (window != null) window.Close();
+        }
     }
 }

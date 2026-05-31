@@ -19,7 +19,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Интервал таймера
         /// </summary>
-        private const int TIMER_INTERVAL = 30; 
+        private const int TIMER_INTERVAL = 5; 
 
         /// <summary>
         /// Таймер, который перезагружает данные
@@ -28,10 +28,14 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Активен ли таймер
         /// </summary>
-        private bool _isTimerActive = true;
+        private bool _isTimerActive = false;
 
         private readonly OrderService _orderService;
         private readonly CourierService _courierService;
+        private SimulationService _simulationService;
+
+        public event Action? DisposeRequested;
+        
 
         // ВАЖНО: Поменять названия статусов в комментариях
         /// <summary>
@@ -57,11 +61,19 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Выбранный курьер
         /// </summary>
+       
         public Courier SelectedCourier
         {
             get => _selectedCourier;
             set => SetProperty(ref _selectedCourier, value);
         }
+
+        public SimulationService SimulationService
+        {
+            get => _simulationService;
+            set => SetProperty(ref _simulationService, value);
+        }
+
         /// <summary>
         /// Выбранный Заказ
         /// </summary>
@@ -139,14 +151,16 @@ namespace DeliveryService.ViewModels
         /// </summary>
         public event Action<double,double,double,double,double,double>? CourierSelected;
 
-        public DispatcherViewModel(OrderService orderService, CourierService courierService)
+        public DispatcherViewModel(OrderService orderService, CourierService courierService, SimulationService simulationService)
         {
             _orderService = orderService;
             _courierService = courierService;
-
+            _simulationService = simulationService;
+ 
             ActiveOrders = new ObservableCollection<Order>();
             OnlineCouriers = new ObservableCollection<Courier>();
             FreeCouriers = new ObservableCollection<Courier>();
+
 
             LoadDataCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(LoadDataAsync, "Ошибка загрузки"),
@@ -181,20 +195,9 @@ namespace DeliveryService.ViewModels
                 if (SelectedOrder == null) return;
                 if (SelectedCourier == null) return;
 
-                double startLat = courier.Current_Lat;
-                double startLon = courier.Current_Lon;
-
-                bool courierAtPickup =
-                Math.Abs(courier.Current_Lat - SelectedOrder.Lat_From) < 0.00001 &&
-                Math.Abs(courier.Current_Lon - SelectedOrder.Lon_From) < 0.00001;
-
-                double endLat = courierAtPickup ? SelectedOrder.Lat_To : SelectedOrder.Lat_From;
-                double endLon = courierAtPickup ? SelectedOrder.Lon_To : SelectedOrder.Lon_From;
-
-                CourierSelected?.Invoke(SelectedOrder.Lat_From, SelectedOrder.Lon_From, SelectedOrder.Lat_To, SelectedOrder.Lon_To,SelectedCourier.Current_Lat,SelectedCourier.Current_Lon);
+                CourierSelected?.Invoke(SelectedOrder.Lat_From, SelectedOrder.Lon_From, SelectedOrder.Lat_To, SelectedOrder.Lon_To, SelectedCourier.Current_Lat, SelectedCourier.Current_Lon);
             });
 
-            InitializeTimer();
         }
 
         /// <summary>
@@ -206,19 +209,15 @@ namespace DeliveryService.ViewModels
 
             if (allOrders != null && allOrders.Any())
             {
-                var activeOrders = allOrders.Where(o => o.Status != "Завершён").OrderByDescending(o => o.Created_At).ToList();
+                var activeOrders = allOrders.Where(o => o.Status != "Доставлен").OrderByDescending(o => o.Created_At).ToList();
 
                 ActiveOrders.Clear();
                 foreach (var order in activeOrders) 
                     ActiveOrders.Add(order);
 
-                System.Diagnostics.Debug.WriteLine($"Заказов загружено: {ActiveOrders.Count}");
-
-                // Поменять статусы на нужные проекту
-
                 NewOrderCount = activeOrders.Count(o => o.Status == "Новый");
                 InTransitOrderCount = activeOrders.Count(o => o.Status == "В пути");
-                CompletedOrderCount = allOrders.Count(o => o.Status == "Завершён");
+                CompletedOrderCount = allOrders.Count(o => o.Status == "Доставлен");
             }
             else
             {
@@ -283,44 +282,39 @@ namespace DeliveryService.ViewModels
             await LoadCouriersAsync();
             await LoadFreeCouriersAsync();
         }
-
         /// <summary>
-        /// Логика таймера
+        /// Старт таймера
         /// </summary>
-        private void OnTimerTick(object? sender, EventArgs e)
+        public void TimerStart()
         {
-            bool windowExists = Application.Current.Windows
-                .Cast<Window>()
-                .Any(w => w.DataContext == this);
-
-            if (!windowExists)
-            {
-                if (_isTimerActive)
-                {
-                    _refreshTimer.Stop();
-                    _refreshTimer.Tick -= OnTimerTick;
-                    _isTimerActive = false;
-                }
-                return;
-            }
-
-            Debug.WriteLine("Done");
-            LoadDataCommand.Execute(null);
-        }
-
-        /// <summary>
-        /// Инициализация таймера
-        /// </summary>
-        private void InitializeTimer()
-        {
+            Debug.WriteLine("Timer start");
             _refreshTimer = new DispatcherTimer();
             _refreshTimer.Interval = TimeSpan.FromSeconds(TIMER_INTERVAL);
             _refreshTimer.Tick += OnTimerTick;
             _refreshTimer.Start();
+            _isTimerActive = true;
+        }
+        /// <summary>
+        /// Остановка таймера
+        /// </summary>
+        public void TimerStop()
+        {
+            if (_isTimerActive)
+            {
+                Debug.WriteLine("Timer stop");
+                _refreshTimer.Stop();
+                _refreshTimer.Tick -= OnTimerTick;
+                _isTimerActive = false;
+            }
         }
 
+        /// <summary>
+        /// Логика таймера
+        /// </summary>
+        private void OnTimerTick(object? sender, EventArgs e) => LoadDataCommand.Execute(null);
+
         public async Task SaveCoords(double v1, double v2)
-            {
+        {
             SelectedCourier.Current_Lat = v1;
             SelectedCourier.Current_Lon = v2;
             await _courierService.Update(SelectedCourier);

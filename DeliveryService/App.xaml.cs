@@ -1,4 +1,4 @@
-﻿using DeliveryService.Data;
+using DeliveryService.Data;
 using DeliveryService.Repositories;
 using DeliveryService.Services;
 using DeliveryService.ViewModels;
@@ -28,7 +28,6 @@ namespace DeliveryService
 
             var services = new ServiceCollection();
 
-
             // БД
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(config.GetConnectionString("Default")));
@@ -44,7 +43,7 @@ namespace DeliveryService
             // Сервисы
             services.AddSingleton<SessionService>();
             services.AddSingleton<WindowsService>();
-
+            services.AddScoped<SimulationService>();
             services.AddScoped<OrderService>();
             services.AddScoped<CourierService>();
             services.AddScoped<ClientService>();
@@ -77,8 +76,9 @@ namespace DeliveryService
             // Собираем контейнер
             Services = services.BuildServiceProvider();
 
-            // Открываем главное окно - пока затычка
-            var win = Services.GetRequiredService<EntranceView>();
+            var startupScope = Services.CreateScope();
+            var win = startupScope.ServiceProvider.GetRequiredService<EntranceView>();
+            win.Closed += (_, _) => startupScope.Dispose();
             win.Show();
         }
     }

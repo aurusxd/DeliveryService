@@ -1,12 +1,17 @@
 using DeliveryService.Models;
+using DeliveryService.Services;
 using DeliveryService.Utils;
 using DeliveryService.ViewModels;
+using GalaSoft.MvvmLight.Helpers;
 using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,40 +35,11 @@ namespace DeliveryService.Views
         /// Специальный токен для защиты от дубликации симуляций маршрутов
         /// </summary>
         private CancellationTokenSource? _simulationCts;
+        private SimulationService _simulationService;
         public dispatcherPage()
         {
             InitializeComponent();
-            MapInitializer.CoordinatesRoute += RouteSimulate;
 
-        }
-        /// <summary>
-        /// Симуляция маршрута
-        /// </summary>
-        /// <param name="points">Список списков координат маршрута</param>
-        /// <returns></returns>
-        public async Task RouteSimulate(List<List<double>> points)
-        {
-            if (DataContext is DispatcherViewModel vm)
-            {
-                _simulationCts?.Cancel();
-                _simulationCts?.Dispose();
-
-                _simulationCts = new CancellationTokenSource();
-                var token = _simulationCts.Token;
-                foreach (var point in points)
-                {
-                    if (token.IsCancellationRequested) return;
-
-                    await Map.CoreWebView2.ExecuteScriptAsync(
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            "MoveCourier({0}, {1})",
-                            point[0],
-                            point[1]));
-                    await vm.SaveCoords(point[0], point[1]);
-                    await Task.Delay(300, token);
-                }
-            }
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -73,12 +49,34 @@ namespace DeliveryService.Views
 
             if (DataContext is DispatcherViewModel vm)
             {
+                _simulationService = vm.SimulationService;
                 vm.OrderSelected -= OnOrderSelected;
                 vm.CourierSelected -= OnCourierSelected;
 
                 vm.OrderSelected += OnOrderSelected;
                 vm.CourierSelected += OnCourierSelected;
+
+                _simulationService.CourierMoved -= OnCourierMoved;
+                _simulationService.CourierMoved += OnCourierMoved;
+                MapInitializer.CoordinatesRoute += OnRouteReceived;
             }
+        }
+
+        private async void OnCourierMoved(double Lat, double Lon)
+        {
+
+            await Map.CoreWebView2.ExecuteScriptAsync(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    "MoveCourier({0}, {1})",
+                    Lat,
+                    Lon));
+        }
+
+        private async Task OnRouteReceived(List<List<double>> points)
+        {
+            if (DataContext is DispatcherViewModel vm)
+                await _simulationService.StartAsync(points, vm.SelectedCourier);
         }
 
         private async void OnOrderSelected(Order order)
@@ -93,7 +91,6 @@ namespace DeliveryService.Views
 
         private async void OnCourierSelected(double latFrom, double lonFrom,double latTo, double lonTo,double courLat,double courLon)
         {
-            System.Diagnostics.Debug.WriteLine($"OnCourierSelected вызван: {latFrom}, {lonFrom}");
             await Map.CoreWebView2.ExecuteScriptAsync(
                 string.Format(CultureInfo.InvariantCulture,
                     "DrawRoute({0}, {1}, {2}, {3}, true)",
@@ -112,7 +109,7 @@ namespace DeliveryService.Views
                 MapInitializer.Reset();
                 vm.OrderSelected -= OnOrderSelected;
                 vm.CourierSelected -= OnCourierSelected;
-                MapInitializer.CoordinatesRoute -= RouteSimulate;
+                Map.Dispose();
 
 
             }

@@ -17,6 +17,7 @@ namespace DeliveryService.ViewModels
         private readonly ClientService _clientService;
         private readonly BasketService _basketService;
         private readonly WindowsService _windowService;
+        private readonly CourierService _courierService;
 
         /// <summary>
         /// Имя клиента
@@ -166,13 +167,14 @@ namespace DeliveryService.ViewModels
 
 
         public NewOrderViewModel(SessionService sessionService, 
-            OrderService orderService, ClientService clientService, BasketService basketService, WindowsService windowService)
+            OrderService orderService, ClientService clientService, BasketService basketService, WindowsService windowService, CourierService courierService)
         {
             _sessionService = sessionService;
             _orderService = orderService;
             _clientService = clientService;
             _basketService = basketService;
             _windowService = windowService;
+            _courierService = courierService;
 
             _clientBasket = new List<Basket>();
 
@@ -320,74 +322,21 @@ namespace DeliveryService.ViewModels
                 };
 
                 bool success = await _orderService.CreateOrderAsync(client, order);
+                _sessionService.CurrentOrder = order;
+
+              
+
                 if (!success)
                 {
                     ErrorMessage = "Не удалось создать один из заказов";
                     return;
                 }
+
             }
             _windowService.OpenOrderAccept();
             CloseWindow(true);
         }
-        /// <summary>
-        /// Создание заказа и сохранение
-        /// <br/> !!! Старый метод, остался как тестовый вариант !!!
-        /// </summary>
-        private async Task SaveOrderAsync_Old()
-        {
-            ErrorMessage = null;
-
-            if (!ValidateProperty())
-                return;
-
-            #region На данный момент этот регион работает с ошибками
-            //if (!ValidatePhoneNumber())
-            //    return;
-
-            //if (!int.TryParse(_cleanedPhoneNumber, out int phoneNumber))
-            //{
-            //    ErrorMessage = "Номер телефона должен содержать только цифры";
-            //    return;
-            //}
-            #endregion
-
-            if (!int.TryParse(ClientPhone, out int phoneNumber))
-            {
-                ErrorMessage = "Номер телефона должен содержать только цифры";
-                return;
-            }
-
-            Client? client = await _clientService.GetClientById(_sessionService.CurrentClient.Id);
-            if (client == null)
-            {
-                client = new Client
-                {
-                    Name = ClientName,
-                    Phone = phoneNumber,
-                    Created_At = DateTime.UtcNow
-                };
-            }
-
-            Order order = new Order
-            {
-                Address_From = AddressFrom,
-                Lat_From = LatFrom,
-                Lon_From = LonFrom,
-                Address_To = AddressTo,
-                Lat_To = LatTo,
-                Lon_To = LonTo,
-                Price = Price,
-            };
-
-            bool success = await _orderService.CreateOrderAsync(client, order);
-            if (success)
-                CloseWindow(true);
-            else
-            {
-                ErrorMessage = "Не удалось выполнить команду";
-                return;
-            }
-        }
+       
         /// <summary>
         /// Устанавливает выбранный адрес в поля для ввода
         /// </summary>

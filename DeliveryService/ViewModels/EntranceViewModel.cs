@@ -14,6 +14,10 @@ namespace DeliveryService.ViewModels
     public class EntranceViewModel : BaseViewModel
     {
         private readonly SessionService _sessionService;
+        /// <summary>
+        /// Событие, нужное для закрывания окна
+        /// </summary>
+        public event Action? CloseRequested;
 
         /// <summary>
         /// Имя
@@ -94,6 +98,7 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
+
         }
 
         /// <summary>
@@ -116,11 +121,11 @@ namespace DeliveryService.ViewModels
             {
                 case "admin":
                     _windowService.OpenMainWindow();
-                    Application.Current.MainWindow.Close();
+                    CloseRequested?.Invoke();
                     break;
                 case "user":
                     _windowService.OpenMenu();
-                    Application.Current.MainWindow.Close();
+                    CloseRequested?.Invoke();
                     break;
             }
 

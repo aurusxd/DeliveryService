@@ -30,6 +30,12 @@
                 <TextBlock Text="Пароль" Style="{StaticResource FieldLabel}" Margin="0,0,0,8"/>
                 <TextBox Name="PhoneTextBox" Text="{Binding Password}" Style="{StaticResource ModernFieldTextBox}" Margin="0,0,0,40"/>
 
+                <TextBlock Grid.Row="0"
+               Text="{Binding ErrorMessage}"
+               Foreground="Red"
+               FontSize="12"
+               Margin="0,0,0,6"
+               TextWrapping="Wrap"/>
                 <Button Content="Зарегистрироваться" Style="{StaticResource PrimaryButton}" Command="{Binding RegistrationCommand}" Height="50" Margin="0,0,0,15"/>
             </StackPanel>
         </Border>

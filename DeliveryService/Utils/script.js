@@ -26,6 +26,7 @@ ymaps.ready(function () {
             });
         });
     });
+
 });
 //Очистка карты
 function clearMapOverlays() {
@@ -33,6 +34,7 @@ function clearMapOverlays() {
 }
 //Постройка маршрута
 function DrawRoute(startLat, startLon, endLat, endLon, addCourierMark) {
+    console.log("Draw Route",startLat,endLon);
     clearMapOverlays();
     routeRequestId++;
     var thisRequestId = routeRequestId;
@@ -70,7 +72,6 @@ function AddMark(lat, lon) {
     console.log("AddMark вызван, текущий courierMarker:", courierMarker);
 
     if (courierMarker != null) {
-        console.log("Удаляем старую метку");
         map.geoObjects.remove(courierMarker);
         courierMarker = null;
     }
@@ -91,10 +92,7 @@ function AddMark(lat, lon) {
             zIndexActive: 10000
         }
     );
-    console.log("Маршруты: ", routes);
-    console.log("Метка курьера: ", courierMarker);
     map.geoObjects.add(courierMarker);
-    console.log("Метка добавлена");
 }
 
 

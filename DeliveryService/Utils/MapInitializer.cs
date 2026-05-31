@@ -1,5 +1,6 @@
 
 using DeliveryService.DTO;
+using DeliveryService.Models;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System.IO;
@@ -31,8 +32,6 @@ namespace DeliveryService.Utils
 
         public static async Task Initialize(WebView2 MapWebView)
         {
-
-
             string html = """ 
             <!DOCTYPE html>
             <html>
@@ -63,7 +62,10 @@ namespace DeliveryService.Utils
                 utilsFolder,
                 CoreWebView2HostResourceAccessKind.Allow);
 
-            if (_isInitialized) return;
+            if (_isInitialized)
+            {
+                return;
+            }
             _isInitialized = true;
 
             MapWebView.CoreWebView2.WebMessageReceived += (sender, args) =>

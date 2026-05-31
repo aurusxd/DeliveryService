@@ -14,6 +14,12 @@ namespace DeliveryService.Services
     public class SessionService
     {
         /// <summary>
+        /// Текущий заказ
+        /// </summary>
+        private Order? _currentOrder;
+
+
+        /// <summary>
         /// Текущий пользователь
         /// </summary>
         private Client? _currentClient;
@@ -29,6 +35,22 @@ namespace DeliveryService.Services
                 if (_currentClient?.Id != value?.Id)
                 {
                     _currentClient = value;
+                    CurrentUserChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
+        public Order? CurrentOrder
+        {
+            get => _currentOrder;
+            set
+            {
+                if (_currentOrder?.Id != value?.Id)
+                {
+                    _currentOrder = value;
                     CurrentUserChanged?.Invoke();
                 }
             }

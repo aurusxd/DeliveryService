@@ -12,27 +12,44 @@ namespace DeliveryService.ViewModels
 {
     public class AuthorizationViewModel : BaseViewModel
     {
-
+        /// <summary>
+        /// Текущее view
+        /// </summary>
         private object _currentView;
 
         private readonly EntranceViewModel _entranceViewModel;
         private readonly RegistrationViewModel _registrationViewModel;
+        private readonly WindowsService _windowsService;
+
+        /// <summary>
+        /// Текущее view
+        /// </summary>
         public object CurrentView
         {
             get => _currentView;
             set{ SetProperty(ref _currentView, value);}
         }
 
-
+        /// <summary>
+        /// Команда для входа в аккаунт
+        /// </summary>
         public ICommand LoginCommand { get; }
+        /// <summary>
+        /// Команда для регистрации аккаунта
+        /// </summary>
         public ICommand RegCommand { get; }
         public AuthorizationViewModel(
             EntranceViewModel EntViewModel,
-            RegistrationViewModel RegistrationViewModel
+            RegistrationViewModel RegistrationViewModel,
+            WindowsService windowService
             )
         {
             _entranceViewModel = EntViewModel;
             _registrationViewModel = RegistrationViewModel;
+            _windowsService = windowService;
+            _entranceViewModel.CloseRequested += () => _windowsService.CloseWindow(this);
+            _registrationViewModel.ClosedRequested += () => _windowsService.CloseWindow(this);
+
 
             CurrentView = _entranceViewModel;
 

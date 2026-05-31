@@ -43,6 +43,7 @@ namespace DeliveryService.Views
         {
             MapInitializer.AddressSelected -= OnAddressSelected;
             base.OnClosed(e);
+            Map.Dispose();
         }
     }
 }

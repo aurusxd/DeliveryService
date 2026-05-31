@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -95,6 +96,9 @@ namespace DeliveryService.ViewModels
             catch (Exception ex)
             {
                 ErrorMessage = $"{errorName ?? "Ошибка"}: {ex.Message}";
+                var detail = ex.InnerException?.Message;
+                Debug.WriteLine(detail);
+
                 return false;
             }
             finally
