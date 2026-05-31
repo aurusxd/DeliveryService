@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeliveryService.Views"
         mc:Ignorable="d"
-        Title="RegistrationCourier" Height="500" Width="500" WindowStartupLocation="CenterScreen">
+        Title="RegistrationCourier" Height="530" Width="500" WindowStartupLocation="CenterScreen">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -71,7 +71,8 @@
                Text="{Binding ErrorMessage}"
                Foreground="Red"
                FontSize="12"
-               Margin="0,0,0,6"
+               Margin="0,0,0,0"
+               HorizontalAlignment="Center"
                TextWrapping="Wrap"/>
 
         <Button Grid.Row="5" 
