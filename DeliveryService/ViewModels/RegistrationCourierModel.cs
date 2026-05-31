@@ -140,25 +140,21 @@ namespace DeliveryService.ViewModels
                 return;
 
             #region На данный момент этот регион работает с ошибками
-            //if (!ValidatePhoneNumber())
-            //    return;
+            if (!ValidatePhoneNumber())
+                return;
 
-            //if (!int.TryParse(_cleanedPhoneNumber, out int phoneNumber))
-            //{
-            //    ErrorMessage = "Номер телефона должен содержать только цифры";
-            //    return;
-            //}
-            #endregion
-
-            if (!int.TryParse(CourierPhone, out int phoneNumber))
+            if (!long.TryParse(_cleanedPhoneNumber, out long phoneNumber))
             {
                 ErrorMessage = "Номер телефона должен содержать только цифры";
                 return;
             }
+            #endregion
 
-            Courier courier = new Courier {
+
+            Courier courier = new Courier
+            {
                 Name = CourierName,
-                CourierPhone = phoneNumber,
+                CourierPhone = phoneNumber.ToString(),
                 Vehicle_Type = VehicleType
             };
 

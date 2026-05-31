@@ -105,18 +105,11 @@ namespace DeliveryService.ViewModels
             if (!ValidateProperty())
                 return;
 
-            #region На данный момент этот регион работает с ошибками
-            //if (!ValidatePhoneNumber())
-            //    return;
+            if (!ValidatePhoneNumber())
+                return;
 
-            //if (!int.TryParse(_cleanedPhoneNumber, out int phoneNumber))
-            //{
-            //    ErrorMessage = "Номер телефона должен содержать только цифры";
-            //    return;
-            //}
-            #endregion
 
-            if (!int.TryParse(PhoneNumber, out int phoneNumber))
+            if (!long.TryParse(PhoneNumber, out long phoneNumber))
             {
                 ErrorMessage = "Номер телефона должен содержать только цифры";
 
@@ -126,7 +119,7 @@ namespace DeliveryService.ViewModels
             Client Client = new Client
             {
                 Name = this.Name,
-                Phone = phoneNumber,
+                Phone = phoneNumber.ToString(),
                 Created_At = DateTime.UtcNow,
                 Email = this.Email,
                 Password = this.Password,
@@ -201,7 +194,7 @@ namespace DeliveryService.ViewModels
             }
             if (cleaned.Length < 10 || cleaned.Length > 11)
             {
-                ErrorMessage = "Номер телефона должен содержать 10–11 цифр";
+                ErrorMessage = "Номер телефона должен содержать 11 цифр";
                 _cleanedPhoneNumber = null;
                 return false;
             }
