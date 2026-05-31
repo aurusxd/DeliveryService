@@ -127,7 +127,8 @@ namespace DeliveryService.ViewModels
             if (_sessionService?.CurrentOrder?.Courier == null)
             {
 
-                await _courierService.AssignFreeCourierToOrderAsync(_sessionService.CurrentOrder);
+                bool success = await _courierService.AssignFreeCourierToOrderAsync(_sessionService?.CurrentOrder);
+                if (success == false) return;
                 Status = $"Ваш заказ принял: {_sessionService?.CurrentOrder?.Courier?.Name}";
                 StatusMessage = "Курьер уже в пути";
                 OrderNumber = $"№ ORD-{_sessionService?.CurrentOrder?.Id}";

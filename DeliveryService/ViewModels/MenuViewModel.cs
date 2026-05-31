@@ -279,6 +279,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async void OnCurrentUserChanged()
         {
+            if(IsBusy) return;
             await LoadDataAsync();
         }
         /// <summary>

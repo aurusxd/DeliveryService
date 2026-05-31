@@ -95,12 +95,12 @@ namespace DeliveryService.Services
         public async Task<bool> AssignFreeCourierToOrderAsync(Order order)
         {
             var list = await _courierRepository.GetFreeCouriers();
-            if(list.Count ==0)
+            if(list.Count == 0)
             {
                 order.CourierId = null;
                 order.Status = "Новый"; // Заменить на нужный
                 await _orderRepository.UpdateAsync(order);
-                return true;
+                return false;
             }
             Courier? courier = null;
             if(list.Count != 0) courier = list[new Random().Next(list.Count)];

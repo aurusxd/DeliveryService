@@ -58,7 +58,6 @@ namespace DeliveryService.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            MapInitializer.Reset();
             await MapInitializer.Initialize(Map);
 
             if(DataContext is OrderAcceptViewModel vm)
