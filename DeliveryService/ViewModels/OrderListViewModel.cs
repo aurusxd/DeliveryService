@@ -142,6 +142,8 @@ namespace DeliveryService.ViewModels
         /// </summary>
         public ICommand AddOrderCommand { get; }
 
+        public ICommand RemoveOrderCommand { get; }
+
 
         public OrderListViewModel(WindowsService windowsService, OrderService orderService, CourierService courierService)
         {
@@ -169,6 +171,14 @@ namespace DeliveryService.ViewModels
                     LoadOrdersCommand.Execute(null);
             });
 
+            RemoveOrderCommand = new RelayCommandAsync(
+                execute: async (parameter) =>
+                {
+                    if (parameter is int orderId)
+                        await RemoveOrderAsync(orderId);
+                },
+                canExecute: _ => !IsBusy
+            );
             LoadDataCommand.Execute(null);
         }
 
@@ -181,9 +191,9 @@ namespace DeliveryService.ViewModels
         {
             TotalCount = orders.Count;
             // Изменить названия статусов на нужные проекту
-            InProcessCount = orders.Count(o => o.Status == "InProgress");
-            PendingCount = orders.Count(o => o.Status == "Pending");
-            CompletedCount = orders.Count(o => o.Status == "Done");
+            InProcessCount = orders.Count(o => o.Status == "В пути");
+            PendingCount = orders.Count(o => o.Status == "Новый");
+            CompletedCount = orders.Count(o => o.Status == "Доставлен");
         }
         /// <summary>
         /// Загрузка данных о заказах в список
@@ -265,14 +275,22 @@ namespace DeliveryService.ViewModels
             SetOrderStatistic(Orders);
         }
 
-        /// <summary>
-        /// Открытие окна создания нового заказа
-        /// </summary>
-        private void OpenAddOrderWindow()
+        private async Task RemoveOrderAsync(object id)
         {
-            var win = App.Services.GetRequiredService<NewOrderView>();
-            if (win.ShowDialog() == true)
-                LoadOrdersCommand.Execute(null);
+            if (IsBusy) return;
+            if (!int.TryParse(id?.ToString(), out int orderId))
+                return;
+
+            var success = await _orderService.RemoveOrderAsync(orderId);
+
+            if (success == true)
+                await LoadOrdersAsync();
+            else
+            {
+                ErrorMessage = "Не удалось удалить заказ";
+                await Task.Delay(3000);
+                ErrorMessage = null;
+            }
         }
     }
 }

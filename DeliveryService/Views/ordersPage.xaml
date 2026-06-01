@@ -80,6 +80,14 @@
               HeadersVisibility="Column" GridLinesVisibility="Horizontal"
               HorizontalGridLinesBrush="#EEEEEE" CanUserAddRows="False" IsReadOnly="True">
 
+                <DataGrid.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Удалить"
+                                  Command="{Binding RemoveOrderCommand}"
+                                  CommandParameter="{Binding PlacementTarget.SelectedItem.Id,RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+
                 <DataGrid.Resources>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#F9FAFB"/>

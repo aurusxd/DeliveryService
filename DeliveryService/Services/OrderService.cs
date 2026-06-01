@@ -102,6 +102,19 @@ namespace DeliveryService.Services
         public async Task<Order?> FindOrderByCourierIdAsync(int courierId) => await _orderRepository.GetByCourierId(courierId);
 
         /// <summary>
+        /// Удаление заказа
+        /// </summary>
+        /// <param name="orderId">Айди заказа</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveOrderAsync(int orderId)
+        {
+            Order? order = await _orderRepository.GetById(orderId);
+            if(order == null) return false;
+            await _orderRepository.DeleteAsync(order);
+            return true;
+        }
+
+        /// <summary>
         /// Обновление данных в заказе
         /// </summary>
         /// <param name="order">Объект заказа</param>

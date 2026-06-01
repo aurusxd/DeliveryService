@@ -75,9 +75,9 @@
 
         <Border Grid.Row="2" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Background="White">
             <DataGrid ItemsSource="{Binding Couriers}" SelectedItem="{Binding SelectedCourier}" AutoGenerateColumns="False" 
-  Background="Transparent" BorderThickness="0" RowHeight="50"
-  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-  HorizontalGridLinesBrush="#EEEEEE" CanUserAddRows="False" IsReadOnly="True">
+              Background="Transparent" BorderThickness="0" RowHeight="50"
+              HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+              HorizontalGridLinesBrush="#EEEEEE" CanUserAddRows="False" IsReadOnly="True">
                 <DataGrid.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                         <MenuItem Header="Переключить статус" 

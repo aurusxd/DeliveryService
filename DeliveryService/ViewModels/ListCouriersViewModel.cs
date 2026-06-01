@@ -149,12 +149,13 @@ namespace DeliveryService.ViewModels
 
         private async Task RemoveCourierAsync(object id)
         {
+            if(IsBusy) return;
             if (!int.TryParse(id?.ToString(), out int courierId))
                 return;
 
-            var success = _courierService.RemoveCourierAsync(courierId);
+            var success = await _courierService.RemoveCourierAsync(courierId);
 
-            if (success.Result==true)
+            if (success==true)
                 await LoadCouriersAsync();
             else
             {
@@ -203,14 +204,5 @@ namespace DeliveryService.ViewModels
             }
         }
 
-        /// <summary>
-        /// Открытие окна регистрации нового курьера
-        /// </summary>
-        private void OpenRegistrationCourier()
-        {
-            var win = App.Services.GetRequiredService<RegistrationCourier>();
-            if (win.ShowDialog() == true)
-                LoadCouriersCommand.Execute(null);
-        }
     }
 }
