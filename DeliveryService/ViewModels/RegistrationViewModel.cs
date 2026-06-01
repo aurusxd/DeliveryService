@@ -2,6 +2,7 @@
 using DeliveryService.Models;
 using DeliveryService.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 
 namespace DeliveryService.ViewModels
@@ -153,7 +154,7 @@ namespace DeliveryService.ViewModels
                 ErrorMessage = "Введите пароль";
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(Email))
+            if (string.IsNullOrWhiteSpace(Email) || !IsValidEmail(Email))
             {
                 ErrorMessage = "Введите почту";
                 return false;
@@ -192,6 +193,15 @@ namespace DeliveryService.ViewModels
 
             _cleanedPhoneNumber = cleaned;
             return true;
+        }
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, pattern);
         }
 
     }
