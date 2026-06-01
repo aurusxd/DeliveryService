@@ -56,12 +56,13 @@ namespace DeliveryService.Services
             if (courier.Current_Lat == orderPoint[0] && courier.Current_Lon == orderPoint[1])
             {
                 var order = await _orderService.FindOrderByCourierIdAsync(courier.Id);
+                if(order==null) return;
                 order.Status = "Доставлен";
                 order.Courier = null;
                 CourierFinal?.Invoke();
                 await _orderService.Update(order);
                 await _orderService.AddToHistory(order, status: "Доставлен");
-
+                //action
             }
         }
 
@@ -79,8 +80,8 @@ namespace DeliveryService.Services
         /// Функция, ищущая ближайшую точку к курьеру 
         /// </summary>
         /// <param name="points">Координаты</param>
-        /// <param name="curLat"></param>
-        /// <param name="curLon"></param>
+        /// <param name="curLat">Lat курьера</param>
+        /// <param name="curLon">Lon курьера</param>
         /// <returns>Возвращает индекс ближайшей пары точек</returns>
         private int NearestIndexFinder(List<List<double>> points, double curLat, double curLon)
         {

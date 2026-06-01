@@ -37,12 +37,14 @@ namespace DeliveryService.ViewModels
         /// Команда закрытия всех открытых немодальных окон
         /// </summary>
         public ICommand CloseWindowsCommand { get; }
+        public ICommand LogoutCommand { get; }
 
         private object _currentView;
         private readonly DispatcherViewModel _dispatcherVm;
         private readonly OrderListViewModel _ordersVm;
         private readonly ListCouriersViewModel _couriersVm;
 
+        public event Action CloseRequested;
         public object CurrentView
         {
             get => _currentView;
@@ -90,7 +92,8 @@ namespace DeliveryService.ViewModels
                 
                 );
 
-            // Эти потом можно изменить с проверками DialogResult
+            CloseRequested += () => _windowsService.CloseWindow(this);
+
             OpenNewOrderCommand = new RelayCommand(() =>
                 _windowsService.OpenMenu()
             );
@@ -100,7 +103,24 @@ namespace DeliveryService.ViewModels
             });
 
 
-            CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
+            //CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
+
+            LogoutCommand = new RelayCommandAsync(
+                execute: () => TryRunTaskAsync(Logout, "Ошибка выхода из аккаунта"),
+                canExecute: () => !IsBusy
+                );
+        }
+
+        /// <summary>
+        /// Выход из аккаунта
+        /// </summary>
+        /// <returns></returns>
+        private async Task Logout()
+        {
+            _sessionService.CurrentClient = null;
+            _sessionService.CurrentOrder = null;
+            _windowsService.OpenEntrance();
+            this.CloseRequested?.Invoke();
         }
     }
 }

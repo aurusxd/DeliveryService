@@ -138,7 +138,8 @@ namespace DeliveryService.Services
         /// <returns></returns>
         public async Task<bool> RemoveCourierAsync(int courierId)
         {
-            var courier = _courierRepository.GetById(courierId).Result;
+            
+            var courier = await _courierRepository.GetById(courierId);
             
             if(courier == null) return false;
             _courierRepository?.DeleteAsync(courier);
