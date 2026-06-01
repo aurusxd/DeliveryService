@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: delivery_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: delivery_usr
+      POSTGRES_PASSWORD: 123  # ← задаёт пароль postgres юзера
+      POSTGRES_DB: delivery_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:

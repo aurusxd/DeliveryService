@@ -93,6 +93,7 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция назначения</returns>
         public async Task<bool> AssignFreeCourierToOrderAsync(Order order)
         {
+            if(order== null) return false;
             var list = await _courierRepository.GetFreeCouriers();
             if(list.Count == 0)
             {
@@ -105,7 +106,6 @@ namespace DeliveryService.Services
             if(list.Count != 0) courier = list[new Random().Next(list.Count)];
             if (list == null) return false;
             if (courier == null) return false;
-            if (order == null) return false;
             if (order.CourierId != null) return false;
 
 
