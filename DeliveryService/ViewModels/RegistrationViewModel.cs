@@ -9,7 +9,8 @@ namespace DeliveryService.ViewModels
     public class RegistrationViewModel : BaseViewModel
     {
 
-        public event Action? ClosedRequested;
+        public event Action? RegistrationSuccess;
+
 
         /// <summary>
         /// Имя
@@ -124,11 +125,7 @@ namespace DeliveryService.ViewModels
             {
                 bool success = await _clientService.AddClientAsync(Client);
 
-                if (success)
-                {
-                    _windowService.OpenEntrance();
-                    ClosedRequested?.Invoke();
-                }
+                if (success) RegistrationSuccess?.Invoke();
                 else
                     ErrorMessage = "Не удалось выполнить команду";
             }

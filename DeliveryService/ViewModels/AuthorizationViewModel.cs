@@ -47,7 +47,7 @@ namespace DeliveryService.ViewModels
             _registrationViewModel = RegistrationViewModel;
             _windowsService = windowService;
             _entranceViewModel.CloseRequested += () => _windowsService.CloseWindow(this);
-            _registrationViewModel.ClosedRequested += () => _windowsService.CloseWindow(this);
+            _registrationViewModel.RegistrationSuccess += () => CurrentView = EntViewModel;
 
 
             CurrentView = _entranceViewModel;
