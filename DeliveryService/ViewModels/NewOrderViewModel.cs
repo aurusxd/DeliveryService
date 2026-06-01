@@ -291,48 +291,32 @@ namespace DeliveryService.ViewModels
                     ErrorMessage = "Номер телефона должен содержать только цифры";
                     return;
                 }
-
-                #region На данный момент этот регион работает с ошибками
-                //if (!ValidatePhoneNumber())
-                //    return;
-
-                //if (!int.TryParse(_cleanedPhoneNumber, out int phoneNumber))
-                //{
-                //    ErrorMessage = "Номер телефона должен содержать только цифры";
-                //    return;
-                //}
-                #endregion
             }
+
+            var order = new Order
+            {
+                ClientId = _sessionService.CurrentClient.Id,
+                Address_From = AddressFrom,
+                Lat_From = LatFrom,
+                Lon_From = LonFrom,
+                Address_To = AddressTo,
+                Lat_To = LatTo,
+                Lon_To = LonTo,
+                Price = Price,             
+                Status = "Новый",
+                Created_At = DateTime.UtcNow,
+                BasketId = _clientBasket[0].Id, 
+            };
+            bool success = await _orderService.CreateOrderAsync(client, order);
+            if (!success)
+            {
+                ErrorMessage = "Не удалось создать заказ";
+                return;
+            }
+            _sessionService.CurrentOrder = order;
 
             foreach (var item in _clientBasket)
-            {
-                var order = new Order
-                {
-                    ClientId = _sessionService.CurrentClient.Id,
-                    Address_From = AddressFrom,
-                    Lat_From = LatFrom,
-                    Lon_From = LonFrom,
-                    Address_To = AddressTo,
-                    Lat_To = LatTo,
-                    Lon_To = LonTo,
-                    Price = item.Price,
-                    Status = "Новый",
-                    Created_At = DateTime.UtcNow,
-                    BasketId = item.Id
-                };
-
-                bool success = await _orderService.CreateOrderAsync(client, order);
-                _sessionService.CurrentOrder = order;
-
-              
-
-                if (!success)
-                {
-                    ErrorMessage = "Не удалось создать один из заказов";
-                    return;
-                }
-
-            }
+                await _basketService.RemoveItemAsync(item.Id);
             _windowService.OpenOrderAccept();
             CloseWindow(true);
         }

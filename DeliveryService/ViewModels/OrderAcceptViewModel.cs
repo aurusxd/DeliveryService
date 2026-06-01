@@ -24,7 +24,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Интервал таймера
         /// </summary>
-        public double TIMER_INTERVAL = 1;
+        public double TIMER_INTERVAL = 3;
         /// <summary>
         /// Статус заказа
         /// </summary>
