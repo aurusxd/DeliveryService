@@ -32,6 +32,11 @@ namespace DeliveryService.ViewModels
         /// Команда для регистрации аккаунта
         /// </summary>
         public ICommand RegCommand { get; }
+        /// <summary>
+        /// Команда для закрытия окна
+        /// </summary>
+        public ICommand CloseCommand { get; }
+
         public AuthorizationViewModel(
             EntranceViewModel EntViewModel,
             RegistrationViewModel RegistrationViewModel,
@@ -49,6 +54,7 @@ namespace DeliveryService.ViewModels
 
             LoginCommand = new RelayCommand(() => CurrentView = _entranceViewModel);
             RegCommand = new RelayCommand(() => CurrentView = _registrationViewModel);
+            CloseCommand = new RelayCommand(() => _windowsService.CloseWindow(this));
 
         }
     }

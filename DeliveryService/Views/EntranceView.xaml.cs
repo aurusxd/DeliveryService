@@ -11,6 +11,8 @@ namespace DeliveryService.Views
         {
             InitializeComponent();
             DataContext = vw;
+            Login.Background = Brushes.Gray;
+            Reg.Background = ColorFromHex("#2563EB");
         }
 
         private SolidColorBrush ColorFromHex(string hex)

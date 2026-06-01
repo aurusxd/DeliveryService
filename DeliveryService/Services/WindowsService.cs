@@ -78,7 +78,7 @@ namespace DeliveryService.Services
         /// Открытие MainWindow
         /// </summary>
         /// <returns>Результат работы окна - DialogResult</returns>
-        public bool? OpenMainWindow() => OpenModalWindow<MainWindow>();
+        public void OpenMainWindow() => OpenWindow<MainWindow>();
         /// <summary>
         /// Открытие RegistrationCourier
         /// </summary>

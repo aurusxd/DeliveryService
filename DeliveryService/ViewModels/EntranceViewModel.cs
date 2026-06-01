@@ -107,7 +107,7 @@ namespace DeliveryService.ViewModels
 
             if (Client == null)
             {
-                ErrorMessage = "Юзер не найден";
+                ErrorMessage = "Такого пользователя не существует";
                 return;
             }
             Role = Client.Role;

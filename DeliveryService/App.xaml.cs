@@ -73,7 +73,7 @@ namespace DeliveryService
             services.AddTransient<MenuView>();
             services.AddTransient<OrderAcceptView>();
 
-            // Собираем контейнер
+            //контейнер
             Services = services.BuildServiceProvider();
 
             var startupScope = Services.CreateScope();
