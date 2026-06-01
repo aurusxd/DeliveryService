@@ -103,7 +103,7 @@ namespace DeliveryService.ViewModels
             });
 
 
-            CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
+            //CloseWindowsCommand = new RelayCommand(_windowsService.CloseWindows);
 
             LogoutCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(Logout, "Ошибка выхода из аккаунта"),

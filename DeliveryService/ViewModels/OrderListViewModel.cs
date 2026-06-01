@@ -43,15 +43,15 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private int _totalCount;
         /// <summary>
-        /// Количество заказов со статусом "В процессе" (поменять в кавычках на название в проекте)
+        /// Количество заказов со статусом "В пути" 
         /// </summary>
         private int _inProcessCount;
         /// <summary>
-        /// Количество заказов со статусом "Ожидают" (поменять в кавычках на название в проекте)
+        /// Количество заказов со статусом "Новый" 
         /// </summary>
         private int _pendingCount;
         /// <summary>
-        /// Количество заказов со статусом "Завершено" (поменять в кавычках на название в проекте)
+        /// Количество заказов со статусом "Доставлено" 
         /// </summary>
         private int _completedCount;
 
@@ -104,7 +104,7 @@ namespace DeliveryService.ViewModels
             set => SetProperty(ref _totalCount, value);
         }
         /// <summary>
-        /// Количество заказов со статусом "В процессе" (поменять в кавычках на название в проекте)
+        /// Количество заказов со статусом "В пути"
         /// </summary>
         public int InProcessCount
         {
@@ -112,7 +112,7 @@ namespace DeliveryService.ViewModels
             set => SetProperty(ref _inProcessCount, value);
         }
         /// <summary>
-        /// Количество заказов со статусом "Ожидают" (поменять в кавычках на название в проекте)
+        /// Количество заказов со статусом "Новый"
         /// </summary>
         public int PendingCount
         {
@@ -120,7 +120,7 @@ namespace DeliveryService.ViewModels
             set => SetProperty(ref _pendingCount, value);
         }
         /// <summary>
-        /// Количество заказов со статусом "Завершено" (поменять в кавычках на название в проекте)
+        /// Количество заказов со статусом "Доставлено" 
         /// </summary>
         public int CompletedCount
         {
@@ -138,10 +138,8 @@ namespace DeliveryService.ViewModels
         /// </summary>
         public ICommand LoadDataCommand { get; }
         /// <summary>
-        /// Команда открытия окна добавления нового заказа
+        /// Комадна удаления заказа
         /// </summary>
-        public ICommand AddOrderCommand { get; }
-
         public ICommand RemoveOrderCommand { get; }
 
 
@@ -165,12 +163,6 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
-            //AddOrderCommand = new RelayCommand(OpenAddOrderWindow);
-            AddOrderCommand = new RelayCommand(() => {
-                if (_windowsService.OpenNewOrder() == true)
-                    LoadOrdersCommand.Execute(null);
-            });
-
             RemoveOrderCommand = new RelayCommandAsync(
                 execute: async (parameter) =>
                 {
@@ -190,7 +182,6 @@ namespace DeliveryService.ViewModels
         private void SetOrderStatistic(ObservableCollection<OrderDTO> orders)
         {
             TotalCount = orders.Count;
-            // Изменить названия статусов на нужные проекту
             InProcessCount = orders.Count(o => o.Status == "В пути");
             PendingCount = orders.Count(o => o.Status == "Новый");
             CompletedCount = orders.Count(o => o.Status == "Доставлен");

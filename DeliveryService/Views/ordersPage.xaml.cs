@@ -11,6 +11,11 @@ namespace DeliveryService.Views
         public ordersPage()
         {
             InitializeComponent();
+            Loaded += (sender,e) =>
+            {
+                combobox.SelectedIndex = 0;
+            };
         }
+
     }
 }

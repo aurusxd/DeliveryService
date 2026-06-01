@@ -20,16 +20,9 @@
             <TextBox Style="{StaticResource ModernSearchBox}" Width="350" Height="40"
                      Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Border Margin="15,0,0,0" Background="White" CornerRadius="6" BorderBrush="#BCBCBC" BorderThickness="1">
-                <ComboBox Width="170" BorderThickness="0" Background="Transparent" SelectedIndex="0" VerticalContentAlignment="Center" Padding="8,0" Foreground="Black">
-                    <ComboBoxItem Content="Все статусы"/>
-                    <ComboBoxItem Content="В пути"/>
-                    <ComboBoxItem Content="Доставлено"/>
-                </ComboBox>
-            </Border>
 
             <Border Margin="10,0,0,0" Background="White" CornerRadius="6" BorderBrush="#BCBCBC" BorderThickness="1">
-                <ComboBox Width="170" BorderThickness="0" Background="Transparent" 
+                <ComboBox Name="combobox" Width="170" BorderThickness="0" Background="Transparent" 
                           VerticalContentAlignment="Center" Padding="8,0" Foreground="Black"
                           ItemsSource="{Binding Couriers}"
                           SelectedValuePath="Id"
@@ -38,13 +31,6 @@
                 </ComboBox>
             </Border>
 
-            <Button Content="Добавить заказ" Command="{Binding AddOrderCommand}" Margin="15,0,0,0" Padding="20,0" Height="40" Background="#2563EB" Foreground="White" BorderThickness="0" Cursor="Hand">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="6"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
         </StackPanel>
 
         <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,25">

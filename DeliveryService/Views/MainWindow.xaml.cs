@@ -13,7 +13,7 @@ namespace DeliveryService
         {
             InitializeComponent();
             DataContext = viewModel;
-            Closing += (s, e) => viewModel.CloseWindowsCommand.Execute(null); 
+
         }
 
     }
