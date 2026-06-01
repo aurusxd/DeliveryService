@@ -10,8 +10,10 @@ namespace DeliveryService.Services
         private readonly SessionService _sessionService;
         private readonly OrderService _orderService;
         private CancellationTokenSource? _simulationCts;
+
         public event Action<double, double>? CourierMoved;
-        public event Action CourierFinal;
+            
+        public event Action? CourierFinal;
 
 
         public SimulationService(CourierService courierService, SessionService sessionService,OrderService orderService)
@@ -59,10 +61,9 @@ namespace DeliveryService.Services
                 if(order==null) return;
                 order.Status = "Доставлен";
                 order.Courier = null;
-                CourierFinal?.Invoke();
                 await _orderService.Update(order);
                 await _orderService.AddToHistory(order, status: "Доставлен");
-                //action
+                CourierFinal?.Invoke();
             }
         }
 
