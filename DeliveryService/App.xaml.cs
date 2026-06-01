@@ -76,6 +76,10 @@ namespace DeliveryService
             //контейнер
             Services = services.BuildServiceProvider();
 
+            using var scope = Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+
             var startupScope = Services.CreateScope();
             var win = startupScope.ServiceProvider.GetRequiredService<EntranceView>();
             win.Closed += (_, _) => startupScope.Dispose();
