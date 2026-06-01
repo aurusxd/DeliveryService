@@ -1,7 +1,7 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Services;
 using System.Windows.Input;
-using System.Windows.Navigation;
+
 
 namespace DeliveryService.ViewModels
 {
@@ -49,9 +49,9 @@ namespace DeliveryService.ViewModels
             set {
                 switch (value)
                 {
-                    case OrderListViewModel o: o.LoadOrdersCommand.Execute(null); break;
-                    case DispatcherViewModel d: d.LoadDataCommand.Execute(null); break;
-                    case ListCouriersViewModel d: d.LoadCouriersCommand.Execute(null); break;
+                    case OrderListViewModel o: _dispatcherVm.TimerStop(); o.LoadOrdersCommand.Execute(null); break;
+                    case DispatcherViewModel d: _dispatcherVm.TimerStart(); d.LoadDataCommand.Execute(null); break;
+                    case ListCouriersViewModel d: _dispatcherVm.TimerStop(); d.LoadCouriersCommand.Execute(null); break;
                 }
                 SetProperty(ref _currentView, value);
                 }

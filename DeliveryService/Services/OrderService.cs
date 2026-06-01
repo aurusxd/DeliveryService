@@ -99,7 +99,49 @@ namespace DeliveryService.Services
         /// </summary>
         /// <param name="courierId">айди курьера</param>
         /// <returns></returns>
-        public async Task<Order?> FindOrderByCourierIdAsync(int courierId) => await _orderRepository.GetByCourierId(courierId);    
+        public async Task<Order?> FindOrderByCourierIdAsync(int courierId) => await _orderRepository.GetByCourierId(courierId);
+
+        /// <summary>
+        /// Обновление данных в заказе
+        /// </summary>
+        /// <param name="order">Объект заказа</param>
+        /// <returns></returns>
+        public async Task Update(Order order) => await _orderRepository.UpdateAsync(order);
+
+        /// <summary>
+        /// Удаление заказа
+        /// </summary>
+        /// <param name="order">Объект заказа</param>
+        /// <returns>true-удачно, false-неудачно</returns>
+        public async Task<bool> DeleteAsync(Order order)
+        {
+            if(order  == null) return false;
+            await _orderRepository.DeleteAsync(order);
+            return true;
+        }
+        /// <summary>
+        /// Добавление в историю
+        /// </summary>
+        /// <param name="order">Объект заказа</param>
+        /// <param name="feedback">Отзыв</param>
+        /// <param name="status">Новый статус</param>
+        /// <returns></returns>
+        public async Task AddToHistory(Order order, string status, string? feedback = null)
+        {
+            if (order == null) return;
+            await _orderRepository.AddStatusHistoryAsync(new OrderStatusHistory
+            {
+                Id = order.Id,
+                Order = order,
+                Changed_At = DateTime.UtcNow,
+                FeedBack = feedback,
+                Status = status,
+                OrderId = order.Id
+
+            });
+
+        }
+
 
     }
 }

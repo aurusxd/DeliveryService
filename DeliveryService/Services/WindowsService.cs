@@ -57,12 +57,17 @@ namespace DeliveryService.Services
             var win = _services.GetRequiredService<TView>();
             return win.ShowDialog();
         }
-
         /// <summary>
         /// Открывает окно входа
         /// </summary>
         public void OpenEntrance() => OpenWindow<EntranceView>();
-
+        /// <summary>
+        /// Открывает окно, которое появляется после совершения заказа для дальнейшего отслеживания его
+        /// </summary>
+        public void OpenOrderAccept() => OpenWindow<OrderAcceptView>();
+        /// <summary>
+        /// Открывает меню с едой
+        /// </summary>
         public void OpenMenu() => OpenWindow<MenuView>();
         /// <summary>
         /// Открытие NewOrderView
@@ -73,7 +78,7 @@ namespace DeliveryService.Services
         /// Открытие MainWindow
         /// </summary>
         /// <returns>Результат работы окна - DialogResult</returns>
-        public bool? OpenMainWindow() => OpenModalWindow<MainWindow>();
+        public void OpenMainWindow() => OpenWindow<MainWindow>();
         /// <summary>
         /// Открытие RegistrationCourier
         /// </summary>
@@ -93,6 +98,22 @@ namespace DeliveryService.Services
             }
 
             _openedWindows.Clear();
+        }
+
+
+        /// <summary>
+        /// Закрытие окна
+        /// </summary>
+        /// <param name="dataContext">Контекст нужного окна</param>
+        public void CloseWindow(object dataContext)
+        {
+            var target = dataContext ?? this;
+
+            var window = Application.Current.Windows
+                .OfType<Window>()
+                .FirstOrDefault(w => w.DataContext == target);
+
+            if (window != null) window.Close();
         }
     }
 }

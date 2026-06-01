@@ -42,15 +42,15 @@
 
                 <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ListView ItemsSource="{Binding MenuItems}" 
-                              Background="Transparent" 
-                              BorderThickness="0"
-                              HorizontalContentAlignment="Left"
-                              PreviewMouseWheel="ListView_PreviewMouseWheel">
+                      Background="Transparent" 
+                      BorderThickness="0"
+                      HorizontalContentAlignment="Left"
+                      PreviewMouseWheel="ListView_PreviewMouseWheel">
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}" 
-                                           HorizontalAlignment="Left"/>
+                                <WrapPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+                       HorizontalAlignment="Left"/>
                             </ItemsPanelTemplate>
                         </ListView.ItemsPanel>
 
@@ -69,26 +69,78 @@
 
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Border Width="190" Height="290" Background="White" BorderBrush="#F3F4F6" BorderThickness="1" CornerRadius="24" Margin="7">
+                                <Border Width="180" Height="260"
+                                Background="White"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                CornerRadius="20"
+                                Margin="7">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" Opacity="0.06" 
+                                      BlurRadius="12" ShadowDepth="2"/>
+                                    </Border.Effect>
                                     <Grid>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="130"/>
-                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="115"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <Border Grid.Row="0" Background="#F3F4F6" CornerRadius="18" Margin="12,12,12,0" ClipToBounds="True">
+
+                                        <Border Grid.Row="0" Background="#F9FAFB" 
+                                        CornerRadius="20,20,0,0" ClipToBounds="True">
                                             <Image Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
                                         </Border>
-                                        <StackPanel Grid.Row="1" Margin="15,10,15,0">
-                                            <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold" Foreground="#111827"/>
-                                            <TextBlock Text="{Binding Weight,StringFormat='{}{0}г.'}" FontSize="12" Foreground="#9CA3AF"/>
-                                        </StackPanel>
-                                        <Grid Grid.Row="2" Margin="15,0,12,0">
-                                            <TextBlock Text="{Binding Price}" FontSize="18" FontWeight="Bold" Foreground="#111827"/>
-                                            <Button Content="Добавить" 
-                                                    Command="{Binding DataContext.AddToBasketCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                    CommandParameter="{Binding Id}"
-                                                    Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Center" Width="100"/>
+
+                                        <Grid Grid.Row="1" Margin="14,10,14,14">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <StackPanel Grid.Row="0">
+                                            <TextBlock Text="{Binding Title}"
+                                            FontSize="14" FontWeight="SemiBold"
+                                            Foreground="#111827"
+                                            TextWrapping="Wrap"
+                                            LineHeight="18"/>
+                                                <TextBlock Text="{Binding Weight, StringFormat='{}{0} г.'}"
+                                            FontSize="12" Foreground="#9CA3AF"
+                                            Margin="0,3,0,0"/>
+                                            </StackPanel>
+
+                                            <Grid Grid.Row="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" Orientation="Horizontal" 
+                                            VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Price}"
+                                            FontSize="18" FontWeight="Bold"
+                                            Foreground="#111827"/>
+                                                    <TextBlock Text=" ₽"
+                                            FontSize="13" Foreground="#9CA3AF"
+                                            VerticalAlignment="Bottom"
+                                            Margin="0,0,0,1"/>
+                                                </StackPanel>
+
+                                                <Border Grid.Column="1"
+                                            Width="34" Height="34"
+                                            CornerRadius="17"
+                                            Background="#2563EB">
+                                                <Button Content="+"
+                                            Command="{Binding DataContext.AddToBasketCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Id}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="White"
+                                            FontSize="20"
+                                            FontWeight="Light"
+                                            Cursor="Hand"
+                                            VerticalContentAlignment="Center"
+                                            HorizontalContentAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Border>
@@ -159,7 +211,7 @@
                                         <StackPanel>
                                             <TextBlock Text="{Binding Food.Title}" FontWeight="SemiBold" FontSize="14"/>
                                             <TextBlock Text="{Binding Quantity,StringFormat=Количество:{0}}" Foreground="#6B7280" FontSize="12"/>
-                                            <TextBlock Text="{Binding Price,StringFormat=Цена:{0}}" Foreground="#6B7280" FontSize="12"/>
+                                            <TextBlock Text="{Binding Price,StringFormat=Цена:{0} руб.}" Foreground="#6B7280" FontSize="12"/>
                                         </StackPanel>
                                         <Button Grid.Column="1" Content="✕" 
                                     Command="{Binding DataContext.RemoveFromBasketCommand, RelativeSource={RelativeSource AncestorType=Window}}"

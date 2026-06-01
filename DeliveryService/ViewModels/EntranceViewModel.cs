@@ -1,12 +1,6 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Models;
 using DeliveryService.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace DeliveryService.ViewModels
@@ -14,6 +8,10 @@ namespace DeliveryService.ViewModels
     public class EntranceViewModel : BaseViewModel
     {
         private readonly SessionService _sessionService;
+        /// <summary>
+        /// Событие, нужное для закрывания окна
+        /// </summary>
+        public event Action? CloseRequested;
 
         /// <summary>
         /// Имя
@@ -94,6 +92,7 @@ namespace DeliveryService.ViewModels
                 canExecute: () => !IsBusy
             );
 
+
         }
 
         /// <summary>
@@ -108,7 +107,7 @@ namespace DeliveryService.ViewModels
 
             if (Client == null)
             {
-                ErrorMessage = "Юзер не найден";
+                ErrorMessage = "Такого пользователя не существует";
                 return;
             }
             Role = Client.Role;
@@ -116,11 +115,11 @@ namespace DeliveryService.ViewModels
             {
                 case "admin":
                     _windowService.OpenMainWindow();
-                    Application.Current.MainWindow.Close();
+                    CloseRequested?.Invoke();
                     break;
                 case "user":
                     _windowService.OpenMenu();
-                    Application.Current.MainWindow.Close();
+                    CloseRequested?.Invoke();
                     break;
             }
 

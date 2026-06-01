@@ -1,9 +1,4 @@
 ﻿using DeliveryService.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -16,6 +11,8 @@ namespace DeliveryService.Views
         {
             InitializeComponent();
             DataContext = vw;
+            Login.Background = Brushes.Gray;
+            Reg.Background = ColorFromHex("#2563EB");
         }
 
         private SolidColorBrush ColorFromHex(string hex)

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Net;
-
+﻿
 namespace DeliveryService.Models
 {
     public class Courier
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int CourierPhone { get; set; }
+        public string CourierPhone { get; set; }
         public bool IsActive { get; set; } = false;
         public double Current_Lat { get; set; }
         public double Current_Lon { get; set; }

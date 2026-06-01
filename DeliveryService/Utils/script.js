@@ -26,6 +26,7 @@ ymaps.ready(function () {
             });
         });
     });
+
 });
 //Очистка карты
 function clearMapOverlays() {
@@ -33,12 +34,11 @@ function clearMapOverlays() {
 }
 //Постройка маршрута
 function DrawRoute(startLat, startLon, endLat, endLon, addCourierMark) {
+    console.log("Draw Route",startLat,endLon);
     clearMapOverlays();
     routeRequestId++;
     var thisRequestId = routeRequestId;
-    console.log("DrawRoute вызван:", startLat, startLon, endLat, endLon);
     if (courierMarker != null) {
-        console.log("Удаляем старую метку");
         map.geoObjects.remove(courierMarker);
         courierMarker = null;
     }
@@ -50,7 +50,7 @@ function DrawRoute(startLat, startLon, endLat, endLon, addCourierMark) {
         currentRoute = route;
         map.geoObjects.add(route);
         if (addCourierMark) {
-            AddMark(startLat, startLon);
+            //AddMark(startLat, startLon);
 
 
             route.getPaths().each(function (path) {
@@ -72,7 +72,6 @@ function AddMark(lat, lon) {
     console.log("AddMark вызван, текущий courierMarker:", courierMarker);
 
     if (courierMarker != null) {
-        console.log("Удаляем старую метку");
         map.geoObjects.remove(courierMarker);
         courierMarker = null;
     }
@@ -93,10 +92,7 @@ function AddMark(lat, lon) {
             zIndexActive: 10000
         }
     );
-    console.log("Маршруты: ", routes);
-    console.log("Метка курьера: ", courierMarker);
     map.geoObjects.add(courierMarker);
-    console.log("Метка добавлена");
 }
 
 

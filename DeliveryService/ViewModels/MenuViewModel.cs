@@ -19,6 +19,13 @@ namespace DeliveryService.ViewModels
         private readonly FoodService _foodService;
         private readonly BasketService _basketService;
 
+
+        /// <summary>
+        /// Событие, нужное для закрывания окна
+        /// </summary>
+        public event Action? CloseRequested;
+
+
         /// <summary>
         /// Список категорий
         /// </summary>
@@ -122,6 +129,9 @@ namespace DeliveryService.ViewModels
             MenuItems = new ObservableCollection<Food>();
             BasketItems = new ObservableCollection<Basket>();
             Username = _sessionService.CurrentClient.Name;
+
+            this.CloseRequested += () => _windowsService.CloseWindow(this);
+
             LoadDataCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(LoadDataAsync, "Ошибка загрузки данных"),
                 canExecute: () => !IsBusy
@@ -268,6 +278,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async void OnCurrentUserChanged()
         {
+            if(IsBusy) return;
             await LoadDataAsync();
         }
         /// <summary>
@@ -299,8 +310,10 @@ namespace DeliveryService.ViewModels
         /// <returns></returns>
         private async Task Logout()
         {
-            _windowsService.CloseWindows();
+            _sessionService.CurrentClient = null;
+            _sessionService.CurrentOrder = null;
             _windowsService.OpenEntrance();
+            CloseRequested?.Invoke();
         }
 
         /// <summary>

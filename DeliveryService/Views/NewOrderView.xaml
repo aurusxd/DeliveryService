@@ -7,7 +7,7 @@
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:DeliveryService.Views"
         mc:Ignorable="d"
-        Title="NewOrderView" Height="800" Width="1100">
+        Title="NewOrderView" Height="800" Width="1100" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -26,10 +26,7 @@
             <Grid Grid.Row="0" Margin="18,16">
                 <TextBlock Text="Новый заказ" FontSize="16" FontWeight="SemiBold"
                        Foreground="Black" VerticalAlignment="Center"/>
-                <Button Content="✕" Command="{Binding CloseCommand}" HorizontalAlignment="Right"
-                    Width="28" Height="28" Background="White"
-                    Foreground="Black" BorderThickness="0"
-                    FontSize="14" Cursor="Hand"/>
+
             </Grid>
 
             <!-- Форма -->

@@ -1,12 +1,9 @@
-
 using DeliveryService.DTO;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using System.IO;
-using System.Net;
 using System.Text.Json;
-using System.Windows;
-using System.Windows.Interop;
+
 
 namespace DeliveryService.Utils
 {
@@ -24,15 +21,13 @@ namespace DeliveryService.Utils
         /// <summary>
         /// Переменная, необходимая для проверки инциализирована ли карта или нет
         /// </summary>
-        private static bool _isInitialized = false;
+        private static bool _isInitialized = true;
 
         public static void Reset() => _isInitialized = false;
 
 
         public static async Task Initialize(WebView2 MapWebView)
         {
-
-
             string html = """ 
             <!DOCTYPE html>
             <html>
@@ -63,7 +58,10 @@ namespace DeliveryService.Utils
                 utilsFolder,
                 CoreWebView2HostResourceAccessKind.Allow);
 
-            if (_isInitialized) return;
+            if (!_isInitialized)
+            {
+                return;
+            }
             _isInitialized = true;
 
             MapWebView.CoreWebView2.WebMessageReceived += (sender, args) =>

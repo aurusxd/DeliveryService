@@ -1,10 +1,5 @@
 ﻿using DeliveryService.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DeliveryService.Services
 {
@@ -13,6 +8,12 @@ namespace DeliveryService.Services
     /// </summary>
     public class SessionService
     {
+        /// <summary>
+        /// Текущий заказ
+        /// </summary>
+        private Order? _currentOrder;
+
+
         /// <summary>
         /// Текущий пользователь
         /// </summary>
@@ -29,6 +30,22 @@ namespace DeliveryService.Services
                 if (_currentClient?.Id != value?.Id)
                 {
                     _currentClient = value;
+                    CurrentUserChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
+        public Order? CurrentOrder
+        {
+            get => _currentOrder;
+            set
+            {
+                if (_currentOrder?.Id != value?.Id)
+                {
+                    _currentOrder = value;
                     CurrentUserChanged?.Invoke();
                 }
             }
