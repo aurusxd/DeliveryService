@@ -16,7 +16,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Интервал таймера
         /// </summary>
-        private const int TIMER_INTERVAL = 5; 
+        private const int TIMER_INTERVAL = 30; 
 
         /// <summary>
         /// Таймер, который перезагружает данные
@@ -157,7 +157,7 @@ namespace DeliveryService.ViewModels
             ActiveOrders = new ObservableCollection<Order>();
             OnlineCouriers = new ObservableCollection<Courier>();
             FreeCouriers = new ObservableCollection<Courier>();
-
+            _simulationService.CourierFinal += _simulationService_CourierFinal;
 
             LoadDataCommand = new RelayCommandAsync(
                 execute: () => TryRunTaskAsync(LoadDataAsync, "Ошибка загрузки"),
@@ -196,6 +196,11 @@ namespace DeliveryService.ViewModels
             });
 
         }
+
+        /// <summary>
+        /// Функция, срабатывающая при достижении курьером финальной точки
+        /// </summary>
+        private void _simulationService_CourierFinal()=> LoadDataCommand.Execute(null);
 
         /// <summary>
         /// Загрузка данных о заказах
