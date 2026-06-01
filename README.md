@@ -28,94 +28,40 @@ DeliveryService/                          # корень репозитория
    ├── App.xaml
     ├── App.xaml.cs                       # DI
 ├── appsettings.json                     
-    ├── Models/                           # сущности БД
-    │   ├── Order.cs
-    │   ├── Courier.cs
-    │   ├── Client.cs
-    │   ├── OrderStatusHistory.cs
-    │   ├── RoutePoint.cs
-    │   ├── Food.cs
-    │   ├── Categories.cs
-    │   └── Backet.cs                      
+    ├── Models/                           # сущности БД             
     │
     ├── Data/                             # EF Core
-    │   ├── AppDbContext.cs
     │   
     │
     ├── Migrations/                       # миграции
-    │   └── …
+    │   
     │
     ├── Repositories/                     # слой доступа к данным
-    │   ├── OrderRepository.cs
-    │   ├── CourierRepository.cs
-    │   ├── ClientRepository.cs
-    │   ├── FoodRepository.cs
-    │   ├── FoodCategoryRepository.cs
-    │   └── BasketRepository.cs
+    │  
     │
     ├── Services/                         # бизнес-логика
-    │   ├── OrderService.cs
-    │   ├── CourierService.cs
-    │   ├── ClientService.cs
-    │   ├── SimulationService.cs
-    │   ├── FoodService.cs
-    │   ├── FoodCategoryService.cs
-    │   ├── BasketService.cs
-    │   ├── SessionService.cs
-    │   └── WindowsService.cs
+    │  
     │
     ├── DTO/                              # объекты передачи данных
-    │   ├── OrderDTO.cs
-    │   ├── CourierDTO.cs
-    │   ├── AddressDTO.cs
-    │   └── CoordinatesDTO.cs
+    │ 
     │
     ├── ViewModels/                       # MVVM
-    │   ├── BaseViewModel.cs
-    │   ├── MainWindowModel.cs
-    │   ├── EntranceViewModel.cs
-    │   ├── AuthorizationViewModel.cs
-    │   ├── RegistrationViewModel.cs
-    │   ├── RegistrationCourierModel.cs
-    │   ├── DispatcherViewModel.cs
-    │   ├── OrderListViewModel.cs
-    │   ├── ListCouriersViewModel.cs
-    │   ├── NewOrderViewModel.cs
-    │   ├── MenuViewModel.cs
-    │   └── OrderAcceptViewModel.cs
+    │   
     │
     ├── Views/                            # XAML-экраны
-    │   ├── MainWindow.xaml
-    │   ├── EntranceView.xaml
-    │   ├── LoginPage.xaml
-    │   ├── RegisterPage.xaml
-    │   ├── RegistrationCourier.xaml
-    │   ├── MenuView.xaml
-    │   ├── NewOrderView.xaml
-    │   ├── OrderAcceptView.xaml
-    │   ├── ordersPage.xaml
-    │   ├── dispatcherPage.xaml
-    │   └── listCouriersPage.xaml
+    │  
     │
     ├── Commands/                         # RelayCommand для MVVM
-    │   ├── RelayCommand.cs
-    │   └── RelayCommandAsync.cs
+    │   
     │
     ├── Utils/                            # конвертеры, карта, скрипт
-    │   ├── StatusToVisibilityConverter.cs
-    │   ├── CourierStatusConverter.cs
-    │   ├── MapInitializer.cs
-    │   └── script.js
+    │  
     │
     ├── Styles/                           # общие стили WPF
-    │   ├── ButtonStyles.xaml
-    │   └── TextStyles.xaml
+    │   
     │
     └── Images/                           # ресурсы меню
-        ├── cheesecake.png
-        ├── coffee.png
-        ├── croissant.png
-        └── plov.png
+       
 ```
 
 ## Запуск
