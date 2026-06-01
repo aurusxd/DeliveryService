@@ -13,9 +13,7 @@ namespace DeliveryService.Views
         public NewOrderView(NewOrderViewModel viewModel)
         {
             InitializeComponent();
-            MapInitializer.Initialize(Map);
             DataContext = viewModel;
-            MapInitializer.AddressSelected += OnAddressSelected;
         }
 
         private void OnAddressSelected(double lat, double lon, string address)
@@ -31,6 +29,13 @@ namespace DeliveryService.Views
             MapInitializer.AddressSelected -= OnAddressSelected;
             base.OnClosed(e);
             Map.Dispose();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await MapInitializer.Initialize(Map);
+            MapInitializer.AddressSelected += OnAddressSelected;
+
         }
     }
 }

@@ -21,9 +21,12 @@ namespace DeliveryService.Utils
         /// <summary>
         /// Переменная, необходимая для проверки инциализирована ли карта или нет
         /// </summary>
-        private static bool _isInitialized = true;
+        private static readonly HashSet<WebView2> _initializedMaps = new();
 
-        public static void Reset() => _isInitialized = false;
+        public static void Reset(WebView2 map)
+        {
+            _initializedMaps.Remove(map);
+        }
 
 
         public static async Task Initialize(WebView2 MapWebView)
@@ -58,11 +61,9 @@ namespace DeliveryService.Utils
                 utilsFolder,
                 CoreWebView2HostResourceAccessKind.Allow);
 
-            if (!_isInitialized)
-            {
+            if (_initializedMaps.Contains(MapWebView))
                 return;
-            }
-            _isInitialized = true;
+            _initializedMaps.Add(MapWebView);
 
             MapWebView.CoreWebView2.WebMessageReceived += (sender, args) =>
             {

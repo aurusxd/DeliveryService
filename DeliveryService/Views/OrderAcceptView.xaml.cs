@@ -72,7 +72,6 @@ namespace DeliveryService.Views
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            //vm.CourierAssigned -= AddCourierMark;
             _simulationService.CourierMoved -= OnCourierMoved;
             Map.Dispose();
             _simulationService.Stop();

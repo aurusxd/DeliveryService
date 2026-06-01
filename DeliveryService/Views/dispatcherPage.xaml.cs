@@ -2,6 +2,7 @@ using DeliveryService.Models;
 using DeliveryService.Services;
 using DeliveryService.Utils;
 using DeliveryService.ViewModels;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,6 +43,7 @@ namespace DeliveryService.Views
                 _simulationService.CourierMoved -= OnCourierMoved;
                 _simulationService.CourierMoved += OnCourierMoved;
                 MapInitializer.CoordinatesRoute += OnRouteReceived;
+                
             }
         }
 
@@ -89,9 +91,11 @@ namespace DeliveryService.Views
         {
             if (DataContext is DispatcherViewModel vm)
             {
-                MapInitializer.Reset();
+                MapInitializer.Reset(Map);
                 vm.OrderSelected -= OnOrderSelected;
                 vm.CourierSelected -= OnCourierSelected;
+                MapInitializer.CoordinatesRoute -= OnRouteReceived;
+                _simulationService.CourierMoved -= OnCourierMoved;
                 Map.Dispose();
 
 
