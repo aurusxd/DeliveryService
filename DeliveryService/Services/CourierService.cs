@@ -23,19 +23,28 @@ namespace DeliveryService.Services
         /// Получение всех курьеров
         /// </summary>
         /// <returns>Список курьеров</returns>
-        public async Task<List<Courier>> GetAllAsync() => await _courierRepository.GetAllAsync();
+        public async Task<List<Courier>> GetAllAsync()
+        {
+            return await _courierRepository.GetAllAsync();
+        }
 
         /// <summary>
         /// Получение всех активных курьеров
         /// </summary>
         /// <returns>Список активных курьеров</returns>
-        public async Task<List<Courier>> GetActiveCouriersAsync() => await _courierRepository.GetActive();
+        public async Task<List<Courier>> GetActiveCouriersAsync()
+        {
+            return await _courierRepository.GetActive();
+        }
 
         /// <summary>
         /// Получение всех свободных от заказов курьеров
         /// </summary>
         /// <returns>Список свободных от заказов курьеров</returns>
-        public async Task<List<Courier>> GetFreeCouriersAsync() => await _courierRepository.GetFreeCouriers();
+        public async Task<List<Courier>> GetFreeCouriersAsync()
+        {
+            return await _courierRepository.GetFreeCouriers();
+        }
 
         /// <summary>
         /// Добавление курьера в базу данных
@@ -70,7 +79,7 @@ namespace DeliveryService.Services
                 return false;
 
             Order? order = await _orderRepository.GetById(orderId);
-            if (order == null) 
+            if (order == null)
                 return false;
 
             if (order.CourierId != null || order.CourierId == courierId)
@@ -93,17 +102,17 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция назначения</returns>
         public async Task<bool> AssignFreeCourierToOrderAsync(Order order)
         {
-            if(order== null) return false;
+            if (order == null) return false;
             var list = await _courierRepository.GetFreeCouriers();
-            if(list.Count == 0)
+            if (list.Count == 0)
             {
                 order.CourierId = null;
-                order.Status = "Новый"; 
+                order.Status = "Новый";
                 await _orderRepository.UpdateAsync(order);
                 return false;
             }
             Courier? courier = null;
-            if(list.Count != 0) courier = list[new Random().Next(list.Count)];
+            if (list.Count != 0) courier = list[new Random().Next(list.Count)];
             if (list == null) return false;
             if (courier == null) return false;
             if (order.CourierId != null) return false;
@@ -125,7 +134,7 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция</returns>
         public async Task<bool> ToggleCourierOnlineAsync(int courierId)
         {
-            if (await _courierRepository.GetById(courierId) == null) 
+            if (await _courierRepository.GetById(courierId) == null)
                 return false;
 
             await _courierRepository.ToggleOnline(courierId);
@@ -138,10 +147,10 @@ namespace DeliveryService.Services
         /// <returns></returns>
         public async Task<bool> RemoveCourierAsync(int courierId)
         {
-            
+
             var courier = await _courierRepository.GetById(courierId);
-            
-            if(courier == null) return false;
+
+            if (courier == null) return false;
             _courierRepository?.DeleteAsync(courier);
             return true;
         }
@@ -150,13 +159,21 @@ namespace DeliveryService.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Courier?> GetById(int id)=> await _courierRepository?.GetById(id);
+        public async Task<Courier?> GetById(int id)
+        {
+            return await _courierRepository?.GetById(id);
+        }
+
         /// <summary>
         /// Обновление курьера
         /// </summary>
         /// <param name="courier"></param>
         /// <returns></returns>
-        public async Task Update(Courier courier) => await _courierRepository.UpdateAsync(courier);
+        public async Task Update(Courier courier)
+        {
+            await _courierRepository.UpdateAsync(courier);
+        }
+
         /// <summary>
         /// Функция, сохраняющая координаты курьеры
         /// </summary>
@@ -164,7 +181,7 @@ namespace DeliveryService.Services
         /// <param name="Lat"></param>
         /// <param name="courier"></param>
         /// <returns></returns>
-        public async Task SaveCourierCoords(double Lat, double Lon,Courier courier)
+        public async Task SaveCourierCoords(double Lat, double Lon, Courier courier)
         {
             courier.Current_Lat = Lat;
             courier.Current_Lon = Lon;

@@ -16,7 +16,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Интервал таймера
         /// </summary>
-        private const int TIMER_INTERVAL = 30; 
+        private const int TIMER_INTERVAL = 30;
 
         /// <summary>
         /// Таймер, который перезагружает данные
@@ -32,7 +32,7 @@ namespace DeliveryService.ViewModels
         private SimulationService _simulationService;
 
         public event Action? DisposeRequested;
-        
+
 
         // ВАЖНО: Поменять названия статусов в комментариях
         /// <summary>
@@ -58,7 +58,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Выбранный курьер
         /// </summary>
-       
+
         public Courier SelectedCourier
         {
             get => _selectedCourier;
@@ -146,14 +146,14 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Событие, которое вызывается при выборе курьера 
         /// </summary>
-        public event Action<double,double,double,double,double,double>? CourierSelected;
+        public event Action<double, double, double, double, double, double>? CourierSelected;
 
         public DispatcherViewModel(OrderService orderService, CourierService courierService, SimulationService simulationService)
         {
             _orderService = orderService;
             _courierService = courierService;
             _simulationService = simulationService;
- 
+
             ActiveOrders = new ObservableCollection<Order>();
             OnlineCouriers = new ObservableCollection<Courier>();
             FreeCouriers = new ObservableCollection<Courier>();
@@ -200,7 +200,7 @@ namespace DeliveryService.ViewModels
         /// <summary>
         /// Функция, срабатывающая при достижении курьером финальной точки
         /// </summary>
-        private void _simulationService_CourierFinal()=> LoadDataCommand.Execute(null);
+        private void _simulationService_CourierFinal() => LoadDataCommand.Execute(null);
 
         /// <summary>
         /// Загрузка данных о заказах
@@ -214,7 +214,7 @@ namespace DeliveryService.ViewModels
                 var activeOrders = allOrders.Where(o => o.Status != "Доставлен").OrderByDescending(o => o.Created_At).ToList();
 
                 ActiveOrders.Clear();
-                foreach (var order in activeOrders) 
+                foreach (var order in activeOrders)
                     ActiveOrders.Add(order);
 
                 NewOrderCount = activeOrders.Count(o => o.Status == "Новый");
@@ -247,7 +247,7 @@ namespace DeliveryService.ViewModels
             FreeCouriers.Clear();
             foreach (var courier in onlineCouriers)
                 FreeCouriers.Add(courier);
-;
+            ;
 
         }
 
@@ -265,7 +265,7 @@ namespace DeliveryService.ViewModels
         private async Task LoadCouriersAsync()
         {
             var allCouriers = await _courierService.GetAllAsync();
-            if (allCouriers == null) 
+            if (allCouriers == null)
                 return;
 
             var onlineCouriers = allCouriers.Where(c => c.IsActive).ToList();

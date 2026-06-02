@@ -12,18 +12,18 @@ namespace DeliveryService.Services
         private CancellationTokenSource? _simulationCts;
 
         public event Action<double, double>? CourierMoved;
-            
+
         public event Action? CourierFinal;
 
 
-        public SimulationService(CourierService courierService, SessionService sessionService,OrderService orderService)
+        public SimulationService(CourierService courierService, SessionService sessionService, OrderService orderService)
         {
             _courierService = courierService;
             _sessionService = sessionService;
             _orderService = orderService;
         }
 
-        
+
         /// <summary>
         /// Симуляция маршрута
         /// </summary>
@@ -46,7 +46,7 @@ namespace DeliveryService.Services
                 var lat = point[0];
                 var lon = point[1];
 
-  
+
                 CourierMoved?.Invoke(lat, lon);
 
                 courier.Current_Lat = lat;
@@ -58,7 +58,7 @@ namespace DeliveryService.Services
             if (courier.Current_Lat == orderPoint[0] && courier.Current_Lon == orderPoint[1])
             {
                 var order = await _orderService.FindOrderByCourierIdAsync(courier.Id);
-                if(order==null) return;
+                if (order == null) return;
                 order.Status = "Доставлен";
                 order.Courier = null;
                 await _orderService.Update(order);

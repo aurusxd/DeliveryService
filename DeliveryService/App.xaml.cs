@@ -19,7 +19,7 @@ namespace DeliveryService
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            
+
 
             var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -31,7 +31,7 @@ namespace DeliveryService
             // БД
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(config.GetConnectionString("Default")));
-            
+
 
             // Репозитории
             services.AddScoped<OrderRepository>();
