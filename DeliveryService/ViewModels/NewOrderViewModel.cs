@@ -46,7 +46,7 @@ namespace DeliveryService.ViewModels
         /// Долгота адреса отправки
         /// </summary>
         private double _lonFrom;
-        
+
         /// <summary>
         /// Адрес доставки
         /// </summary>
@@ -59,7 +59,7 @@ namespace DeliveryService.ViewModels
         /// Долгота адреса доставки
         /// </summary>
         private double _lonTo;
-        
+
         /// <summary>
         /// Цена
         /// </summary>
@@ -166,7 +166,7 @@ namespace DeliveryService.ViewModels
         public ICommand LoadUserCommand { get; }
 
 
-        public NewOrderViewModel(SessionService sessionService, 
+        public NewOrderViewModel(SessionService sessionService,
             OrderService orderService, ClientService clientService, BasketService basketService, WindowsService windowService, CourierService courierService)
         {
             _sessionService = sessionService;
@@ -302,10 +302,10 @@ namespace DeliveryService.ViewModels
                 Address_To = AddressTo,
                 Lat_To = LatTo,
                 Lon_To = LonTo,
-                Price = Price,             
+                Price = Price,
                 Status = "Новый",
                 Created_At = DateTime.UtcNow,
-                BasketId = _clientBasket[0].Id, 
+                BasketId = _clientBasket[0].Id,
             };
             bool success = await _orderService.CreateOrderAsync(client, order);
             if (!success)
@@ -320,7 +320,7 @@ namespace DeliveryService.ViewModels
             _windowService.OpenOrderAccept();
             CloseWindow(true);
         }
-       
+
         /// <summary>
         /// Устанавливает выбранный адрес в поля для ввода
         /// </summary>

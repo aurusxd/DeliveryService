@@ -36,7 +36,7 @@ namespace DeliveryService.Services
         {
             var basket = await _basketRepository.GetUserBasketAsync(userId);
             decimal totalPrice = basket.Sum(b => b.Price);
-            
+
             return (basket, totalPrice);
         }
         /// <summary>
@@ -69,6 +69,7 @@ namespace DeliveryService.Services
             {
                 UserId = userId,
                 FoodId = foodId,
+                Food = food,
                 Quantity = quantity,
                 Price = price
             };
@@ -100,10 +101,11 @@ namespace DeliveryService.Services
             else
             {
                 decimal price = food.Price * quantity;
-                Basket newItem = new Basket 
-                { 
+                Basket newItem = new Basket
+                {
                     UserId = userId,
                     FoodId = foodId,
+                    Food = food,
                     Quantity = quantity,
                     Price = price
                 };

@@ -33,7 +33,7 @@ namespace DeliveryService.Repositories
         /// </summary>
         /// <param name="courierId">айди курьера</param>
         /// <returns></returns>
-        public async Task<Order?> GetByCourierId(int courierId) => await _context.Orders.FirstOrDefaultAsync(x=>x.CourierId == courierId);
+        public async Task<Order?> GetByCourierId(int courierId) => await _context.Orders.FirstOrDefaultAsync(x => x.CourierId == courierId);
 
         /// <summary>
         /// Получение всех заказов
