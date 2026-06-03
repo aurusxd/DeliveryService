@@ -167,7 +167,7 @@ namespace DeliveryService.ViewModels
                 execute: async (parameter) =>
                 {
                     if (parameter is int orderId)
-                        await RemoveOrderAsync(orderId);
+                        await RemoveOrderAsync(orderId).ConfigureAwait(false);
                 },
                 canExecute: _ => !IsBusy
             );
@@ -191,7 +191,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadOrdersAsync()
         {
-            var orders = await _orderService.GetAllAsync();
+            var orders = await _orderService.GetAllAsync().ConfigureAwait(false);
             var items = new List<OrderDTO>();
 
             foreach (var order in orders)
@@ -220,7 +220,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadCouriersAsync()
         {
-            var all = await _courierService.GetAllAsync();
+            var all = await _courierService.GetAllAsync().ConfigureAwait(false);
             var list = new List<CourierDTO>
             {
                 new CourierDTO { Id = 0, Name = "Все курьеры" }
@@ -241,8 +241,8 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadDataAsync()
         {
-            await LoadOrdersAsync();
-            await LoadCouriersAsync();
+            await LoadOrdersAsync().ConfigureAwait(false);
+            await LoadCouriersAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Загрузка списка заказов с учётом фильтрации по имени клиента или ардресам откуда и куда
@@ -273,14 +273,14 @@ namespace DeliveryService.ViewModels
             if (!int.TryParse(id?.ToString(), out int orderId))
                 return;
 
-            var success = await _orderService.RemoveOrderAsync(orderId);
+            var success = await _orderService.RemoveOrderAsync(orderId).ConfigureAwait(false);
 
             if (success == true)
-                await LoadOrdersAsync();
+                await LoadOrdersAsync().ConfigureAwait(false);
             else
             {
                 ErrorMessage = "Не удалось удалить заказ";
-                await Task.Delay(3000);
+                await Task.Delay(3000).ConfigureAwait(false);
                 ErrorMessage = null;
             }
         }

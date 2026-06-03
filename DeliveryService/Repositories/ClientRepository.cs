@@ -24,20 +24,20 @@ namespace DeliveryService.Repositories
         {
             return await _context.Clients
                 .Include(o => o.Orders)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Получение клиента по id
         /// </summary>
         /// <param name="id">Айди клиента</param>
         /// <returns>Вовзращает клиента с указанным id</returns>
-        public async Task<Client?> GetById(int id) => await _context.Clients.FindAsync(id);
+        public async Task<Client?> GetById(int id) => await _context.Clients.FindAsync(id).ConfigureAwait(false);
         /// <summary>
         /// Получение клиента по логину(имени)
         /// </summary>
         /// <param name="name">Логин</param>
         /// <returns></returns>
-        public async Task<Client?> GetByName(string name) => await _context.Clients.FirstOrDefaultAsync(x => x.Name == name);
+        public async Task<Client?> GetByName(string name) => await _context.Clients.FirstOrDefaultAsync(x => x.Name == name).ConfigureAwait(false);
 
         /// <summary>
         /// Добавление клиента в БД
@@ -45,8 +45,8 @@ namespace DeliveryService.Repositories
         /// <param name="client">Созданный объект клиента, которого нужно добавить</param>
         public async Task AddAsync(Client client)
         {
-            await _context.Clients.AddAsync(client);
-            await _context.SaveChangesAsync();
+            await _context.Clients.AddAsync(client).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace DeliveryService.Repositories
         public async Task DeleteAsync(Client client)
         {
             _context.Clients.Remove(client);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace DeliveryService.Repositories
         public async Task UpdateAsync(Client client)
         {
             _context.Clients.Update(client);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

@@ -33,19 +33,19 @@ namespace DeliveryService.Views
                     CultureInfo.InvariantCulture,
                     "MoveCourier({0}, {1})",
                     Lat,
-                    Lon));
+                    Lon)).ConfigureAwait(false);
         }
 
         private async Task OnRouteReceived(List<List<double>> points)
         {
             if (_sessionService.CurrentOrder != null && _sessionService.CurrentOrder.Courier != null)
-                await _simulationService.StartAsync(points, _sessionService.CurrentOrder.Courier);
+                await _simulationService.StartAsync(points, _sessionService.CurrentOrder.Courier).ConfigureAwait(false);
         }
 
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await MapInitializer.Initialize(Map);
+            await MapInitializer.Initialize(Map).ConfigureAwait(false);
 
             if (DataContext is OrderAcceptViewModel vm)
             {
@@ -63,11 +63,11 @@ namespace DeliveryService.Views
                 _sessionService.CurrentOrder.Lat_From,
                 _sessionService.CurrentOrder.Lon_From,
                 _sessionService.CurrentOrder.Lat_To,
-                _sessionService.CurrentOrder.Lon_To));
+                _sessionService.CurrentOrder.Lon_To)).ConfigureAwait(false);
             _ = await Map.CoreWebView2.ExecuteScriptAsync(
             string.Format(CultureInfo.InvariantCulture,
                 "AddMark({0}, {1})",
-                _sessionService.CurrentOrder.Courier.Current_Lat, _sessionService.CurrentOrder.Courier.Current_Lon));
+                _sessionService.CurrentOrder.Courier.Current_Lat, _sessionService.CurrentOrder.Courier.Current_Lon)).ConfigureAwait(false);
         }
 
         private void Window_Closed(object sender, EventArgs e)

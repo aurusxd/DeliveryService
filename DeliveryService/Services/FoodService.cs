@@ -22,19 +22,19 @@ namespace DeliveryService.Services
         /// </summary>
         /// <param name="foodId">ID еды</param>
         /// <returns>Объект еды</returns>
-        public async Task<Food?> GetById(int foodId) => await _foodRepository.GetById(foodId);
+        public async Task<Food?> GetById(int foodId) => await _foodRepository.GetById(foodId).ConfigureAwait(false);
         /// <summary>
         /// Получение всей еды
         /// </summary>
         /// <returns>Список всеё еды</returns>
-        public async Task<List<Food>> GetAllAsync() => await _foodRepository.GetAllAsync();
+        public async Task<List<Food>> GetAllAsync() => await _foodRepository.GetAllAsync().ConfigureAwait(false);
         /// <summary>
         /// Получение всей еды по категории
         /// </summary>
         /// <param name="categoryId">ID категории</param>
         /// <returns>Список объектов еды с указанной категорией. Если таких нет - пустой список</returns>
         public async Task<List<Food>> GetAllFromCategoryAsync(int categoryId)
-            => await _foodRepository.GetAllFromCategoryAsync(categoryId);
+            => await _foodRepository.GetAllFromCategoryAsync(categoryId).ConfigureAwait(false);
         /// <summary>
         /// Добавление еды в базы данных
         /// </summary>
@@ -45,7 +45,7 @@ namespace DeliveryService.Services
             if (food == null)
                 return false;
 
-            await _foodRepository.AddAsync(food);
+            await _foodRepository.AddAsync(food).ConfigureAwait(false);
             return true;
         }
     }

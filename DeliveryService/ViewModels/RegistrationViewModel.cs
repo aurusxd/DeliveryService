@@ -124,7 +124,7 @@ namespace DeliveryService.ViewModels
 
             try
             {
-                bool success = await _clientService.AddClientAsync(Client);
+                bool success = await _clientService.AddClientAsync(Client).ConfigureAwait(false);
 
                 if (success) RegistrationSuccess?.Invoke();
                 else

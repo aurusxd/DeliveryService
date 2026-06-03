@@ -26,10 +26,6 @@ namespace DeliveryService.ViewModels
         private Courier _selectedCourier;
 
         /// <summary>
-        /// Количество всех курьеров
-        /// </summary>
-        private int _totalCount;
-        /// <summary>
         /// Количество курьеров, которые сейчас в онлайн
         /// </summary>
         private int _onlineCount;
@@ -126,7 +122,7 @@ namespace DeliveryService.ViewModels
                 execute: async (parameter) =>
                 {
                     if (parameter is int courierId)
-                        await ToggleCourierStatusAsync(courierId);
+                        await ToggleCourierStatusAsync(courierId).ConfigureAwait(false);
                 },
                 canExecute: _ => !IsBusy
             );
@@ -140,7 +136,7 @@ namespace DeliveryService.ViewModels
                 execute: async (parameter) =>
                 {
                     if (parameter is int courierId)
-                        await RemoveCourierAsync(courierId);
+                        await RemoveCourierAsync(courierId).ConfigureAwait(false);
                 },
                 canExecute: _ => !IsBusy
             );
@@ -154,14 +150,14 @@ namespace DeliveryService.ViewModels
             if (!int.TryParse(id?.ToString(), out int courierId))
                 return;
 
-            var success = await _courierService.RemoveCourierAsync(courierId);
+            var success = await _courierService.RemoveCourierAsync(courierId).ConfigureAwait(false);
 
             if (success == true)
-                await LoadCouriersAsync();
+                await LoadCouriersAsync().ConfigureAwait(false);
             else
             {
                 ErrorMessage = "Не удалось удалить курьера";
-                await Task.Delay(3000);
+                await Task.Delay(3000).ConfigureAwait(false);
                 ErrorMessage = null;
             }
         }
@@ -171,7 +167,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadCouriersAsync()
         {
-            var all = await _courierService.GetAllAsync();
+            var all = await _courierService.GetAllAsync().ConfigureAwait(false);
             Couriers.Clear();
             TotalOrderCount = 0;
             foreach (var c in all)
@@ -194,13 +190,13 @@ namespace DeliveryService.ViewModels
             if (!int.TryParse(id?.ToString(), out int courierId))
                 return;
 
-            bool success = await _courierService.ToggleCourierOnlineAsync(courierId);
+            bool success = await _courierService.ToggleCourierOnlineAsync(courierId).ConfigureAwait(false);
             if (success)
-                await LoadCouriersAsync();
+                await LoadCouriersAsync().ConfigureAwait(false);
             else
             {
                 ErrorMessage = "Не удалось переключить статус";
-                await Task.Delay(3000);
+                await Task.Delay(3000).ConfigureAwait(false);
                 ErrorMessage = null;
             }
         }

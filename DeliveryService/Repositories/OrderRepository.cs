@@ -25,7 +25,7 @@ namespace DeliveryService.Repositories
         /// <returns>Заказ</returns>
         /// 
 
-        public async Task<Order?> GetById(int orderId) => await _context.Orders.FindAsync(orderId);
+        public async Task<Order?> GetById(int orderId) => await _context.Orders.FindAsync(orderId).ConfigureAwait(false);
 
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace DeliveryService.Repositories
         /// </summary>
         /// <param name="courierId">айди курьера</param>
         /// <returns></returns>
-        public async Task<Order?> GetByCourierId(int courierId) => await _context.Orders.FirstOrDefaultAsync(x => x.CourierId == courierId);
+        public async Task<Order?> GetByCourierId(int courierId) => await _context.Orders.FirstOrDefaultAsync(x => x.CourierId == courierId).ConfigureAwait(false);
 
         /// <summary>
         /// Получение всех заказов
@@ -46,7 +46,7 @@ namespace DeliveryService.Repositories
                 .Include(o => o.Courier)
                 .Include(o => o.RoutePoints)
                 .Include(o => o.StatusHistory)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace DeliveryService.Repositories
                 .Include(o => o.Courier)
                 .Include(o => o.RoutePoints)
                 .Include(o => o.StatusHistory)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace DeliveryService.Repositories
         /// <param name="order">Заказ</param>
         public async Task AddAsync(Order order)
         {
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
+            await _context.Orders.AddAsync(order).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace DeliveryService.Repositories
         public async Task UpdateAsync(Order order)
         {
             _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace DeliveryService.Repositories
         public async Task DeleteAsync(Order order)
         {
             _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
 
@@ -102,8 +102,8 @@ namespace DeliveryService.Repositories
         /// <returns></returns>
         public async Task AddStatusHistoryAsync(OrderStatusHistory history)
         {
-            await _context.OrderStatusHistories.AddAsync(history);
-            await _context.SaveChangesAsync();
+            await _context.OrderStatusHistories.AddAsync(history).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
     }

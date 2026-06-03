@@ -23,20 +23,20 @@ namespace DeliveryService.Repositories
         /// </summary>
         /// <param name="categoryId">ID категории</param>
         /// <returns>Категория еды с указаным id</returns>
-        public async Task<Categories?> GetById(int categoryId) => await _context.Categories.FindAsync(categoryId);
+        public async Task<Categories?> GetById(int categoryId) => await _context.Categories.FindAsync(categoryId).ConfigureAwait(false);
         /// <summary>
         /// Получение всех категорий еды
         /// </summary>
         /// <returns>Список категорий еды</returns>
-        public async Task<List<Categories>> GetAllAsync() => await _context.Categories.ToListAsync();
+        public async Task<List<Categories>> GetAllAsync() => await _context.Categories.ToListAsync().ConfigureAwait(false);
         /// <summary>
         /// Добавление категории еды
         /// </summary>
         /// <param name="categories">Категория</param>
         public async Task AddAsync(Categories categories)
         {
-            await _context.Categories.AddAsync(categories);
-            await _context.SaveChangesAsync();
+            await _context.Categories.AddAsync(categories).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Обновление категории еды в базе данных
@@ -46,7 +46,7 @@ namespace DeliveryService.Repositories
         public async Task UpdateAsync(Categories categories)
         {
             _context.Update(categories);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Удаление категории еды
@@ -55,7 +55,7 @@ namespace DeliveryService.Repositories
         public async Task DeleteAsync(Categories category)
         {
             _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

@@ -102,7 +102,7 @@ namespace DeliveryService.ViewModels
         private async Task CheckAndAuthClient()
         {
 
-            Client = await _clientService.GetClientByName(Name);
+            Client = await _clientService.GetClientByName(Name).ConfigureAwait(false);
             _sessionService.CurrentClient = Client;
 
             if (Client == null)

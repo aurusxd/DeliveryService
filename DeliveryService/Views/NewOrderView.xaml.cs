@@ -33,7 +33,7 @@ namespace DeliveryService.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await MapInitializer.Initialize(Map);
+            await MapInitializer.Initialize(Map).ConfigureAwait(false);
             MapInitializer.AddressSelected += OnAddressSelected;
 
         }

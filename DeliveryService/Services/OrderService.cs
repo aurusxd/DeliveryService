@@ -20,15 +20,15 @@ namespace DeliveryService.Services
         /// Получение всех заказов
         /// </summary>
         /// <returns>Возвращает список всех заказов</returns>
-        public async Task<List<Order>> GetAllAsync() => await _orderRepository.GetAllAsync();
+        public async Task<List<Order>> GetAllAsync() => await _orderRepository.GetAllAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Получение всех активных заказов
         /// </summary>
         /// <returns>Список активных заказов</returns>
-        public async Task<List<Order>> GetActiveOrdersAsync() => await _orderRepository.GetActive();
+        public async Task<List<Order>> GetActiveOrdersAsync() => await _orderRepository.GetActive().ConfigureAwait(false);
 
-        public async Task<Order?> GetByIdAsync(int id) => await _orderRepository.GetById(id);
+        public async Task<Order?> GetByIdAsync(int id) => await _orderRepository.GetById(id).ConfigureAwait(false);
 
         public async Task<bool> CreateOrderAsync(Client client, Order order)
         {
@@ -36,13 +36,13 @@ namespace DeliveryService.Services
             if (string.IsNullOrEmpty(order.Address_From) || string.IsNullOrEmpty(order.Address_To)) return false;
 
             if (client.Id == 0)
-                await _clientRepository.AddAsync(client);
+                await _clientRepository.AddAsync(client).ConfigureAwait(false);
             order.ClientId = client.Id;
 
             order.Status = "Новый";
             order.Created_At = DateTime.UtcNow;
 
-            await _orderRepository.AddAsync(order);
+            await _orderRepository.AddAsync(order).ConfigureAwait(false);
             return true;
         }
 
@@ -55,11 +55,11 @@ namespace DeliveryService.Services
         /// <returns></returns>
         public async Task<bool> ChangeStatusAsync(int orderId, string newStatus, string? feedback = null)
         {
-            var order = await _orderRepository.GetById(orderId);
+            var order = await _orderRepository.GetById(orderId).ConfigureAwait(false);
             if (order == null) return false;
 
             order.Status = newStatus;
-            await _orderRepository.UpdateAsync(order);
+            await _orderRepository.UpdateAsync(order).ConfigureAwait(false);
 
             await _orderRepository.AddStatusHistoryAsync(new OrderStatusHistory
             {
@@ -67,7 +67,7 @@ namespace DeliveryService.Services
                 Status = newStatus,
                 Changed_At = DateTime.UtcNow,
                 FeedBack = feedback
-            });
+            }).ConfigureAwait(false);
             return true;
         }
         /// <summary>
@@ -78,19 +78,19 @@ namespace DeliveryService.Services
         /// <returns>true-если заказ отменен,false-если заказ не найден</returns>
         public async Task<bool?> CancelOrderAsync(int orderId, string? feedback = null)
         {
-            var order = await _orderRepository.GetById(orderId);
+            var order = await _orderRepository.GetById(orderId).ConfigureAwait(false);
             if (order == null) return false;
 
 
             order.Status = "Отменён";
-            await _orderRepository.UpdateAsync(order);
+            await _orderRepository.UpdateAsync(order).ConfigureAwait(false);
             await _orderRepository.AddStatusHistoryAsync(new OrderStatusHistory
             {
                 OrderId = orderId,
                 Status = "Отменён",
                 Changed_At = DateTime.UtcNow,
                 FeedBack = feedback
-            });
+            }).ConfigureAwait(false);
             return true;
         }
 
@@ -99,7 +99,7 @@ namespace DeliveryService.Services
         /// </summary>
         /// <param name="courierId">айди курьера</param>
         /// <returns></returns>
-        public async Task<Order?> FindOrderByCourierIdAsync(int courierId) => await _orderRepository.GetByCourierId(courierId);
+        public async Task<Order?> FindOrderByCourierIdAsync(int courierId) => await _orderRepository.GetByCourierId(courierId).ConfigureAwait(false);
 
         /// <summary>
         /// Удаление заказа
@@ -108,9 +108,9 @@ namespace DeliveryService.Services
         /// <returns></returns>
         public async Task<bool> RemoveOrderAsync(int orderId)
         {
-            Order? order = await _orderRepository.GetById(orderId);
+            Order? order = await _orderRepository.GetById(orderId).ConfigureAwait(false);
             if (order == null) return false;
-            await _orderRepository.DeleteAsync(order);
+            await _orderRepository.DeleteAsync(order).ConfigureAwait(false);
             return true;
         }
 
@@ -119,7 +119,7 @@ namespace DeliveryService.Services
         /// </summary>
         /// <param name="order">Объект заказа</param>
         /// <returns></returns>
-        public async Task Update(Order order) => await _orderRepository.UpdateAsync(order);
+        public async Task Update(Order order) => await _orderRepository.UpdateAsync(order).ConfigureAwait(false);
 
         /// <summary>
         /// Удаление заказа
@@ -129,7 +129,7 @@ namespace DeliveryService.Services
         public async Task<bool> DeleteAsync(Order order)
         {
             if (order == null) return false;
-            await _orderRepository.DeleteAsync(order);
+            await _orderRepository.DeleteAsync(order).ConfigureAwait(false);
             return true;
         }
         /// <summary>
@@ -151,7 +151,7 @@ namespace DeliveryService.Services
                 Status = status,
                 OrderId = order.Id
 
-            });
+            }).ConfigureAwait(false);
 
         }
 
