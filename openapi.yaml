@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Delivery Service API
+  description: Интерактивная спецификация API для сервиса доставки (WPF DeliveryService)
+  version: 1.0.0
+paths:
+  /orders:
+    get:
+      summary: Получение всех заказов
+      description: Возвращает список всех заказов из базы данных.
+      responses:
+        '200':
+          description: Успешный ответ со списком заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderDTO'
+    post:
+      summary: Создание нового заказа
+      description: Регистрирует клиента (если он новый) и создает заказ со статусом "Новый".
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientName:
+                  type: string
+                  example: "Иван Иванов"
+                addressFrom:
+                  type: string
+                  example: "ул. Ленина, д. 10"
+                addressTo:
+                  type: string
+                  example: "ул. Пушкина, д. 5"
+                price:
+                  type: number
+                  format: decimal
+                  example: 450.00
+      responses:
+        '200':
+          description: Заказ успешно создан
+        '400':
+          description: Неверные входные данные (пустые адреса)
+
+  /orders/{id}:
+    get:
+      summary: Получение заказа по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Заказ найден
+        '404':
+          description: Заказ не найден
+
+  /orders/{id}/status:
+    put:
+      summary: Изменение статуса заказа
+      description: Меняет текущий статус заказа и записывает действие в историю статусов.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newStatus
+              properties:
+                newStatus:
+                  type: string
+                  example: "Доставлен"
+                feedback:
+                  type: string
+                  nullable: true
+                  example: "Все приехало горячим, спасибо!"
+      responses:
+        '200':
+          description: Статус успешно изменен
+
+  /couriers:
+    get:
+      summary: Получение списка курьеров
+      parameters:
+        - name: status
+          in: query
+          description: Фильтр статуса курьера (active / free / all)
+          required: false
+          schema:
+            type: string
+            enum: [active, free, all]
+            default: all
+      responses:
+        '200':
+          description: Список курьеров получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourierDTO'
+
+components:
+  schemas:
+    OrderDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        clientName:
+          type: string
+        route:
+          type: string
+        status:
+          type: string
+        price:
+          type: number
+          format: decimal
+        orderTime:
+          type: string
+        courierId:
+          type: integer
+          nullable: true
+    CourierDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string

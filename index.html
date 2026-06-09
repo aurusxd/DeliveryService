@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Delivery Service API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Встроенные стили, чтобы не качать их из интернета -->
+  <style>
+    body { margin: 0; background: #fafafa; font-family: sans-serif; }
+    .header { background: #1b1b1b; color: #fff; padding: 20px; text-align: center; }
+    .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+    .section { background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+    .method { display: inline-block; padding: 6px 15px; border-radius: 3px; color: #fff; font-weight: bold; font-size: 14px; margin-right: 15px; min-width: 80px; text-align: center; }
+    .get { background: #61afff; }
+    .post { background: #49cc90; }
+    .put { background: #fca130; }
+    .endpoint { display: flex; align-items: center; padding: 15px; cursor: pointer; background: #f8f8f8; border-bottom: 1px solid #e0e0e0; font-family: monospace; font-size: 16px; }
+    .endpoint:hover { background: #f0f0f0; }
+    .details { padding: 20px; display: none; background: #fff; border-top: 1px solid #eee; font-size: 14px; }
+    .details.active { display: block; }
+    .desc { color: #555; margin-bottom: 15px; font-style: italic; }
+    pre { background: #2d3748; color: #fff; padding: 15px; border-radius: 4px; overflow-x: auto; font-family: monospace; }
+    .badge { background: #718096; color: white; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Delivery Service API</h1>
+    <p>Интерактивная спецификация методов для WPF DeliveryService</p>
+  </div>
+
+  <div class="container">
+    <h2>Методы заказов (OrderService)</h2>
+
+    <!-- GET /orders -->
+    <div class="section">
+      <div class="endpoint" onclick="toggleDetails('get-orders')">
+        <span class="method get">GET</span>
+        <span>/api/orders</span>
+      </div>
+      <div id="get-orders" class="details">
+        <div class="desc">Соответствует методу: <code>OrderService.GetAllAsync()</code>. Возвращает список всех заказов из базы данных.</div>
+        <strong>Пример успешного ответа (JSON):</strong>
+        <pre>[
+  {
+    "id": 1,
+    "clientName": "Иван Иванов",
+    "route": "ул. Ленина -> ул. Пушкина",
+    "status": "Новый",
+    "price": 450.00,
+    "orderTime": "2026-06-10T02:00:00Z",
+    "courierId": null
+  }
+]</pre>
+      </div>
+    </div>
+
+    <!-- POST /orders -->
+    <div class="section">
+      <div class="endpoint" onclick="toggleDetails('post-orders')">
+        <span class="method post">POST</span>
+        <span>/api/orders</span>
+      </div>
+      <div id="post-orders" class="details">
+        <div class="desc">Соответствует методу: <code>OrderService.CreateOrderAsync(client, order)</code>. Создает новый заказ со статусом "Новый".</div>
+        <div style="margin-bottom: 10px;"><strong>Тело запроса (Request Body):</strong></div>
+        <pre>{
+  "clientName": "Петр Петров",
+  "addressFrom": "ул. Сибирская, д. 12",
+  "addressTo": "ул. Красная, д. 5",
+  "price": 320.00
+}</pre>
+        <strong>Варианты ответов:</strong>
+        <ul>
+          <li><span class="badge" style="background:#49cc90">200 OK</span> Заказ успешно создан и привязан к клиенту.</li>
+          <li><span class="badge" style="background:#e53e3e">400 Bad Request</span> Ошибка: пустые адреса или отсутствует имя клиента.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PUT /orders/{id}/status -->
+    <div class="section">
+      <div class="endpoint" onclick="toggleDetails('put-status')">
+        <span class="method put">PUT</span>
+        <span>/api/orders/{id}/status</span>
+      </div>
+      <div id="put-status" class="details">
+        <div class="desc">Соответствует методу: <code>OrderService.ChangeStatusAsync(id, status, feedback)</code>. Обновляет статус и записывает действие в историю.</div>
+        <div style="margin-bottom: 10px;"><strong>Тело запроса (Request Body):</strong></div>
+        <pre>{
+  "newStatus": "Доставлен",
+  "feedback": "Все приехало горячим, спасибо!"
+}</pre>
+      </div>
+    </div>
+
+    <h2>Методы курьеров (CourierService)</h2>
+
+    <!-- GET /couriers -->
+    <div class="section">
+      <div class="endpoint" onclick="toggleDetails('get-couriers')">
+        <span class="method get">GET</span>
+        <span>/api/couriers</span>
+      </div>
+      <div id="get-couriers" class="details">
+        <div class="desc">Соответствует методам: <code>CourierService.GetAllAsync()</code>, <code>GetActiveCouriersAsync()</code> и <code>GetFreeCouriersAsync()</code>. Позволяет получить список курьеров с фильтрацией.</div>
+        <div style="margin-bottom: 10px;"><strong>Параметры запроса (Query URL):</strong></div>
+        <ul>
+          <li><code>status</code> (опционально) — варианты: <code>all</code> (все), <code>active</code> (активные), <code>free</code> (свободные)</li>
+        </ul>
+        <strong>Пример ответа:</strong>
+        <pre>[
+  { "id": 1, "name": "Курьер Алексей" },
+  { "id": 2, "name": "Курьер Дмитрий" }
+]</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Скрипт переключения вкладок работает полностью без интернета -->
+  <script>
+    function toggleDetails(id) {
+      const el = document.getElementById(id);
+      if (el.classList.contains('active')) {
+        el.classList.remove('active');
+      } else {
+        el.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
