@@ -123,8 +123,8 @@ services:
     ports:
       - "5000:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=Server=db;Database=DeliveryDB;User Id=sa;Password=YOUR_PASSWORD
+      - ASPNETCORE_ENVIRONMENTConnectionStrings=Development
+      - __Default=Server=db;Database=DeliveryDB;User Id=sa;Password=YOUR_PASSWORD
   db:
     image: mcr.microsoft.com/mssql/server
     environment:
