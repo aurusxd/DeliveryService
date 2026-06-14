@@ -1,44 +1,25 @@
 ﻿using DeliveryService.Data;
 using DeliveryService.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging; 
 
 namespace DeliveryService.Repositories
 {
-    /// <summary>
-    /// Репозиторий для доступа к Заказам в базе данных
-    /// </summary>
     public class OrderRepository
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<OrderRepository> _logger; 
 
-
-        public OrderRepository(AppDbContext context)
+        public OrderRepository(AppDbContext context, ILogger<OrderRepository> logger)
         {
             _context = context;
+            _logger = logger; 
         }
-
-
-        /// <summary>
-        /// Получение заказа по id
-        /// </summary>
-        /// <param name="orderId">ID заказа</param>
-        /// <returns>Заказ</returns>
-        /// 
 
         public async Task<Order?> GetById(int orderId) => await _context.Orders.FindAsync(orderId).ConfigureAwait(false);
 
-
-        /// <summary>
-        /// Получение заказа по айди курьера
-        /// </summary>
-        /// <param name="courierId">айди курьера</param>
-        /// <returns></returns>
         public async Task<Order?> GetByCourierId(int courierId) => await _context.Orders.FirstOrDefaultAsync(x => x.CourierId == courierId).ConfigureAwait(false);
 
-        /// <summary>
-        /// Получение всех заказов
-        /// </summary>
-        /// <returns>Список заказов</returns>
         public async Task<List<Order>> GetAllAsync()
         {
             return await _context.Orders
@@ -49,14 +30,10 @@ namespace DeliveryService.Repositories
                 .ToListAsync().ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Получение всех незавершённых заказов
-        /// </summary>
-        /// <returns>Список незавершённых заказов</returns>
         public async Task<List<Order>> GetActive()
         {
             return await _context.Orders
-                .Where(o => o.Status != "Done") // Изменить на нужный статус или добавить ещё условия
+                .Where(o => o.Status != "Done")
                 .Include(o => o.Client)
                 .Include(o => o.Courier)
                 .Include(o => o.RoutePoints)
@@ -64,47 +41,33 @@ namespace DeliveryService.Repositories
                 .ToListAsync().ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Добавление заказа
-        /// </summary>
-        /// <param name="order">Заказ</param>
         public async Task AddAsync(Order order)
         {
-            await _context.Orders.AddAsync(order).ConfigureAwait(false);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            try {
+                await _context.Orders.AddAsync(order).ConfigureAwait(false);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Ошибка БД при добавлении заказа"); 
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Обновление заказа в базе данных
-        /// </summary>
-        /// <param name="order">Заказ</param>
         public async Task UpdateAsync(Order order)
         {
             _context.Orders.Update(order);
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Удаление заказа
-        /// </summary>
-        /// <param name="order">Заказ</param>
         public async Task DeleteAsync(Order order)
         {
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
-
-        /// <summary>
-        /// Добавление в историю изменения статусов заказов
-        /// </summary>
-        /// <param name="history">Объект класса OrderStatusHistory</param>
-        /// <returns></returns>
         public async Task AddStatusHistoryAsync(OrderStatusHistory history)
         {
             await _context.OrderStatusHistories.AddAsync(history).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
-
     }
 }

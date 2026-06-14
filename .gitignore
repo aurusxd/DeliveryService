@@ -11,3 +11,4 @@ obj/
 # Rider / Resharper (на всякий)
 .idea/
 *.DotSettings.user
+logs/

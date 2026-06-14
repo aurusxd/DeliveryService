@@ -1,6 +1,7 @@
 ﻿using DeliveryService.Commands;
 using DeliveryService.Models;
 using DeliveryService.Services;
+using Microsoft.Extensions.Logging; 
 using System.Windows.Input;
 
 namespace DeliveryService.ViewModels
@@ -8,105 +9,45 @@ namespace DeliveryService.ViewModels
     public class EntranceViewModel : BaseViewModel
     {
         private readonly SessionService _sessionService;
-        /// <summary>
-        /// Событие, нужное для закрывания окна
-        /// </summary>
-        public event Action? CloseRequested;
+        private readonly ILogger<EntranceViewModel> _logger; 
 
-        /// <summary>
-        /// Имя
-        /// </summary>
+        public event Action? CloseRequested;
         private string _name;
-        /// <summary>
-        /// Пароль 
-        /// </summary>
         private string _password;
-        /// <summary>
-        /// Юзер, который входит в систему
-        /// </summary>
         private Client? _client;
-        /// <summary>
-        /// Роль юзера
-        /// </summary>
         private string _role;
 
-        /// <summary>
-        /// Роль юзера
-        /// </summary>
-        public string Role
-        {
-            get => _role;
-            set => SetProperty(ref _role, value);
-        }
+        public string Role { get => _role; set => SetProperty(ref _role, value); }
+        public Client? Client { get => _client; set => SetProperty(ref _client, value); }
+        public string Name { get => _name; set => SetProperty(ref _name, value); }
+        public string Password { get => _password; set => SetProperty(ref _password, value); }
 
-        /// <summary>
-        /// Юзер, который входит в систему
-        /// </summary>
-        public Client? Client
-        {
-            get => _client;
-            set => SetProperty(ref _client, value);
-        }
-
-        /// <summary>
-        /// Имя
-        /// </summary>
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-        /// <summary>
-        /// Пароль 
-        /// </summary>
-        public string Password
-        {
-            get => _password;
-            set => SetProperty(ref _password, value);
-        }
-
-        /// <summary>
-        /// Клиент сервис
-        /// </summary>
         private readonly ClientService _clientService;
-        /// <summary>
-        /// Сервис для открытия окон
-        /// </summary>
         private readonly WindowsService _windowService;
-
-        /// <summary>
-        /// Команда для авторизации
-        /// </summary>
         public ICommand LoginCommand { get; }
 
-
-        public EntranceViewModel(ClientService clientService, WindowsService windowService, SessionService sessionService)
+        public EntranceViewModel(ClientService clientService, WindowsService windowService, SessionService sessionService, ILogger<EntranceViewModel> logger)
         {
-
             _clientService = clientService;
             _windowService = windowService;
             _sessionService = sessionService;
+            _logger = logger; 
 
             LoginCommand = new RelayCommandAsync(
-                execute: () => TryRunTaskAsync(CheckAndAuthClient, "Ошибка аунтефикации"),
+                execute: () => TryRunTaskAsync(CheckAndAuthClient, "Ошибка аутентификации"),
                 canExecute: () => !IsBusy
             );
-
-
         }
 
-        /// <summary>
-        /// Проверка и аунтефикация пользователя
-        /// </summary>
-        /// <returns></returns>
         private async Task CheckAndAuthClient()
         {
-
+            _logger.LogInformation("Попытка входа пользователя: {Name}", Name); 
             Client = await _clientService.GetClientByName(Name).ConfigureAwait(false);
             _sessionService.CurrentClient = Client;
 
             if (Client == null)
             {
+                _logger.LogWarning("Пользователь {Name} не найден", Name); 
                 ErrorMessage = "Такого пользователя не существует";
                 return;
             }
@@ -122,9 +63,7 @@ namespace DeliveryService.ViewModels
                     CloseRequested?.Invoke();
                     break;
             }
-
-
-
+            _logger.LogInformation("Вход выполнен успешно: {Name}", Name); 
         }
     }
 }
