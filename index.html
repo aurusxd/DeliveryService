@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Delivery Service API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Встроенные стили, чтобы не качать их из интернета -->
   <style>
     body { margin: 0; background: #fafafa; font-family: sans-serif; }
     .header { background: #1b1b1b; color: #fff; padding: 20px; text-align: center; }
@@ -32,8 +31,7 @@
 
   <div class="container">
     <h2>Методы заказов (OrderService)</h2>
-
-    <!-- GET /orders -->
+    
     <div class="section">
       <div class="endpoint" onclick="toggleDetails('get-orders')">
         <span class="method get">GET</span>
@@ -56,7 +54,6 @@
       </div>
     </div>
 
-    <!-- POST /orders -->
     <div class="section">
       <div class="endpoint" onclick="toggleDetails('post-orders')">
         <span class="method post">POST</span>
@@ -79,7 +76,6 @@
       </div>
     </div>
 
-    <!-- PUT /orders/{id}/status -->
     <div class="section">
       <div class="endpoint" onclick="toggleDetails('put-status')">
         <span class="method put">PUT</span>
@@ -97,7 +93,6 @@
 
     <h2>Методы курьеров (CourierService)</h2>
 
-    <!-- GET /couriers -->
     <div class="section">
       <div class="endpoint" onclick="toggleDetails('get-couriers')">
         <span class="method get">GET</span>
@@ -119,7 +114,6 @@
 
   </div>
 
-  <!-- Скрипт переключения вкладок работает полностью без интернета -->
   <script>
     function toggleDetails(id) {
       const el = document.getElementById(id);
