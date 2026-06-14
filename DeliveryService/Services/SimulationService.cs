@@ -51,18 +51,18 @@ namespace DeliveryService.Services
 
                 courier.Current_Lat = lat;
                 courier.Current_Lon = lon;
-                await _courierService.Update(courier);
-                await Task.Delay(600, token);
+                await _courierService.Update(courier).ConfigureAwait(false);
+                await Task.Delay(600, token).ConfigureAwait(false);
             }
             var orderPoint = remaining.Last();
             if (courier.Current_Lat == orderPoint[0] && courier.Current_Lon == orderPoint[1])
             {
-                var order = await _orderService.FindOrderByCourierIdAsync(courier.Id);
+                var order = await _orderService.FindOrderByCourierIdAsync(courier.Id).ConfigureAwait(false);
                 if (order == null) return;
                 order.Status = "Доставлен";
                 order.Courier = null;
-                await _orderService.Update(order);
-                await _orderService.AddToHistory(order, status: "Доставлен");
+                await _orderService.Update(order).ConfigureAwait(false);
+                await _orderService.AddToHistory(order, status: "Доставлен").ConfigureAwait(false);
                 CourierFinal?.Invoke();
             }
         }

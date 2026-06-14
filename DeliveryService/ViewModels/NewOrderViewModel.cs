@@ -204,7 +204,7 @@ namespace DeliveryService.ViewModels
             ClientName = _sessionService.CurrentClient.Name;
             ClientPhone = _sessionService.CurrentClient.Phone.ToString();
 
-            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_sessionService.CurrentClient.Id);
+            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_sessionService.CurrentClient.Id).ConfigureAwait(false);
             _clientBasket = userBasket;
             Price = totalPrice;
         }
@@ -283,7 +283,7 @@ namespace DeliveryService.ViewModels
                 return;
             }
 
-            Client? client = await _clientService.GetClientById(_sessionService.CurrentClient.Id);
+            Client? client = await _clientService.GetClientById(_sessionService.CurrentClient.Id).ConfigureAwait(false);
             if (client == null)
             {
                 if (!int.TryParse(ClientPhone, out int phoneNumber))
@@ -307,7 +307,7 @@ namespace DeliveryService.ViewModels
                 Created_At = DateTime.UtcNow,
                 BasketId = _clientBasket[0].Id,
             };
-            bool success = await _orderService.CreateOrderAsync(client, order);
+            bool success = await _orderService.CreateOrderAsync(client, order).ConfigureAwait(false);
             if (!success)
             {
                 ErrorMessage = "Не удалось создать заказ";
@@ -316,7 +316,7 @@ namespace DeliveryService.ViewModels
             _sessionService.CurrentOrder = order;
 
             foreach (var item in _clientBasket)
-                await _basketService.RemoveItemAsync(item.Id);
+                await _basketService.RemoveItemAsync(item.Id).ConfigureAwait(false);
             _windowService.OpenOrderAccept();
             CloseWindow(true);
         }

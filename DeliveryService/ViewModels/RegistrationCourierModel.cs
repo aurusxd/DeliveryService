@@ -158,7 +158,7 @@ namespace DeliveryService.ViewModels
                 Vehicle_Type = VehicleType
             };
 
-            bool success = await _courierService.AddCourierAsync(courier);
+            bool success = await _courierService.AddCourierAsync(courier).ConfigureAwait(false);
 
             if (success)
                 CloseWindow(true);

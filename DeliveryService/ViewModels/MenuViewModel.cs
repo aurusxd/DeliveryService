@@ -141,11 +141,11 @@ namespace DeliveryService.ViewModels
                 execute: async (parameter) =>
                 {
                     if (parameter == null)
-                        await TryRunTaskAsync(LoadMenuAsync, "Ошибка загрузки объектов еды");
+                        await TryRunTaskAsync(LoadMenuAsync, "Ошибка загрузки объектов еды").ConfigureAwait(false);
                     else
                     {
                         int categoryId = Convert.ToInt32(parameter);
-                        await TryRunTaskAsync(() => LoadMenuFromCategoryAsync(categoryId), "Ошибка загрузки еды данной категории");
+                        await TryRunTaskAsync(() => LoadMenuFromCategoryAsync(categoryId), "Ошибка загрузки еды данной категории").ConfigureAwait(false);
                     }
                 },
                 canExecute: _ => !IsBusy
@@ -155,7 +155,7 @@ namespace DeliveryService.ViewModels
                 execute: async (parameter) =>
                 {
                     if (int.TryParse(parameter?.ToString(), out int foodId))
-                        await TryRunTaskAsync(() => AddToBasketAsync(foodId, 1), "Ошибка загрузки объектов корзины");
+                        await TryRunTaskAsync(() => AddToBasketAsync(foodId, 1), "Ошибка загрузки объектов корзины").ConfigureAwait(false);
                     else
                         ErrorMessage = "Ошибка опериции";
                 },
@@ -166,7 +166,7 @@ namespace DeliveryService.ViewModels
                 execute: async (parameter) =>
                 {
                     if (int.TryParse(parameter?.ToString(), out int basketId))
-                        await TryRunTaskAsync(() => RemoveBasketItemAsync(basketId), "Ошибка в удалении объекта корзины");
+                        await TryRunTaskAsync(() => RemoveBasketItemAsync(basketId), "Ошибка в удалении объекта корзины").ConfigureAwait(false);
                     else
                         ErrorMessage = "Ошибка опериции";
                 },
@@ -207,7 +207,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadCategoriesAsync()
         {
-            var list = await _categoryService.GetAllAsync();
+            var list = await _categoryService.GetAllAsync().ConfigureAwait(false);
             FillList(Categories, list);
         }
         /// <summary>
@@ -215,7 +215,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadMenuAsync()
         {
-            var items = await _foodService.GetAllAsync();
+            var items = await _foodService.GetAllAsync().ConfigureAwait(false);
             FillList(MenuItems, items);
         }
         /// <summary>
@@ -224,7 +224,7 @@ namespace DeliveryService.ViewModels
         /// <param name="categoryId">ID категории</param>
         private async Task LoadMenuFromCategoryAsync(int categoryId)
         {
-            var items = await _foodService.GetAllFromCategoryAsync(categoryId);
+            var items = await _foodService.GetAllFromCategoryAsync(categoryId).ConfigureAwait(false);
             FillList(MenuItems, items);
         }
         /// <summary>
@@ -232,7 +232,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadBasketAsync()
         {
-            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_sessionService.CurrentClient.Id);
+            var (userBasket, totalPrice) = await _basketService.GetUserActiveBasketAsync(_sessionService.CurrentClient.Id).ConfigureAwait(false);
 
             FillList(BasketItems, userBasket);
             TotalPrice = totalPrice;
@@ -244,9 +244,9 @@ namespace DeliveryService.ViewModels
         /// <param name="quantity">Количество</param>
         private async Task AddToBasketAsync(int foodId, int quantity)
         {
-            bool success = await _basketService.AddOrUpdateBasketItemAsync(_sessionService.CurrentClient.Id, foodId, quantity);
+            bool success = await _basketService.AddOrUpdateBasketItemAsync(_sessionService.CurrentClient.Id, foodId, quantity).ConfigureAwait(false);
             if (success)
-                await LoadBasketAsync();
+                await LoadBasketAsync().ConfigureAwait(false);
             else
                 ErrorMessage = "Не удалось добавить товар в корзину";
         }
@@ -256,9 +256,9 @@ namespace DeliveryService.ViewModels
         /// <param name="basketItemId">ID объекта корзины</param>
         private async Task RemoveBasketItemAsync(int basketItemId)
         {
-            bool success = await _basketService.RemoveItemAsync(basketItemId);
+            bool success = await _basketService.RemoveItemAsync(basketItemId).ConfigureAwait(false);
             if (success)
-                await LoadBasketAsync();
+                await LoadBasketAsync().ConfigureAwait(false);
             else
                 ErrorMessage = "Не удалось удалить из корзины";
         }
@@ -267,11 +267,11 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadDataAsync()
         {
-            await LoadCategoriesAsync();
-            await LoadMenuAsync();
+            await LoadCategoriesAsync().ConfigureAwait(false);
+            await LoadMenuAsync().ConfigureAwait(false);
 
             if (_sessionService.CurrentClient != null)
-                await LoadBasketAsync();
+                await LoadBasketAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Перезагрузка при изменении текущего пользователя
@@ -279,7 +279,7 @@ namespace DeliveryService.ViewModels
         private async void OnCurrentUserChanged()
         {
             if (IsBusy) return;
-            await LoadDataAsync();
+            await LoadDataAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Открытие окна NewOrderView для создания заказа
@@ -299,7 +299,7 @@ namespace DeliveryService.ViewModels
 
             bool? success = _windowsService.OpenNewOrder();
             if (success == true)
-                await LoadBasketAsync();
+                await LoadBasketAsync().ConfigureAwait(false);
             else
                 ErrorMessage = "Не удалось создать заказ";
         }

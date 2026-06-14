@@ -60,7 +60,7 @@ namespace DeliveryService.Commands
 
             try
             {
-                await _execute(parameter);
+                await _execute(parameter).ConfigureAwait(false);
             }
             finally
             {

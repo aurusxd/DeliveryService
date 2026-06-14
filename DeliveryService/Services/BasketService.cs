@@ -26,7 +26,7 @@ namespace DeliveryService.Services
         /// </summary>
         /// <param name="basketId">ID объекта корзины</param>
         /// <returns>Объект корзины</returns>
-        public async Task<Basket?> GetById(int basketId) => await _basketRepository.GetById(basketId);
+        public async Task<Basket?> GetById(int basketId) => await _basketRepository.GetById(basketId).ConfigureAwait(false);
         /// <summary>
         /// Полуение списка корзины и полной суммы по пользователю
         /// </summary>
@@ -34,7 +34,7 @@ namespace DeliveryService.Services
         /// <returns>Список корзины и полная сумма</returns>
         public async Task<(List<Basket> userBasket, decimal totalPrice)> GetUserBasketAsync(int userId)
         {
-            var basket = await _basketRepository.GetUserBasketAsync(userId);
+            var basket = await _basketRepository.GetUserBasketAsync(userId).ConfigureAwait(false);
             decimal totalPrice = basket.Sum(b => b.Price);
 
             return (basket, totalPrice);
@@ -46,7 +46,7 @@ namespace DeliveryService.Services
         /// <returns>Список объектов корзины, c не привязанными к заказам и полная сумма</returns>
         public async Task<(List<Basket> userBasket, decimal totalPrice)> GetUserActiveBasketAsync(int userId)
         {
-            var basket = await _basketRepository.GetUserActiveBasketAsync(userId);
+            var basket = await _basketRepository.GetUserActiveBasketAsync(userId).ConfigureAwait(false);
             decimal totalPrice = basket.Sum(b => b.Price);
 
             return (basket, totalPrice);
@@ -60,7 +60,7 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция</returns>
         public async Task<bool> AddNewBasketItemAsync(int userId, int foodId, int quantity)
         {
-            var food = await _foodRepository.GetById(foodId);
+            var food = await _foodRepository.GetById(foodId).ConfigureAwait(false);
             if (food == null)
                 return false;
 
@@ -74,7 +74,7 @@ namespace DeliveryService.Services
                 Price = price
             };
 
-            await _basketRepository.AddAsync(item);
+            await _basketRepository.AddAsync(item).ConfigureAwait(false);
 
             return true;
         }
@@ -87,16 +87,16 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция</returns>
         public async Task<bool> AddOrUpdateBasketItemAsync(int userId, int foodId, int quantity)
         {
-            var food = await _foodRepository.GetById(foodId);
+            var food = await _foodRepository.GetById(foodId).ConfigureAwait(false);
             if (food == null)
                 return false;
 
-            var item = await _basketRepository.GetActiveByUserAndFoodId(userId, foodId);
+            var item = await _basketRepository.GetActiveByUserAndFoodId(userId, foodId).ConfigureAwait(false);
             if (item != null)
             {
                 item.Quantity += quantity;
                 item.Price = food.Price * item.Quantity;
-                await _basketRepository.UpdateAsync(item);
+                await _basketRepository.UpdateAsync(item).ConfigureAwait(false);
             }
             else
             {
@@ -110,7 +110,7 @@ namespace DeliveryService.Services
                     Price = price
                 };
 
-                await _basketRepository.AddAsync(newItem);
+                await _basketRepository.AddAsync(newItem).ConfigureAwait(false);
             }
 
             return true;
@@ -122,11 +122,11 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция</returns>
         public async Task<bool> RemoveItemAsync(int basketId)
         {
-            var item = await _basketRepository.GetById(basketId);
+            var item = await _basketRepository.GetById(basketId).ConfigureAwait(false);
             if (item == null)
                 return false;
 
-            await _basketRepository.DeleteAsync(item);
+            await _basketRepository.DeleteAsync(item).ConfigureAwait(false);
             return true;
         }
         /// <summary>
@@ -135,7 +135,7 @@ namespace DeliveryService.Services
         /// <param name="userId">ID пользователя</param>
         public async Task ClearUserBasketAsync(int userId)
         {
-            await _basketRepository.ClearUserBasketAsync(userId);
+            await _basketRepository.ClearUserBasketAsync(userId).ConfigureAwait(false);
         }
     }
 }

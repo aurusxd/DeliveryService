@@ -168,8 +168,8 @@ namespace DeliveryService.ViewModels
             {
                 if (SelectedCourier == null || order == null) return;
                 Order ord = (Order)order;
-                bool success = await _courierService.AssignCourierToOrderAsync(SelectedCourier.Id, ord.Id);
-                if (success) await LoadDataAsync();
+                bool success = await _courierService.AssignCourierToOrderAsync(SelectedCourier.Id, ord.Id).ConfigureAwait(false);
+                if (success) await LoadDataAsync().ConfigureAwait(false);
             });
 
             SelectOrderCommand = new RelayCommandAsync(async order =>
@@ -187,7 +187,7 @@ namespace DeliveryService.ViewModels
                 SelectedCourier = courier;
 
                 SelectedOrder = await _orderService
-                    .FindOrderByCourierIdAsync(courier.Id);
+                    .FindOrderByCourierIdAsync(courier.Id).ConfigureAwait(false);
 
                 if (SelectedOrder == null) return;
                 if (SelectedCourier == null) return;
@@ -207,7 +207,7 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadOrdersAsync()
         {
-            var allOrders = await _orderService.GetAllAsync();
+            var allOrders = await _orderService.GetAllAsync().ConfigureAwait(false);
 
             if (allOrders != null && allOrders.Any())
             {
@@ -238,7 +238,7 @@ namespace DeliveryService.ViewModels
         /// <returns></returns>
         private async Task LoadFreeCouriersAsync()
         {
-            var freeCouriers = await _courierService.GetFreeCouriersAsync();
+            var freeCouriers = await _courierService.GetFreeCouriersAsync().ConfigureAwait(false);
             if (freeCouriers == null)
                 return;
 
@@ -257,14 +257,14 @@ namespace DeliveryService.ViewModels
         /// <param name="courierId">Айди курьера</param>
         /// <param name="orderId">Айди заказа</param>
         /// <returns></returns>
-        public async Task AssignCourier(int courierId, int orderId) => await _courierService.AssignCourierToOrderAsync(courierId, orderId);
+        public async Task AssignCourier(int courierId, int orderId) => await _courierService.AssignCourierToOrderAsync(courierId, orderId).ConfigureAwait(false);
 
         /// <summary>
         /// Загрузка данных об курьерах
         /// </summary>
         private async Task LoadCouriersAsync()
         {
-            var allCouriers = await _courierService.GetAllAsync();
+            var allCouriers = await _courierService.GetAllAsync().ConfigureAwait(false);
             if (allCouriers == null)
                 return;
 
@@ -280,9 +280,9 @@ namespace DeliveryService.ViewModels
         /// </summary>
         private async Task LoadDataAsync()
         {
-            await LoadOrdersAsync();
-            await LoadCouriersAsync();
-            await LoadFreeCouriersAsync();
+            await LoadOrdersAsync().ConfigureAwait(false);
+            await LoadCouriersAsync().ConfigureAwait(false);
+            await LoadFreeCouriersAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Старт таймера
@@ -319,7 +319,7 @@ namespace DeliveryService.ViewModels
         {
             SelectedCourier.Current_Lat = v1;
             SelectedCourier.Current_Lon = v2;
-            await _courierService.Update(SelectedCourier);
+            await _courierService.Update(SelectedCourier).ConfigureAwait(false);
         }
     }
 }

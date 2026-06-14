@@ -89,7 +89,7 @@ namespace DeliveryService.ViewModels
 
             try
             {
-                await task();
+                await task().ConfigureAwait(false);
                 return true;
             }
             catch (Exception ex)

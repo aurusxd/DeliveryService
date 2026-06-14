@@ -15,10 +15,6 @@ namespace DeliveryService.Views
     /// </summary>
     public partial class dispatcherPage : UserControl
     {
-        /// <summary>
-        /// Специальный токен для защиты от дубликации симуляций маршрутов
-        /// </summary>
-        private CancellationTokenSource? _simulationCts;
         private SimulationService _simulationService;
         public dispatcherPage()
         {
@@ -28,7 +24,7 @@ namespace DeliveryService.Views
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            await MapInitializer.Initialize(Map);
+            await MapInitializer.Initialize(Map).ConfigureAwait(false);
 
 
             if (DataContext is DispatcherViewModel vm)
@@ -55,13 +51,13 @@ namespace DeliveryService.Views
                     CultureInfo.InvariantCulture,
                     "MoveCourier({0}, {1})",
                     Lat,
-                    Lon));
+                    Lon)).ConfigureAwait(false);
         }
 
         private async Task OnRouteReceived(List<List<double>> points)
         {
             if (DataContext is DispatcherViewModel vm)
-                await _simulationService.StartAsync(points, vm.SelectedCourier);
+                await _simulationService.StartAsync(points, vm.SelectedCourier).ConfigureAwait(false);
         }
 
         private async void OnOrderSelected(Order order)
@@ -71,7 +67,7 @@ namespace DeliveryService.Views
 
             string.Format(CultureInfo.InvariantCulture,
                     "DrawRoute({0}, {1}, {2}, {3}, false)",
-                    order.Lat_From, order.Lon_From, order.Lat_To, order.Lon_To));
+                    order.Lat_From, order.Lon_From, order.Lat_To, order.Lon_To)).ConfigureAwait(false);
         }
 
         private async void OnCourierSelected(double latFrom, double lonFrom, double latTo, double lonTo, double courLat, double courLon)
@@ -79,12 +75,12 @@ namespace DeliveryService.Views
             await Map.CoreWebView2.ExecuteScriptAsync(
                 string.Format(CultureInfo.InvariantCulture,
                     "DrawRoute({0}, {1}, {2}, {3}, true)",
-                    latFrom, lonFrom, latTo, lonTo));
+                    latFrom, lonFrom, latTo, lonTo)).ConfigureAwait(false);
 
             await Map.CoreWebView2.ExecuteScriptAsync(
             string.Format(CultureInfo.InvariantCulture,
                 "AddMark({0}, {1})",
-                courLat, courLon));
+                courLat, courLon)).ConfigureAwait(false);
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

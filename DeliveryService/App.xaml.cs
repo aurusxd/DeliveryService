@@ -6,41 +6,45 @@ using DeliveryService.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
 using System.Windows;
 
 namespace DeliveryService
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         public static IServiceProvider? Services { get; private set; }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console()
+                .WriteTo.File("logs/app-.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             var config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             var services = new ServiceCollection();
 
-            // БД
+            services.AddLogging(builder => builder.AddSerilog());
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(config.GetConnectionString("Default")));
 
-
-            // Репозитории
             services.AddScoped<OrderRepository>();
             services.AddScoped<CourierRepository>();
             services.AddScoped<ClientRepository>();
             services.AddScoped<FoodCategoryRepository>();
             services.AddScoped<FoodRepository>();
             services.AddScoped<BasketRepository>();
-            // Сервисы
+
             services.AddSingleton<SessionService>();
             services.AddSingleton<WindowsService>();
             services.AddScoped<SimulationService>();
@@ -51,7 +55,6 @@ namespace DeliveryService
             services.AddScoped<FoodService>();
             services.AddScoped<BasketService>();
 
-            // ViewModels
             services.AddTransient<MainWindowModel>();
             services.AddTransient<ListCouriersViewModel>();
             services.AddTransient<OrderListViewModel>();
@@ -61,11 +64,9 @@ namespace DeliveryService
             services.AddTransient<MenuViewModel>();
             services.AddTransient<EntranceViewModel>();
             services.AddTransient<RegistrationViewModel>();
-            services.AddTransient<MenuViewModel>();
             services.AddTransient<OrderAcceptViewModel>();
             services.AddTransient<AuthorizationViewModel>();
 
-            // View
             services.AddTransient<MainWindow>();
             services.AddTransient<NewOrderView>();
             services.AddTransient<RegistrationCourier>();
@@ -73,8 +74,9 @@ namespace DeliveryService
             services.AddTransient<MenuView>();
             services.AddTransient<OrderAcceptView>();
 
-            //контейнер
             Services = services.BuildServiceProvider();
+
+            Log.Information("Приложение запущено");
 
             using var scope = Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -85,6 +87,12 @@ namespace DeliveryService
             win.Closed += (_, _) => startupScope.Dispose();
             win.Show();
         }
-    }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Log.Information("Приложение закрыто");
+            Log.CloseAndFlush();
+            base.OnExit(e);
+        }
+    }
 }

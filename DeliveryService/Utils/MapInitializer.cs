@@ -54,7 +54,7 @@ namespace DeliveryService.Utils
             </body>
             </html>
             """;
-            await MapWebView.EnsureCoreWebView2Async();
+            await MapWebView.EnsureCoreWebView2Async().ConfigureAwait(false);
             var utilsFolder = Path.Combine(AppContext.BaseDirectory, "Utils");
             MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                 "delivery.local",

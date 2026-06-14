@@ -25,7 +25,7 @@ namespace DeliveryService.Services
         /// <returns>Список курьеров</returns>
         public async Task<List<Courier>> GetAllAsync()
         {
-            return await _courierRepository.GetAllAsync();
+            return await _courierRepository.GetAllAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace DeliveryService.Services
         /// <returns>Список активных курьеров</returns>
         public async Task<List<Courier>> GetActiveCouriersAsync()
         {
-            return await _courierRepository.GetActive();
+            return await _courierRepository.GetActive().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace DeliveryService.Services
         /// <returns>Список свободных от заказов курьеров</returns>
         public async Task<List<Courier>> GetFreeCouriersAsync()
         {
-            return await _courierRepository.GetFreeCouriers();
+            return await _courierRepository.GetFreeCouriers().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace DeliveryService.Services
             courier.Current_Lat = 0.0;
             courier.Current_Lon = 0.0;
 
-            await _courierRepository.AddAsync(courier);
+            await _courierRepository.AddAsync(courier).ConfigureAwait(false);
             return true;
         }
 
@@ -74,11 +74,11 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция назначения</returns>
         public async Task<bool> AssignCourierToOrderAsync(int courierId, int orderId)
         {
-            Courier? courier = await _courierRepository.GetById(courierId);
+            Courier? courier = await _courierRepository.GetById(courierId).ConfigureAwait(false);
             if (courier == null)
                 return false;
 
-            Order? order = await _orderRepository.GetById(orderId);
+            Order? order = await _orderRepository.GetById(orderId).ConfigureAwait(false);
             if (order == null)
                 return false;
 
@@ -89,7 +89,7 @@ namespace DeliveryService.Services
             order.Status = "В пути"; // Заменить на нужный
             courier.Current_Lat = order.Lat_From;
             courier.Current_Lon = order.Lon_From;
-            await _orderRepository.UpdateAsync(order);
+            await _orderRepository.UpdateAsync(order).ConfigureAwait(false);
 
             return true;
         }
@@ -103,12 +103,12 @@ namespace DeliveryService.Services
         public async Task<bool> AssignFreeCourierToOrderAsync(Order order)
         {
             if (order == null) return false;
-            var list = await _courierRepository.GetFreeCouriers();
+            var list = await _courierRepository.GetFreeCouriers().ConfigureAwait(false);
             if (list.Count == 0)
             {
                 order.CourierId = null;
                 order.Status = "Новый";
-                await _orderRepository.UpdateAsync(order);
+                await _orderRepository.UpdateAsync(order).ConfigureAwait(false);
                 return false;
             }
             Courier? courier = null;
@@ -122,7 +122,7 @@ namespace DeliveryService.Services
             order.Status = "В пути";
             courier.Current_Lat = order.Lat_From;
             courier.Current_Lon = order.Lon_From;
-            await _orderRepository.UpdateAsync(order);
+            await _orderRepository.UpdateAsync(order).ConfigureAwait(false);
 
             return true;
         }
@@ -134,10 +134,10 @@ namespace DeliveryService.Services
         /// <returns>Прошла ли операция</returns>
         public async Task<bool> ToggleCourierOnlineAsync(int courierId)
         {
-            if (await _courierRepository.GetById(courierId) == null)
+            if (await _courierRepository.GetById(courierId).ConfigureAwait(false) == null)
                 return false;
 
-            await _courierRepository.ToggleOnline(courierId);
+            await _courierRepository.ToggleOnline(courierId).ConfigureAwait(false);
             return true;
         }
         /// <summary>
@@ -148,7 +148,7 @@ namespace DeliveryService.Services
         public async Task<bool> RemoveCourierAsync(int courierId)
         {
 
-            var courier = await _courierRepository.GetById(courierId);
+            var courier = await _courierRepository.GetById(courierId).ConfigureAwait(false);
 
             if (courier == null) return false;
             _courierRepository?.DeleteAsync(courier);
@@ -161,7 +161,7 @@ namespace DeliveryService.Services
         /// <returns></returns>
         public async Task<Courier?> GetById(int id)
         {
-            return await _courierRepository?.GetById(id);
+            return await (_courierRepository?.GetById(id)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace DeliveryService.Services
         /// <returns></returns>
         public async Task Update(Courier courier)
         {
-            await _courierRepository.UpdateAsync(courier);
+            await _courierRepository.UpdateAsync(courier).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace DeliveryService.Services
         {
             courier.Current_Lat = Lat;
             courier.Current_Lon = Lon;
-            await Update(courier);
+            await Update(courier).ConfigureAwait(false);
         }
     }
 }

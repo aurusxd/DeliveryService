@@ -27,7 +27,7 @@ namespace DeliveryService.Repositories
         {
             return await _context.Baskets
                 .Include(b => b.Food)
-                .FirstOrDefaultAsync(b => b.Id == basketId);
+                .FirstOrDefaultAsync(b => b.Id == basketId).ConfigureAwait(false);
         }
         /// <summary>
         /// Получение объекта корзины по id`шникам пользователя и еды 
@@ -39,7 +39,7 @@ namespace DeliveryService.Repositories
         {
             return await _context.Baskets
                 .Include(b => b.Food)
-                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId);
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId).ConfigureAwait(false);
         }
         /// <summary>
         /// Получение объекта корзины, который не привязан к заказу и по id`шникам пользователя и еды
@@ -50,7 +50,7 @@ namespace DeliveryService.Repositories
         public async Task<Basket?> GetActiveByUserAndFoodId(int userId, int foodId)
         {
             return await _context.Baskets
-                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId && !_context.Orders.Any(o => o.BasketId == b.Id));
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.FoodId == foodId && !_context.Orders.Any(o => o.BasketId == b.Id)).ConfigureAwait(false);
         }
         /// <summary>
         /// Получение всех объектов корзины по пользователю
@@ -62,7 +62,7 @@ namespace DeliveryService.Repositories
             return await _context.Baskets
                 .Include(b => b.Food)
                 .Where(b => b.UserId == userId)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Получение всех объектов корзины по пользователю, исключая те объекты, которые уже привязаны к заказам
@@ -74,7 +74,7 @@ namespace DeliveryService.Repositories
             return await _context.Baskets
                 .Include(b => b.Food)
                 .Where(b => b.UserId == userId && !_context.Orders.Any(o => o.BasketId == b.Id))
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Добавление объекта корзины
@@ -82,8 +82,8 @@ namespace DeliveryService.Repositories
         /// <param name="basket">Объект корзины</param>
         public async Task AddAsync(Basket basket)
         {
-            await _context.Baskets.AddAsync(basket);
-            await _context.SaveChangesAsync();
+            await _context.Baskets.AddAsync(basket).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Обновление объекта корзины в базе данных
@@ -92,7 +92,7 @@ namespace DeliveryService.Repositories
         public async Task UpdateAsync(Basket basket)
         {
             _context.Baskets.Update(basket);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Удаление объекта корзины
@@ -101,7 +101,7 @@ namespace DeliveryService.Repositories
         public async Task DeleteAsync(Basket basket)
         {
             _context.Baskets.Remove(basket);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Удаление объектов корзины по id пользователя
@@ -111,7 +111,7 @@ namespace DeliveryService.Repositories
         {
             var basket = _context.Baskets.Where(b => b.UserId == userId).ToList();
             _context.Baskets.RemoveRange(basket);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

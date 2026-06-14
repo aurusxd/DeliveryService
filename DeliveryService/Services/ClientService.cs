@@ -23,7 +23,7 @@ namespace DeliveryService.Services
         public async Task<bool> AddClientAsync(Client client)
         {
             if (client == null) return false;
-            await _clientRepository.AddAsync(client);
+            await _clientRepository.AddAsync(client).ConfigureAwait(false);
             return true;
         }
 
@@ -34,7 +34,7 @@ namespace DeliveryService.Services
         /// <returns>Клиент. Если был не найден то null</returns>
         public async Task<Client?> GetClientById(int userId)
         {
-            Client? client = await _clientRepository.GetById(userId);
+            Client? client = await _clientRepository.GetById(userId).ConfigureAwait(false);
 
             if (client == null)
                 return null;
@@ -47,7 +47,7 @@ namespace DeliveryService.Services
         /// <returns>Клиент. Если был не найден то null</returns>
         public async Task<Client?> GetClientByName(string name)
         {
-            Client? client = await _clientRepository.GetByName(name);
+            Client? client = await _clientRepository.GetByName(name).ConfigureAwait(false);
 
             if (client == null)
                 return null;

@@ -23,7 +23,7 @@ namespace DeliveryService.Repositories
         /// </summary>
         /// <param name="foodId">ID еды</param>
         /// <returns>Еда с указаным id</returns>
-        public async Task<Food?> GetById(int foodId) => await _context.Foods.FindAsync(foodId);
+        public async Task<Food?> GetById(int foodId) => await _context.Foods.FindAsync(foodId).ConfigureAwait(false);
         /// <summary>
         /// Получение всей еды
         /// </summary>
@@ -32,7 +32,7 @@ namespace DeliveryService.Repositories
         {
             return await _context.Foods
                 .Include(f => f.Categories)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Получение еды по категории
@@ -44,7 +44,7 @@ namespace DeliveryService.Repositories
             return await _context.Foods
                 .Include(f => f.Categories)
                 .Where(f => f.CategoriesId == categoryId)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Добавление еды
@@ -52,8 +52,8 @@ namespace DeliveryService.Repositories
         /// <param name="food">Объект еды</param>
         public async Task AddAsync(Food food)
         {
-            await _context.Foods.AddAsync(food);
-            await _context.SaveChangesAsync();
+            await _context.Foods.AddAsync(food).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Обновление еды в базе данных
@@ -62,7 +62,7 @@ namespace DeliveryService.Repositories
         public async Task UpdateAsync(Food food)
         {
             _context.Foods.Update(food);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
         /// <summary>
         /// Удаление еды
@@ -71,7 +71,7 @@ namespace DeliveryService.Repositories
         public async Task DeleteAsync(Food food)
         {
             _context.Foods.Remove(food);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

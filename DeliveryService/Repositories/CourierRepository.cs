@@ -23,7 +23,7 @@ namespace DeliveryService.Repositories
         /// </summary>
         /// <param name="courierId">ID курьера</param>
         /// <returns>Курьер</returns>
-        public async Task<Courier?> GetById(int courierId) => await _context.Couriers.FindAsync(courierId);
+        public async Task<Courier?> GetById(int courierId) => await _context.Couriers.FindAsync(courierId).ConfigureAwait(false);
 
         /// <summary>
         /// Получение всех курьеров
@@ -33,7 +33,7 @@ namespace DeliveryService.Repositories
         {
             return await _context.Couriers
                 .Include(o => o.Orders)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace DeliveryService.Repositories
             return await _context.Couriers
                 .Where(c => c.IsActive)
                 .Include(o => o.Orders)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace DeliveryService.Repositories
             return await _context.Couriers
                 .Where(c => c.IsActive)
                 .Where(c => !c.Orders.Any(o => o.Status == "В пути")) // Изменить название на нужные
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace DeliveryService.Repositories
         /// <param name="courier">Курьер</param>
         public async Task AddAsync(Courier courier)
         {
-            await _context.Couriers.AddAsync(courier);
-            await _context.SaveChangesAsync();
+            await _context.Couriers.AddAsync(courier).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace DeliveryService.Repositories
         public async Task UpdateAsync(Courier courier)
         {
             _context.Couriers.Update(courier);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -86,12 +86,12 @@ namespace DeliveryService.Repositories
         /// <param name="courierId">ID курьера</param>
         public async Task ToggleOnline(int courierId)
         {
-            var courier = await _context.Couriers.FindAsync(courierId);
+            var courier = await _context.Couriers.FindAsync(courierId).ConfigureAwait(false);
 
             if (courier != null)
             {
                 courier.IsActive = !courier.IsActive;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 
@@ -102,7 +102,7 @@ namespace DeliveryService.Repositories
         public async Task DeleteAsync(Courier courier)
         {
             _context.Couriers.Remove(courier);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
